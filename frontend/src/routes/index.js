@@ -4,9 +4,10 @@ import BookContent from "../pages/BookContent";
 
 //test
 const routes = [
-  { path: "/", component: Home },
-  { path: "/bookInfo", component: BookInfo },
+  // { path: "/", component: Home },
+  // { path: "/bookInfo", component: BookInfo },
   { path: "/bookContent", component: BookContent },
+  {path: "/", component: BookInfo}
 ];
 
 export default routes;
