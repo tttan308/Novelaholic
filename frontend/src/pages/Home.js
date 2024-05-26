@@ -1,33 +1,33 @@
-import { FaChevronDown } from 'react-icons/fa';
-import HotNovels from '../components/HotNovels';
-import SearchBox from '../components/SearchBox';
+import { FaChevronDown } from "react-icons/fa";
+import HotNovels from "../components/HotNovels";
+import SearchBox from "../components/SearchBox";
 
 function Home() {
   const recentlyBooks = [
     {
       id: 1,
-      title: 'Nàng không muốn làm hoàng hậu',
-      image: 'https://images.penguinrandomhouse.com/cover/9780316760113',
+      title: "Nàng không muốn làm hoàng hậu",
+      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
     },
     {
       id: 2,
-      title: 'Nàng không muốn làm hoàng hậu',
-      image: 'https://images.penguinrandomhouse.com/cover/9780316760113',
+      title: "Nàng không muốn làm hoàng hậu",
+      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
     },
     {
       id: 3,
-      title: 'Nàng không muốn làm hoàng hậu',
-      image: 'https://images.penguinrandomhouse.com/cover/9780316760113',
+      title: "Nàng không muốn làm hoàng hậu",
+      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
     },
     {
       id: 4,
-      title: 'Nàng không muốn làm hoàng hậu',
-      image: 'https://images.penguinrandomhouse.com/cover/9780316760113',
+      title: "Nàng không muốn làm hoàng hậu",
+      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
     },
     {
       id: 5,
-      title: 'Nàng không muốn làm hoàng hậu',
-      image: 'https://images.penguinrandomhouse.com/cover/9780316760113',
+      title: "Nàng không muốn làm hoàng hậu",
+      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
     },
   ];
 
