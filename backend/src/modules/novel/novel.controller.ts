@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { NovelService } from '../services/novel.service';
+import { NovelService } from './novel.service';
 
 @Controller('novels')
 export class NovelController {
@@ -25,15 +25,19 @@ export class NovelController {
 	}
 
 	@Get('hot')
-	async getHotNovels(@Query('source') source: string = 'truyenfull.vn') {
-		return this.novelService.getHotNovels(source);
+	async getHotNovels(
+		@Query('source') source: string = 'truyenfull.vn',
+		@Query('page') page: number = 1,
+	) {
+		return this.novelService.getHotNovels(source, page);
 	}
 
 	@Get('search')
 	async searchNovels(
 		@Query('source') source: string = 'truyenfull.vn',
 		@Query('keyword') keyword: string,
+		@Query('page') page: number = 1,
 	) {
-		return this.novelService.searchNovels(source, keyword);
+		return this.novelService.searchNovels(source, keyword, page);
 	}
 }

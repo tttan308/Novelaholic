@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { IScraper } from './scraper.interface';
-import { Details } from './truyenfull-interface/Details.interface';
+import { ICrawl } from '../crawl.interface';
+import { Details } from './interfaces/details.interface';
+import { number } from 'joi';
 
 @Injectable()
-export class TruyenFullScraper implements IScraper {
+export class TruyenFullCrawl implements ICrawl {
 	async getDetails(url: string, name: string, page: number): Promise<Details> {
 		const urlGetDetails =
 			`${url}/${name}` + (page > 1 ? `/trang-${page}/#list-chapter` : '');
@@ -75,7 +76,6 @@ export class TruyenFullScraper implements IScraper {
 			`${url}/${name}` +
 			(page > 1 ? `/trang-${page}/#list-chapter` : '') +
 			`/chuong-${chapterNumber}`;
-		console.log(urlDetailsChapter);
 
 		const response = await axios.get(urlDetailsChapter, {
 			headers: {
@@ -112,8 +112,11 @@ export class TruyenFullScraper implements IScraper {
 		return chapterDetails;
 	}
 
-	async getHotNovels(url: string): Promise<any> {
-		const response = await axios.get(url, {
+	async getHotNovels(url: string, page: number): Promise<any> {
+		let urlHotNovels = `${url}/danh-sach/truyen-hot/`;
+		if (page > 1) urlHotNovels += `trang-${page}/`;
+
+		const response = await axios.get(urlHotNovels, {
 			headers: {
 				'User-Agent':
 					'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -123,19 +126,62 @@ export class TruyenFullScraper implements IScraper {
 		const $ = cheerio.load(html);
 		const hotNovels = [];
 
-		$('.index-intro .item').each((index, element) => {
-			const title = $(element).find('.title').text().trim();
-			const link = $(element).find('a').attr('href');
-			const cover = $(element).find('img').attr('src');
+		$('.list.list-truyen.col-xs-12 .row').each((index, element) => {
+			const cover =
+				$(element).find('.lazyimg').data('image') ||
+				$(element).find('.lazyimg').data('desk-image');
+			if (!cover) return false;
 
-			hotNovels.push({ title, link, cover });
+			const titleElement = $(element).find('.truyen-title a');
+			const title = titleElement.text().trim();
+			const titleLink = titleElement.attr('href');
+			const splitTitleLink = titleLink?.split('/');
+			const id = splitTitleLink?.[splitTitleLink.length - 2];
+			const author = $(element).find('.author').text().trim();
+			const isFull = $(element).find('.label-title.label-full').length > 0;
+			const isHot = $(element).find('.label-title.label-hot').length > 0;
+			const chapterElement = $(element).find('.col-xs-2.text-info a');
+			const chapter = chapterElement.text().replace('Chương ', '').trim();
+			const chapterLink = chapterElement.attr('href');
+
+			hotNovels.push({
+				id,
+				cover,
+				title,
+				titleLink,
+				isFull,
+				isHot,
+				author,
+				chapter,
+				chapterLink,
+			});
 		});
 
-		return hotNovels;
+		const lastPageLink = $('a:contains("Cuối")').attr('href');
+
+		if (!lastPageLink) {
+			throw new Error('Unable to find the total pages.');
+		}
+
+		const totalPageMatch = lastPageLink.match(/trang-(\d+)\//);
+		const totalPages = totalPageMatch ? parseInt(totalPageMatch[1], 10) : 1;
+		const currentPage = Number(page);
+
+		return {
+			hotNovels,
+			totalPages,
+			currentPage,
+		};
 	}
 
-	async searchNovels(url: string, keyword: string): Promise<any> {
-		const searchUrl = `${url}/tim-kiem/?tukhoa=${keyword}`;
+	async searchNovels(url: string, keyword: string, page: number): Promise<any> {
+		let searchUrl = `${url}/tim-kiem/?tukhoa=${keyword}`;
+		console.log(searchUrl);
+		if (page > 1) {
+			searchUrl += `&page=${page}`;
+		}
+
+		console.log(searchUrl);
 
 		const response = await axios.get(searchUrl, {
 			headers: {
@@ -152,9 +198,13 @@ export class TruyenFullScraper implements IScraper {
 			const cover =
 				$(element).find('.lazyimg').data('image') ||
 				$(element).find('.lazyimg').data('desk-image');
+			if (!cover) return false;
+
 			const titleElement = $(element).find('.truyen-title a');
 			const title = titleElement.text().trim();
 			const titleLink = titleElement.attr('href');
+			const splitTitleLink = titleLink?.split('/');
+			const id = splitTitleLink?.[splitTitleLink.length - 2];
 			const author = $(element).find('.author').text().trim();
 			const isFull = $(element).find('.label-title.label-full').length > 0;
 			const isHot = $(element).find('.label-title.label-hot').length > 0;
@@ -163,6 +213,7 @@ export class TruyenFullScraper implements IScraper {
 			const chapterLink = chapterElement.attr('href');
 
 			searchResults.push({
+				id,
 				cover,
 				title,
 				titleLink,
@@ -174,6 +225,20 @@ export class TruyenFullScraper implements IScraper {
 			});
 		});
 
-		return searchResults;
+		const lastPageLink = $('a:contains("Cuối")').last().attr('href');
+
+		if (!lastPageLink) {
+			throw new Error('Unable to find the total pages.');
+		}
+
+		const totalPageMatch = lastPageLink.match(/page=(\d+)/);
+		const totalPages = totalPageMatch ? parseInt(totalPageMatch[1], 10) : 1;
+		const currentPage = Number(page);
+
+		return {
+			searchResults,
+			totalPages,
+			currentPage,
+		};
 	}
 }

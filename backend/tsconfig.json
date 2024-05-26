@@ -18,15 +18,11 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@modules/*": [
-        "src/modules/*"
-      ],
-      "@configs/*": [
-        "src/configs/*"
-      ],
-      "@repositories/*": [
-        "src/repositories/*"
-      ]
-    },
-  }
+      "@modules/*": ["src/modules/*"],
+      "@configs/*": ["src/configs/*"],
+      "@repositories/*": ["src/repositories/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

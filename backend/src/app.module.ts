@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { NovelModule } from '@modules/novel/novel.module';
-import { ScraperModule } from '@modules/scrapers/scraper.module';
+import { CrawlModule } from '@modules/crawl/Crawl.module';
 
 @Module({
 	imports: [
@@ -13,7 +13,7 @@ import { ScraperModule } from '@modules/scrapers/scraper.module';
 				NODE_ENV: Joi.string()
 					.valid('development', 'production', 'test', 'provision', 'staging')
 					.default('development'),
-				PORT: Joi.number().default(3000),
+				PORT: Joi.number().default(3001),
 			}),
 			validationOptions: {
 				abortEarly: false,
@@ -24,7 +24,7 @@ import { ScraperModule } from '@modules/scrapers/scraper.module';
 			expandVariables: true,
 		}),
 		NovelModule,
-		ScraperModule,
+		CrawlModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

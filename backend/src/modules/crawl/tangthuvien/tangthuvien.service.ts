@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { IScraper } from './scraper.interface';
+import { ICrawl } from '../crawl.interface';
 
 @Injectable()
-export class TangThuVienScraper implements IScraper {
+export class TangThuVienCrawl implements ICrawl {
 	async getDetails(url: string, name: string): Promise<any> {
 		return [];
 	}
