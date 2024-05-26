@@ -1,5 +1,5 @@
 import { IoIosSearch } from 'react-icons/io';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { searchNovels } from '../services/novel';
 
@@ -7,10 +7,11 @@ const SearchBox = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const timeoutId = setTimeout(async () => {
-      const data = await searchNovels(searchQuery, 1, 5);
+      const { data, total } = await searchNovels(searchQuery, 1);
       setSearchResults(data?.slice(0, 5));
     }, 500);
     return () => {
@@ -18,9 +19,24 @@ const SearchBox = () => {
     };
   }, [searchQuery]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setSearchResults([]);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="flex justify-end py-10">
-      <div className="w-[500px] flex border rounded-md px-2 py-[6px] gap-2 mr-6 relative">
+    <div className="flex justify-end my-10">
+      <div
+        className="w-[500px] flex border rounded-md px-2 py-[6px] gap-2 mr-6 relative"
+        ref={searchRef}
+      >
         <IoIosSearch size={22} color="#555" />
         <input
           type="text"

@@ -4,7 +4,11 @@ export const fetchHotNovels = async (page) => {
       `http://localhost:3001/novels/hot?page=${page}`
     );
     const data = await response.json();
-    return data.hotNovels;
+    return {
+      data: data.hotNovels,
+      total: data.totalPages,
+      page: data.currentPage,
+    };
   } catch (error) {
     console.error(error);
   }
@@ -16,7 +20,11 @@ export const searchNovels = async (keyword, page) => {
       `http://localhost:3001/novels/search?keyword=${keyword}&page=${page}`
     );
     const data = await response.json();
-    return data.searchResults;
+    return {
+      data: data.searchResults,
+      total: data.totalPages,
+      page: data.currentPage,
+    };
   } catch (error) {
     console.error(error);
   }
