@@ -6,7 +6,7 @@ import GenrePage from '../pages/GenrePage';
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/book-info', component: BookInfo },
+  { path: '/book/:id', component: BookInfo },
   { path: '/book-content', component: BookContent },
   { path: '/search', component: SearchPage },
   { path: '/category/:genre', component: GenrePage },

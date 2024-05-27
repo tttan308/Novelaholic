@@ -35,10 +35,24 @@ function BookInfo() {
   const[genres, setGenres] = useState([]);
   const[list,setList] = useState([]);
   const[currentPage,setCurrentPage] = useState(1);
+  // Lấy URL hiện tại
+  const currentUrl = window.location.href;
+  console.log("currrent url: ", currentUrl);
 
+  // Sử dụng biểu thức chính quy (regex) để lấy ID (bao gồm cả chữ và số)
+  const match= currentUrl.match(/\/book\/([a-zA-Z0-9-/-]+)/);
+
+  const id = match ? match[1] : null;
+
+  if (id!== null) {
+    console.log(`ID là: ${id}`); // Xuất ra ID nếu tìm thấy
+  } else {
+    console.log('Không tìm thấy ID trong URL'); // Thông báo nếu không tìm thấy
+  }
+  
 
     useEffect(() => {
-      getInfo("truyenfull.vn","than-dao-dan-ton",currentPage)
+      getInfo("truyenfull.vn",id,currentPage)
       .then(info => {
         setBook(info);
         setMaxPage(info.maxPage);
@@ -69,26 +83,26 @@ function BookInfo() {
             <img src={book.cover} alt="book image"/>
           </div>
           <div className="bookDetail grid-flow-col pt-7 pl-9">
-            <div className="Author grid grid-cols-8">
+            <div className="Author grid grid-cols-8 p-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub col-span-1">
                 Tác giả
               </h1>
               <h1 className="col-span-7 content-center">{book.author}</h1>
             </div>
-            <div className="Type grid grid-cols-8">
+            <div className="Type grid grid-cols-8 p-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub col-span-1">
                 Thể loại
               </h1>
               <h1 className="col-span-7 content-center">{genres}</h1>
             </div>
-            <div className="Status grid grid-cols-8">
+            <div className="Status grid grid-cols-8 p-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub col-span-1">
                 Trạng thái
               </h1>
               <h1 className="col-span-7 content-center">{(book.status == "Full") ? "Hoàn Thành" : "Đang cập nhật"}</h1>
             </div>
 
-            <div className="groupDesc pt-6">
+            <div className="groupDesc pt-6 pl-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub">Mô tả</h1>
               <ReadMore fullText={book.description}/>
             </div>
@@ -101,12 +115,12 @@ function BookInfo() {
           <hr className="w-[260px] h-1 bg-main" />
         </div>
 
-        <table className="border-collapse ml-[50px] mt-[36px]">
+        <table className="border-collapse ml-[50px] mt-[36px] mb-[20px]">
             <tbody>
                 {list.map((item,index) => {
                     return(
                         <Link to={{pathname: "bookContent",
-                                    search: `?name=${book.title}?chapter=${item.title}`,     //pass chapter as a querry string 
+                                    search: `?name=${id}?chapter=${item.title}`,     //pass chapter as a querry string 
                         }} className="w-1311px">
 
                             <tr key={index} onClick={()=>{}}>
