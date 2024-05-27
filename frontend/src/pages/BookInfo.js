@@ -111,10 +111,9 @@ function BookInfo() {
       </div>
       <div className="listChapter">
         <div className="container px-8">
-          <h1 className="text-2xl font-bold font-Poppins mt-4">
+          <h1 className="text-2xl font-bold font-Poppins mt-4 border-b-4 w-fit border-main pr-6 pb-2">
             Danh sách chương
           </h1>
-          <hr className="w-[260px] h-1 bg-main" />
         </div>
 
         <table className="border-collapse ml-[50px] mt-[36px] mb-[20px]">

@@ -80,14 +80,14 @@ const OrderSourceModal = ({
         <div className="p-4 float-right">
           <button
             onClick={onClose}
-            className="bg-sub text-white text-base font-inter h-[40px] w-[90px] rounded-[5px] mr-4 transition duration-200 hover:scale-110"
+            className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[90px] rounded-[5px] mr-4 transition duration-200 hover:scale-110"
           >
             Hủy
           </button>
 
           <button
             onClick={handleSave}
-            className="bg-sub text-white text-base font-inter h-[40px] w-[90px] rounded-[5px] transition duration-200 hover:scale-110"
+            className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[90px] rounded-[5px] transition duration-200 hover:scale-110"
           >
             Lưu
           </button>

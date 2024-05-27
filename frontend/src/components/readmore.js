@@ -45,18 +45,18 @@ const ReadMore = ({ fullText }) => {
       </button>
       <div className="Groupbtn flex justify-center flex-skrink-0 mt-4">
         <Link to={{ pathname: "/bookContent", search: `?chapter=${1}` }}>
-          <button className="bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
+          <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
             {" "}
             Đọc từ đầu
           </button>
         </Link>
         <Link to={{ pathname: "/bookContent", search: `?chapter=last` }}>
-          <button className="bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
+          <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
             {" "}
             Đọc mới nhất
           </button>
         </Link>
-        <button className="bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
+        <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
           {" "}
           Tải xuống
         </button>
