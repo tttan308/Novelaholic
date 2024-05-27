@@ -21,7 +21,7 @@ const BookContent = (api) => {
       <FixedBox />
 
       {/* title */}
-      <p className="text-2xl font-bold text-center my-4 font-opensans">
+      <p className="text-2xl font-bold text-center my-4 font-opensans text-sub">
         {chapterData.chapterTitle}
       </p>
       <p className="text-xl font-bold text-center my-2 text-main font-opensans">
@@ -91,15 +91,15 @@ const BookContent = (api) => {
 
 const FixedBox = () => {
   return (
-    <div className="fixed left-6 top-1/2 transform -translate-y-1/2 py-3 px-3 bg-white  border p-2 border-gray flex flex-col space-y-4">
+    <div className="fixed left-6 top-1/2 transform -translate-y-1/2 py-3 px-3 bg-white border p-2 border-gray-400 flex flex-col space-y-4">
       <button className="text-main hover:text-black">
-        <FaCog size={24} />
+        <FaCog size={26} />
       </button>
       <button className="text-main hover:text-black">
-        <FaBars size={24} />
+        <FaBars size={26} />
       </button>
       <button className="text-main hover:text-black">
-        <FaDownload size={24} />
+        <FaDownload size={26} />
       </button>
     </div>
   );
