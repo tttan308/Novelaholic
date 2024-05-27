@@ -10,6 +10,11 @@ module.exports = {
         },
         sub: "rgba(58, 74, 103, 1)",
       },
+      fontFamily: {
+        timesnewroman: ["Times New Roman", "Georgia", "serif"],
+        opensans: ["Open Sans", "sans-serif"],
+        cherry: ["Cherry Bomb One", "cursive"],
+      },
     },
   },
   plugins: [],

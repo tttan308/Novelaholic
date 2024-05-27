@@ -39,5 +39,4 @@ const ReadMore = ({fullText}) => {
         );
 };
 
-export default ReadMore
-
+export default ReadMore;

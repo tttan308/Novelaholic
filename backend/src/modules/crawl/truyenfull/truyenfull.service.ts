@@ -3,7 +3,6 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { ICrawl } from '../crawl.interface';
 import { Details } from './interfaces/details.interface';
-import { number } from 'joi';
 
 @Injectable()
 export class TruyenFullCrawl implements ICrawl {
@@ -72,10 +71,9 @@ export class TruyenFullCrawl implements ICrawl {
 			name = name.substring(0, lastSlashIndex);
 		}
 
-		const urlDetailsChapter =
-			`${url}/${name}` +
-			(page > 1 ? `/trang-${page}/#list-chapter` : '') +
-			`/chuong-${chapterNumber}`;
+		const urlDetailsChapter = `${url}/${name}` + `/chuong-${chapterNumber}`;
+
+		console.log(urlDetailsChapter);
 
 		const response = await axios.get(urlDetailsChapter, {
 			headers: {
@@ -126,6 +124,15 @@ export class TruyenFullCrawl implements ICrawl {
 		const $ = cheerio.load(html);
 		const hotNovels = [];
 
+		const lastPageLink = $('a:contains("Cuối")').attr('href');
+
+		if (!lastPageLink) {
+			throw new Error('Unable to find the total pages.');
+		}
+
+		const totalPageMatch = lastPageLink.match(/trang-(\d+)\//);
+		const totalPages = totalPageMatch ? parseInt(totalPageMatch[1], 10) : 1;
+
 		$('.list.list-truyen.col-xs-12 .row').each((index, element) => {
 			const cover =
 				$(element).find('.lazyimg').data('image') ||
@@ -157,14 +164,6 @@ export class TruyenFullCrawl implements ICrawl {
 			});
 		});
 
-		const lastPageLink = $('a:contains("Cuối")').attr('href');
-
-		if (!lastPageLink) {
-			throw new Error('Unable to find the total pages.');
-		}
-
-		const totalPageMatch = lastPageLink.match(/trang-(\d+)\//);
-		const totalPages = totalPageMatch ? parseInt(totalPageMatch[1], 10) : 1;
 		const currentPage = Number(page);
 
 		return {
@@ -228,7 +227,11 @@ export class TruyenFullCrawl implements ICrawl {
 		const lastPageLink = $('a:contains("Cuối")').last().attr('href');
 
 		if (!lastPageLink) {
-			throw new Error('Unable to find the total pages.');
+			return {
+				searchResults,
+				totalPages: 1,
+				currentPage: 1,
+			};
 		}
 
 		const totalPageMatch = lastPageLink.match(/page=(\d+)/);

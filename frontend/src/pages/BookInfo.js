@@ -92,14 +92,10 @@ function BookInfo() {
               <h1 className="text-base font-bold font-Poppins text-sub">Mô tả</h1>
               <ReadMore fullText={book.description}/>
             </div>
-            
           </div>
         </div>
-
-
       </div>
       <div className="listChapter">
-
         <div className="container px-8">
           <h1 className="text-2xl font-bold font-Poppins">Danh sách chương</h1>
           <hr className="w-[260px] h-1 bg-main" />
@@ -128,7 +124,7 @@ function BookInfo() {
         </table>
 
         <Pagination
-            className = "pagination-bar flex justify-center pt-[15px]"
+            className = "pagination-bar flex justify-center pt-[15px] mb-[20px]"
             currentPage = {currentPage}
             totalPageCount = {maxPage}
             pageSize = {pageSize}
