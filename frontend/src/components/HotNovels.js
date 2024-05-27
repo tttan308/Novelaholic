@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { fetchHotNovels } from '../services/novel';
+import { Link } from 'react-router-dom';
 
 const HotNovels = () => {
   const [hotNovels, setHotNovels] = useState([]);
@@ -37,7 +38,10 @@ const HotNovels = () => {
       <div className="grid grid-cols-5 justify-between mx-14 my-6">
         {novels.map((novel) => (
           <div key={novel.id} className="flex justify-center">
-            <div className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer">
+            <Link
+              to={`/book/${novel.id}`}
+              className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
+            >
               <img
                 src={novel.cover}
                 alt={novel.title}
@@ -46,7 +50,7 @@ const HotNovels = () => {
               <h3 className="text-sm font-semibold text-center">
                 {novel.title}
               </h3>
-            </div>
+            </Link>
           </div>
         ))}
       </div>

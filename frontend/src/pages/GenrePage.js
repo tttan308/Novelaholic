@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import SearchBox from '../components/SearchBox';
 import { useEffect, useState } from 'react';
 import { searchByGenre } from '../services/novel';
@@ -57,7 +57,10 @@ const GenrePage = () => {
             <div className="grid grid-cols-5 justify-between mx-14 my-6">
               {novels?.map((novel) => (
                 <div key={novel.id} className="flex justify-center">
-                  <div className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer">
+                  <Link
+                    to={`/book/${novel.id}`}
+                    className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
+                  >
                     <img
                       src={novel.cover}
                       alt={novel.title}
@@ -66,7 +69,7 @@ const GenrePage = () => {
                     <h3 className="text-sm font-semibold text-center">
                       {novel.title}
                     </h3>
-                  </div>
+                  </Link>
                 </div>
               ))}
             </div>

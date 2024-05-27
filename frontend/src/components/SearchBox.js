@@ -92,7 +92,7 @@ const SearchBox = () => {
               <div
                 key={novel.id}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b"
-                onClick={() => navigate(`/novel/${novel.id}`)}
+                onClick={() => navigate(`/book/${novel.id}`)}
               >
                 {novel.title}
               </div>
