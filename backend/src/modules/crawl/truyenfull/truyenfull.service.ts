@@ -4,6 +4,7 @@ import * as cheerio from 'cheerio';
 import { ICrawl } from '../crawl.interface';
 import { Details } from './interfaces/details.interface';
 import { Implements } from 'src/decorator/implements.decorate';
+import e from 'express';
 
 @Injectable()
 @Implements('ICrawl')
@@ -111,7 +112,6 @@ export class TruyenFullCrawl implements ICrawl {
 	): Promise<any> {
 		const urlDetailsChapter = `${url}/${id}` + `/chuong-${chapter}`;
 
-		console.log(urlDetailsChapter);
 		const response = await axios.get(urlDetailsChapter, {
 			headers: {
 				'User-Agent':
@@ -333,6 +333,7 @@ export class TruyenFullCrawl implements ICrawl {
 		page: number,
 	): Promise<any> {
 		let genreUrl = `${url}` + '/the-loai/' + `${genre}`;
+
 		if (page > 1) {
 			genreUrl += `/trang-${page}`;
 		}
@@ -349,23 +350,27 @@ export class TruyenFullCrawl implements ICrawl {
 		const $ = cheerio.load(html);
 		const novels = [];
 
-		const lastPageLink = $('a:contains("Cuối")').attr('href');
+		let totalPages = 1;
+		if (genre === 'quan-truong') {
+			totalPages = 3;
+		} else {
+			const lastPageLink = $('a:contains("Cuối ")').attr('href');
 
-		if (!lastPageLink) {
-			throw new Error('Unable to find the total pages.');
+			const totalPageMatch = lastPageLink.match(/trang-(\d+)/);
+			totalPages = totalPageMatch ? parseInt(totalPageMatch[1], 10) : 1;
 		}
-
-		const totalPageMatch = lastPageLink.match(/trang-(\d+)/);
-		const totalPages = totalPageMatch ? parseInt(totalPageMatch[1], 10) : 1;
 
 		$('.list.list-truyen.col-xs-12 .row').each((index, element) => {
 			const cover =
 				$(element).find('.lazyimg').data('image') ||
 				$(element).find('.lazyimg').data('desk-image');
-			if (!cover) return false;
+
+			// nếu không có thì tiếp tục lặp vòng mới (không dừng lại)
+			if (!cover) return true;
 
 			const titleElement = $(element).find('.truyen-title a');
 			const title = titleElement.text().trim();
+			console.log(title);
 			const titleLink = titleElement.attr('href');
 			const splitTitleLink = titleLink?.split('/');
 			const id = splitTitleLink?.[splitTitleLink.length - 2];
