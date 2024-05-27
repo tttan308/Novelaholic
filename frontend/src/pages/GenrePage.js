@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
-import { FaChevronDown } from 'react-icons/fa';
-import { searchNovels } from '../services/novel';
+import { useParams } from 'react-router-dom';
 import SearchBox from '../components/SearchBox';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { searchByGenre } from '../services/novel';
+import { FaChevronDown } from 'react-icons/fa';
 
-const SearchPage = () => {
-  const [searchParams] = useSearchParams();
-  const keyword = searchParams.get('keyword');
+const GenrePage = () => {
+  const { genre } = useParams();
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(1);
   const [offset, setOffset] = useState(20);
@@ -14,7 +13,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const { data, total } = await searchNovels(keyword, page);
+      const { data, total } = await searchByGenre(genre, page);
       if (!data) return;
       setSearchResults([...searchResults, ...data]);
       setTotal(total);
@@ -26,12 +25,13 @@ const SearchPage = () => {
     setPage(1);
     setOffset(20);
     const getData = async () => {
-      const { data, total } = await searchNovels(keyword, page);
+      const { data, total } = await searchByGenre(genre, page);
       if (!data) return;
       setSearchResults(data);
+      setTotal(total);
     };
     getData();
-  }, [keyword]);
+  }, [genre]);
 
   const handleViewMore = () => {
     setOffset(offset + 20);
@@ -48,13 +48,9 @@ const SearchPage = () => {
     <>
       <SearchBox />
       <div className="p-6 my-4">
-        <h2 className="text-lg font-semibold border-b-4 border-main w-fit">
-          Truyện với từ khóa: {keyword.toUpperCase()}
-        </h2>
-
         {searchResults.length === 0 ? (
           <div className="text-center my-10">
-            Không tìm được truyện với từ khóa: {keyword.toUpperCase()}
+            Không tìm được truyện thuộc thể loại: {genre.toUpperCase()}
           </div>
         ) : (
           <>
@@ -93,4 +89,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default GenrePage;
