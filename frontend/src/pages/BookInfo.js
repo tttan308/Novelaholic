@@ -83,26 +83,26 @@ function BookInfo() {
             <img src={book.cover} alt="book image"/>
           </div>
           <div className="bookDetail grid-flow-col pt-7 pl-9">
-            <div className="Author grid grid-cols-8">
+            <div className="Author grid grid-cols-8 p-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub col-span-1">
                 Tác giả
               </h1>
               <h1 className="col-span-7 content-center">{book.author}</h1>
             </div>
-            <div className="Type grid grid-cols-8">
+            <div className="Type grid grid-cols-8 p-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub col-span-1">
                 Thể loại
               </h1>
               <h1 className="col-span-7 content-center">{genres}</h1>
             </div>
-            <div className="Status grid grid-cols-8">
+            <div className="Status grid grid-cols-8 p-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub col-span-1">
                 Trạng thái
               </h1>
               <h1 className="col-span-7 content-center">{(book.status == "Full") ? "Hoàn Thành" : "Đang cập nhật"}</h1>
             </div>
 
-            <div className="groupDesc pt-6">
+            <div className="groupDesc pt-6 pl-[3px]">
               <h1 className="text-base font-bold font-Poppins text-sub">Mô tả</h1>
               <ReadMore fullText={book.description}/>
             </div>
