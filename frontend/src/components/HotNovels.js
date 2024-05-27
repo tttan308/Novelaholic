@@ -32,7 +32,7 @@ const HotNovels = () => {
 
   return (
     <div className="p-6 my-4">
-      <h2 className="text-[25px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
+      <h2 className="text-[24px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
         Truyện hot
       </h2>
       <div className="grid grid-cols-5 justify-between mx-14 my-6">

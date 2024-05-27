@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { FaChevronDown } from 'react-icons/fa';
-import { searchNovels } from '../services/novel';
-import SearchBox from '../components/SearchBox';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { FaChevronDown } from "react-icons/fa";
+import { searchNovels } from "../services/novel";
+import SearchBox from "../components/SearchBox";
+import { Link, useSearchParams } from "react-router-dom";
 
 const SearchPage = () => {
   const [searchParams] = useSearchParams();
-  const keyword = searchParams.get('keyword');
+  const keyword = searchParams.get("keyword");
   const [searchResults, setSearchResults] = useState([]);
   const [page, setPage] = useState(1);
   const [offset, setOffset] = useState(20);
@@ -48,7 +48,7 @@ const SearchPage = () => {
     <>
       <SearchBox />
       <div className="p-6 my-4">
-        <h2 className="text-lg font-semibold border-b-4 border-main w-fit">
+        <h2 className="text-[24px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
           Truyện với từ khóa: {keyword.toUpperCase()}
         </h2>
 
@@ -68,9 +68,9 @@ const SearchPage = () => {
                     <img
                       src={novel.cover}
                       alt={novel.title}
-                      className="w-28 h-36 object-cover"
+                      className="w-36 h-48 object-cover"
                     />
-                    <h3 className="text-sm font-semibold text-center">
+                    <h3 className="text-[17px] font-bold text-center leading-relaxed">
                       {novel.title}
                     </h3>
                   </Link>
@@ -84,9 +84,9 @@ const SearchPage = () => {
                 onClick={handleViewMore}
               >
                 <div className="w-8 h-8 rounded-full bg-main flex justify-center items-center">
-                  <FaChevronDown size={22} color="#dababa" />
+                  <FaChevronDown size={22} color="#ffffff" />
                 </div>
-                <span className="font-semibold">Xem thêm</span>
+                <span className="font-bold text-sub text-[18px]">Xem thêm</span>
               </div>
             )}
           </>

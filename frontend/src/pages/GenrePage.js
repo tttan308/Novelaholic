@@ -1,8 +1,8 @@
-import { Link, useParams } from 'react-router-dom';
-import SearchBox from '../components/SearchBox';
-import { useEffect, useState } from 'react';
-import { searchByGenre } from '../services/novel';
-import { FaChevronDown } from 'react-icons/fa';
+import { Link, useParams } from "react-router-dom";
+import SearchBox from "../components/SearchBox";
+import { useEffect, useState } from "react";
+import { searchByGenre } from "../services/novel";
+import { FaChevronDown } from "react-icons/fa";
 
 const GenrePage = () => {
   const { genre } = useParams();
@@ -64,9 +64,9 @@ const GenrePage = () => {
                     <img
                       src={novel.cover}
                       alt={novel.title}
-                      className="w-28 h-36 object-cover"
+                      className="w-36 h-48 object-cover"
                     />
-                    <h3 className="text-sm font-semibold text-center">
+                    <h3 className="text-[17px] font-bold text-center leading-relaxed">
                       {novel.title}
                     </h3>
                   </Link>
@@ -80,9 +80,9 @@ const GenrePage = () => {
                 onClick={handleViewMore}
               >
                 <div className="w-8 h-8 rounded-full bg-main flex justify-center items-center">
-                  <FaChevronDown size={22} color="#dababa" />
+                  <FaChevronDown size={22} color="#ffffff" />
                 </div>
-                <span className="font-semibold">Xem thêm</span>
+                <span className="font-bold text-sub text-[18px]">Xem thêm</span>
               </div>
             )}
           </>

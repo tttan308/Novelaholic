@@ -35,7 +35,7 @@ function Home() {
     <>
       <SearchBox />
       <div className="bg-main-light p-6">
-        <h2 className="text-[25px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
+        <h2 className="text-[24px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
           Đã đọc gần đây
         </h2>
         <div className="flex justify-around mx-14 my-6">
