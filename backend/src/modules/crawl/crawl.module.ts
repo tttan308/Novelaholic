@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CrawlFactoryService } from './crawl-factory.service';
+import { CrawlFactory } from './crawl.factory';
 import { TruyenFullCrawl } from './truyenfull/truyenfull.service';
 import { TangThuVienCrawl } from './tangthuvien/tangthuvien.service';
 
 @Module({
-	providers: [CrawlFactoryService, TruyenFullCrawl, TangThuVienCrawl],
-	exports: [CrawlFactoryService],
+	providers: [CrawlFactory, TruyenFullCrawl, TangThuVienCrawl],
+	exports: [CrawlFactory],
 })
 export class CrawlModule {}
