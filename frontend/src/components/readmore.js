@@ -1,17 +1,16 @@
 import { useState } from "react";
-import formatText from "./formatText";
 import {Link} from "react-router-dom"
 import ExportDialog from "./exportDialog";
 
 
-const ReadMore = ({fullText, numberOfChapter}) => {
+const ReadMore = ({fullText}) => {
     const SEE_MORE = "See More";
     const SEE_LESS = "See Less";
     const [collapse, setCollapse] = useState(false);
     return(
         <div className="container relative">
             <div className={`content relative font-Poppins text-base max-w-[967px] pt-4 text-justify  ${collapse ? "expanded max-h-none transition-max-height duration-500" :" max-h-[7.1rem] overflow-hidden transition-max-height duration-500"}`}>
-                {formatText(fullText)}
+                <p dangerouslySetInnerHTML={{__html: fullText}}/>
             </div>
             <button className="flex relative justify-center w-[967px] pt-4"onClick={() => setCollapse((prev) => !prev)}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6" className="size-8 border-[1px] border-solid border-full bg-main rounded-full text-white">
@@ -27,7 +26,7 @@ const ReadMore = ({fullText, numberOfChapter}) => {
                     <button className="bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125"> Đọc từ đầu</button>
                 </Link>
                 <Link to={{pathname: "/bookContent",
-                            search: `?chapter=${numberOfChapter}`
+                            search: `?chapter=last`
                 }}>
                     <button className="bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125"> Đọc mới nhất</button>
                 </Link>

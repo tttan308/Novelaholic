@@ -6,7 +6,8 @@ import "./pagination.css"
 const Pagination = props => {
     const{
         onPageChange,
-        totalCount,
+        // totalCount,
+        totalPageCount,
         siblingCount = 1,
         currentPage,
         pageSize,
@@ -14,7 +15,8 @@ const Pagination = props => {
     } = props;
     const paginationRange = usePagination({
         currentPage,
-        totalCount,
+        // totalCount,
+        totalPageCount,
         siblingCount,
         pageSize
     });
