@@ -29,16 +29,16 @@ function getGenres(genres){
 }
 
 
-function BookInfo() {
+function BookInfo(id) {
   const[book, setBook] = useState({});
   const[maxPage, setMaxPage] = useState(0);
   const[genres, setGenres] = useState([]);
   const[list,setList] = useState([]);
   const[currentPage,setCurrentPage] = useState(1);
-
+  id = "than-dao-dan-ton"
 
     useEffect(() => {
-      getInfo("truyenfull.vn","than-dao-dan-ton",currentPage)
+      getInfo("truyenfull.vn",id,currentPage)
       .then(info => {
         setBook(info);
         setMaxPage(info.maxPage);
@@ -106,7 +106,7 @@ function BookInfo() {
                 {list.map((item,index) => {
                     return(
                         <Link to={{pathname: "bookContent",
-                                    search: `?name=${book.title}?chapter=${item.title}`,     //pass chapter as a querry string 
+                                    search: `?name=${id}?chapter=${item.title}`,     //pass chapter as a querry string 
                         }} className="w-1311px">
 
                             <tr key={index} onClick={()=>{}}>

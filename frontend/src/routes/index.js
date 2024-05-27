@@ -5,8 +5,8 @@ import SearchPage from "../pages/SearchPage";
 import { Component } from "react";
 
 const routes = [
-  { path: "/", component: Home },
-  { path: "/book-info", component: BookInfo },
+  // { path: "/", component: Home },
+  { path: "/", component: BookInfo },
   { path: "/book-content", component: BookContent },
   { path: "/search", component: SearchPage },
 ];
