@@ -45,7 +45,7 @@ const ReadMore = ({ fullText, numberOfChapter }) => {
         </span>
       </button>
       <div className="Groupbtn flex justify-center flex-skrink-0 mt-4">
-        <Link to={{ pathname: "/bookContent", search: `?chapter=${1}` }}>
+        <Link to={{ pathname: "/book-content", search: `?chapter=${1}` }}>
           <button className="bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
             {" "}
             Đọc từ đầu
@@ -53,7 +53,7 @@ const ReadMore = ({ fullText, numberOfChapter }) => {
         </Link>
         <Link
           to={{
-            pathname: "/bookContent",
+            pathname: "/book-content",
             search: `?chapter=${numberOfChapter}`,
           }}
         >

@@ -21,7 +21,7 @@ const ListChapter = ({ data, clickAction }) => {
             return (
               <Link
                 to={{
-                  pathname: "bookContent",
+                  pathname: "book-content",
                   search: `?chapter=${item.chapter}`, //pass chapter as a querry string
                 }}
                 className="w-1311px"
