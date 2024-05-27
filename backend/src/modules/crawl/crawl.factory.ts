@@ -4,7 +4,7 @@ import { TangThuVienCrawl } from './tangthuvien/tangthuvien.service';
 import { ICrawl } from './crawl.interface';
 
 @Injectable()
-export class CrawlFactoryService {
+export class CrawlFactory {
 	private readonly Crawls: Map<string, ICrawl>;
 
 	constructor(

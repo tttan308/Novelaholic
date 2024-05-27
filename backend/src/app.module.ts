@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { NovelModule } from '@modules/novel/novel.module';
 import { CrawlModule } from '@modules/crawl/Crawl.module';
+import { ImplementationScannerService } from '@modules/crawl/Implementation-scanner.service';
 
 @Module({
 	imports: [
@@ -27,6 +28,6 @@ import { CrawlModule } from '@modules/crawl/Crawl.module';
 		CrawlModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [AppService, ImplementationScannerService],
 })
 export class AppModule {}

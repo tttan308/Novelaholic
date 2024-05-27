@@ -24,4 +24,16 @@ export class TangThuVienCrawl implements ICrawl {
 	async searchNovels(url: string, keyword: string): Promise<any> {
 		return [];
 	}
+
+	async getGenres(url: string): Promise<any> {
+		return [];
+	}
+
+	async getNovelsByGenre(
+		url: string,
+		genre: string,
+		page: number,
+	): Promise<any> {
+		return [];
+	}
 }

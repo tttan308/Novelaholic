@@ -29,13 +29,27 @@ function getGenres(genres){
 }
 
 
-function BookInfo(id) {
+function BookInfo() {
   const[book, setBook] = useState({});
   const[maxPage, setMaxPage] = useState(0);
   const[genres, setGenres] = useState([]);
   const[list,setList] = useState([]);
   const[currentPage,setCurrentPage] = useState(1);
-  id = "than-dao-dan-ton"
+  // Lấy URL hiện tại
+  const currentUrl = window.location.href;
+  console.log("currrent url: ", currentUrl);
+
+  // Sử dụng biểu thức chính quy (regex) để lấy ID (bao gồm cả chữ và số)
+  const match= currentUrl.match(/\/book\/([a-zA-Z0-9-/-]+)/);
+
+  const id = match ? match[1] : null;
+
+  if (id!== null) {
+    console.log(`ID là: ${id}`); // Xuất ra ID nếu tìm thấy
+  } else {
+    console.log('Không tìm thấy ID trong URL'); // Thông báo nếu không tìm thấy
+  }
+  
 
     useEffect(() => {
       getInfo("truyenfull.vn",id,currentPage)
@@ -101,7 +115,7 @@ function BookInfo(id) {
           <hr className="w-[260px] h-1 bg-main" />
         </div>
 
-        <table className="border-collapse ml-[50px] mt-[36px]">
+        <table className="border-collapse ml-[50px] mt-[36px] mb-[20px]">
             <tbody>
                 {list.map((item,index) => {
                     return(
