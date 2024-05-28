@@ -130,7 +130,7 @@ function BookInfo() {
                   <tr key={index} onClick={() => {}}>
                     {/* <td className={`border border-2 border-[#9F9F9F] p-[14px] w-[1311px] ${item.viewed === true? "bg-white" : "bg-[#EFEFEF]"} ` }> */}
                     <td
-                      className={`border border-2 border-[#9F9F9F] p-[14px] w-[1311px] bg-[#EFEFEF] `}
+                      className={` border-2 border-[#9F9F9F] p-[14px] w-[1311px] bg-[#EFEFEF] `}
                     >
                       <span className="font-Poppins font-base text-sub font-bold">
                         Chương {item.title.split(":")[0]} :{" "}

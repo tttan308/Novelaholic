@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaCog, FaDownload, FaBars, FaFileExport  } from "react-icons/fa";
 import SettingBox from "./settingBox";
 import { setFont, setFontSize, setBackground, setTextColor, setLineHeight,
@@ -19,26 +19,17 @@ const chapterData = {
 const BookContent = (api) => {
   const { prevChapter, nextChapter } = chapterData;
 
-  const font = getFont();
-  const fontSize = getFontSize();
-  const lineHeight = getLineHeight();
-  const background = getBackground();
-  const textColor = getTextColor();
-  
   useEffect(() => {
-    const text = document.getElementById("bookcontent-content");
-    if (text) {
-      setFont(font);
-      setFontSize(fontSize);
-      setLineHeight(lineHeight);
-      setBackground(background);
-      setTextColor(textColor);
-    }
-  }, [font, fontSize, lineHeight, background, textColor]);
+      setBackground(getBackground());
+      setTextColor(getTextColor());
+      setFont(getFont());
+      setFontSize(getFontSize());
+      setLineHeight(getLineHeight());
+  },[]);
 
   return (
     <div className="container mx-auto">
-      <FixedBox />
+      <SideBox />
 
       {/* title */}
       <p className="text-2xl font-bold text-center my-4 font-opensans text-sub">
@@ -108,13 +99,35 @@ const BookContent = (api) => {
   );
 };
 
-const FixedBox = () => {
+const SideBox = () => {
   const [showSettings, setShowSettings] = useState(false);
+  const boxRef = useRef(null);
+  const handleClickOutside = (event) => {
+    const beforeclick = showSettings;
+    if (boxRef.current && !boxRef.current.contains(event.target)) {
+      setTimeout(()=> {
+        if(beforeclick == showSettings){
+          setShowSettings(false);
+        }
+      },0);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+  });
 
   return (
   <div >
     <div className="fixed left-6 top-1/2 transform -translate-y-1/2 py-3 px-3 bg-white border p-2 border-gray-400 flex flex-col space-y-4">
-      <button className="text-main hover:text-black" onClick={() => setShowSettings(!showSettings)}>
+      <button className="text-main hover:text-black" 
+        onClick={() => { 
+          const beforeclick1 = showSettings; 
+          setTimeout(()=>{
+            if(beforeclick1 == showSettings){
+              setShowSettings(true);
+            }
+          },0 )}}>
         <FaCog size={26} />
       </button>
       <button className="text-main hover:text-black">
@@ -127,7 +140,11 @@ const FixedBox = () => {
         <FaFileExport size={24} />
       </button>
     </div>
-    {showSettings && <SettingBox />}
+    {showSettings && 
+      <div ref={boxRef}>
+        <SettingBox/>
+      </div>
+      }
   </div>
 
   );
