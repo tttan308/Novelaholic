@@ -1,6 +1,10 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import { FaCog, FaDownload, FaBars, FaFileExport  } from "react-icons/fa";
+import SettingBox from "./settingBox";
+import { setFont, setFontSize, setBackground, setTextColor, setLineHeight,
+  getFont, getFontSize, getBackground, getTextColor, getLineHeight } from './textConfig';
 
-import { FaCog, FaDownload, FaBars } from "react-icons/fa";
 
 const chapterData = {
   novelTitle: "Thần Đạo Đan Tôn",
@@ -13,11 +17,27 @@ const chapterData = {
 };
 
 const BookContent = (api) => {
-  const { novelTitle, chapterTitle, chapterContent, prevChapter, nextChapter } =
-    chapterData;
+  const { prevChapter, nextChapter } = chapterData;
+
+  const font = getFont();
+  const fontSize = getFontSize();
+  const lineHeight = getLineHeight();
+  const background = getBackground();
+  const textColor = getTextColor();
+  
+  useEffect(() => {
+    const text = document.getElementById("bookcontent-content");
+    if (text) {
+      setFont(font);
+      setFontSize(fontSize);
+      setLineHeight(lineHeight);
+      setBackground(background);
+      setTextColor(textColor);
+    }
+  }, [font, fontSize, lineHeight, background, textColor]);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto">
       <FixedBox />
 
       {/* title */}
@@ -54,9 +74,8 @@ const BookContent = (api) => {
       </div>
 
       {/* content */}
-      <div className="bg-white p-6 rounded-lg mx-52">
-        <p
-          className="text-xl leading-relaxed font-timesnewroman"
+      <div className="bg-white  rounded-lg mx-52">
+        <p id="bookcontent-content" 
           dangerouslySetInnerHTML={{ __html: chapterData.chapterContent }}
         ></p>
       </div>
@@ -90,9 +109,12 @@ const BookContent = (api) => {
 };
 
 const FixedBox = () => {
+  const [showSettings, setShowSettings] = useState(false);
+
   return (
+  <div >
     <div className="fixed left-6 top-1/2 transform -translate-y-1/2 py-3 px-3 bg-white border p-2 border-gray-400 flex flex-col space-y-4">
-      <button className="text-main hover:text-black">
+      <button className="text-main hover:text-black" onClick={() => setShowSettings(!showSettings)}>
         <FaCog size={26} />
       </button>
       <button className="text-main hover:text-black">
@@ -101,7 +123,13 @@ const FixedBox = () => {
       <button className="text-main hover:text-black">
         <FaDownload size={26} />
       </button>
+      <button className="text-main hover:text-black">
+        <FaFileExport size={24} />
+      </button>
     </div>
+    {showSettings && <SettingBox />}
+  </div>
+
   );
 };
 
