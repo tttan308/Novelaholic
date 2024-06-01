@@ -1,8 +1,13 @@
 import React from "react";
+import { useState, useEffect, useRef} from "react";
+import { FaCog, FaDownload, FaBars, FaFileExport  } from "react-icons/fa";
+import SettingBox from "./settingBox";
+import { setFont, setFontSize, setBackground, setTextColor, setLineHeight,
+  getFont, getFontSize, getBackground, getTextColor, getLineHeight } from './textConfig';
+import ExportButton from "./export";
 
-import { FaCog, FaDownload, FaBars } from "react-icons/fa";
 
-const chapterData = {
+const dumbChapterData = {
   novelTitle: "Thần Đạo Đan Tôn",
   chapterTitle: "Chương 2: Cường thế",
   chapterContent:
@@ -12,16 +17,36 @@ const chapterData = {
   chapterCount: 100,
 };
 
-const BookContent = (api) => {
-  const { novelTitle, chapterTitle, chapterContent, prevChapter, nextChapter } =
-    chapterData;
+const BookContent = () => {
+
+  const [chapterData, setChapterData] = useState(dumbChapterData);
+  const { id, chapter } = useParams();
+
+  useEffect(async () => {
+    try {
+      const res = await getChapter(id, chapter);
+      setChapterData(res);
+    } catch (error) {
+      console.log(error);
+      setChapterData(dumbChapterData);
+    }
+  }, [id, chapter]);
+
+
+  useEffect(() => {
+      setBackground(getBackground());
+      setTextColor(getTextColor());
+      setFont(getFont());
+      setFontSize(getFontSize());
+      setLineHeight(getLineHeight());
+  },[]);
 
   return (
-    <div className="container mx-auto p-4">
-      <FixedBox />
+    <div className="container mx-auto">
+      <SideBox />
 
       {/* title */}
-      <p className="text-2xl font-bold text-center my-4 font-opensans">
+      <p className="text-2xl font-bold text-center my-4 font-opensans text-sub">
         {chapterData.chapterTitle}
       </p>
       <p className="text-xl font-bold text-center my-2 text-main font-opensans">
@@ -54,9 +79,8 @@ const BookContent = (api) => {
       </div>
 
       {/* content */}
-      <div className="bg-white p-6 rounded-lg mx-52">
-        <p
-          className="text-xl leading-relaxed font-timesnewroman"
+      <div className="bg-white  rounded-lg mx-52">
+        <p id="bookcontent-content" 
           dangerouslySetInnerHTML={{ __html: chapterData.chapterContent }}
         ></p>
       </div>
@@ -89,19 +113,56 @@ const BookContent = (api) => {
   );
 };
 
-const FixedBox = () => {
+const SideBox = () => {
+  const [showSettings, setShowSettings] = useState(false);
+  const boxRef = useRef(null);
+  const handleClickOutside = (event) => {
+    const beforeclick = showSettings;
+    if (boxRef.current && !boxRef.current.contains(event.target)) {
+      setTimeout(()=> {
+        if(beforeclick == showSettings){
+          setShowSettings(false);
+        }
+      },0);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+  });
+
   return (
-    <div className="fixed left-6 top-1/2 transform -translate-y-1/2 py-3 px-3 bg-white  border p-2 border-gray flex flex-col space-y-4">
-      <button className="text-main hover:text-black">
-        <FaCog size={24} />
+  <div >
+    <div className="fixed left-6 top-1/2 transform -translate-y-1/2 py-3 px-3 bg-white border p-2 border-gray-400 flex flex-col space-y-4">
+      <button className="text-main hover:text-black" 
+        onClick={() => { 
+          const beforeclick1 = showSettings; 
+          setTimeout(()=>{
+            if(beforeclick1 == showSettings){
+              setShowSettings(true);
+            }
+          },0 )}}>
+        <FaCog size={26} />
       </button>
       <button className="text-main hover:text-black">
-        <FaBars size={24} />
+        <FaBars size={26} />
       </button>
       <button className="text-main hover:text-black">
-        <FaDownload size={24} />
+        <FaDownload size={26} />
       </button>
+      {/* <button className="text-main hover:text-black"
+      >
+        <FaFileExport size={24} />
+      </button> */}
+      <ExportButton novelId="nang-khong-muon-lam-hoang-hau" chapter="1"/>     
     </div>
+    {showSettings && 
+      <div ref={boxRef}>
+        <SettingBox/>
+      </div>
+      }
+  </div>
+
   );
 };
 

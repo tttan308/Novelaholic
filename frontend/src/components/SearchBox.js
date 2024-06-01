@@ -1,13 +1,13 @@
-import { IoIosSearch } from 'react-icons/io';
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { searchNovels } from '../services/novel';
-import { fetchGenres } from '../services/genre';
+import { IoIosSearch } from "react-icons/io";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { searchNovels } from "../services/novel";
+import { fetchGenres } from "../services/genre";
 
 const SearchBox = () => {
   const navigate = useNavigate();
   const { genre } = useParams();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const searchRef = useRef(null);
   const [genres, setGenres] = useState([]);
@@ -28,9 +28,9 @@ const SearchBox = () => {
         setSearchResults([]);
       }
     };
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
@@ -46,17 +46,17 @@ const SearchBox = () => {
   return (
     <div className="flex justify-between my-10 px-6">
       <div className="flex items-center h-full gap-4">
-        <span className="text-blue-900 font-semibold">Thể loại</span>
+        <span className="text-sub text-[18px] font-bold">Thể loại</span>
         <select
-          className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500"
+          className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-sub"
           onChange={(e) => {
-            if (e.target.value === '') {
-              navigate('/');
+            if (e.target.value === "") {
+              navigate("/");
               return;
             }
             navigate(`/category/${e.target.value}`);
           }}
-          value={genre || ''}
+          value={genre || ""}
         >
           <option value="">Tất cả</option>
           {genres.map((genre) => (
@@ -67,7 +67,7 @@ const SearchBox = () => {
         </select>
       </div>
       <div
-        className="w-[500px] flex border rounded-md px-2 py-[6px] gap-2 mr-6 relative"
+        className="border border-gray-400 w-[500px] flex rounded-md px-2 py-[6px] gap-2 mr-6 relative"
         ref={searchRef}
       >
         <IoIosSearch size={22} color="#555" />
@@ -76,12 +76,12 @@ const SearchBox = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               navigate(`/search?keyword=${searchQuery}`);
             }
           }}
           placeholder="Nhập tên truyện hoặc tác giả"
-          className="text-sm flex-1"
+          className="flex-1"
         />
         {searchResults?.length > 0 && (
           <div
