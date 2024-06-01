@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { NovelService } from './novel.service';
 import { NovelController } from './novel.controller';
-import { CrawlModule } from '../crawl/crawl.module';
+import { PluginModule } from '../plugins/plugin.module';
 
 @Module({
-	imports: [CrawlModule],
+	imports: [PluginModule],
 	providers: [NovelService],
 	controllers: [NovelController],
 })

@@ -1,15 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { configSwagger } from '@configs/api-docs.config';
+import { configSwagger } from './configs/api-docs.config';
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
-	configSwagger(app);
+	const app = await NestFactory.create(await AppModule.forRoot());
 	app.enableCors();
+
+	// const pluginManager = app.get(PluginManager);
+	// await pluginManager.loadPlugins();
+	// pluginManager.watchPlugins();
+
+	configSwagger(app);
 	await app.listen(3001);
-	if ((module as any).hot) {
-		(module as any).hot.accept();
-		(module as any).hot.dispose(() => app.close());
-	}
 }
 bootstrap();
