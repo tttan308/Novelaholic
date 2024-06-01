@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
-import { searchNovels } from "../services/novel";
-import SearchBox from "../components/SearchBox";
 import { Link, useSearchParams } from "react-router-dom";
 
 const DownloadedPage = () => {
@@ -46,7 +44,6 @@ const DownloadedPage = () => {
 
   return (
     <>
-      <SearchBox />
       <div className="p-6 my-4">
         <h2 className="text-[24px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
           Truyện với từ khóa: {keyword.toUpperCase()}
