@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
-import { NovelModule } from '@modules/novel/novel.module';
-import { CrawlModule } from '@modules/crawl/Crawl.module';
-import { ImplementationScannerService } from '@modules/crawl/Implementation-scanner.service';
+import { NovelModule } from './novel/novel.module';
+import { PluginManager } from './plugins/plugin.manager';
+import { PluginFactory } from './plugins/plugin.factory';
+import { PluginModule } from './plugins/plugin.module';
 
 @Module({
 	imports: [
@@ -25,9 +26,17 @@ import { ImplementationScannerService } from '@modules/crawl/Implementation-scan
 			expandVariables: true,
 		}),
 		NovelModule,
-		CrawlModule,
 	],
 	controllers: [AppController],
-	providers: [AppService, ImplementationScannerService],
+	providers: [AppService, PluginManager, PluginFactory],
 })
-export class AppModule {}
+export class AppModule {
+	static async forRoot(): Promise<DynamicModule> {
+		const pluginModule = await PluginModule.forRoot();
+
+		return {
+			module: AppModule,
+			imports: [pluginModule, NovelModule],
+		};
+	}
+}

@@ -6,7 +6,7 @@ export class AppController {
 	constructor(private readonly appService: AppService) {}
 
 	@Get('sources')
-	getHello(): string {
-		return this.appService.getHello();
+	async getSources() {
+		return this.appService.getAllPlugins();
 	}
 }
