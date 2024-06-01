@@ -1,12 +1,14 @@
 import React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef} from "react";
 import { FaCog, FaDownload, FaBars, FaFileExport  } from "react-icons/fa";
 import SettingBox from "./settingBox";
 import { setFont, setFontSize, setBackground, setTextColor, setLineHeight,
   getFont, getFontSize, getBackground, getTextColor, getLineHeight } from './textConfig';
+import { useParams } from "react-router-dom";
+import { getChapter } from "./fetchAPI";
 
 
-const chapterData = {
+const dumbChapterData = {
   novelTitle: "Thần Đạo Đan Tôn",
   chapterTitle: "Chương 2: Cường thế",
   chapterContent:
@@ -16,8 +18,21 @@ const chapterData = {
   chapterCount: 100,
 };
 
-const BookContent = (api) => {
-  const { prevChapter, nextChapter } = chapterData;
+const BookContent = () => {
+
+  const [chapterData, setChapterData] = useState(dumbChapterData);
+  const { id, chapter } = useParams();
+
+  useEffect(async () => {
+    try {
+      const res = await getChapter(id, chapter);
+      setChapterData(res);
+    } catch (error) {
+      console.log(error);
+      setChapterData(dumbChapterData);
+    }
+  }, [id, chapter]);
+
 
   useEffect(() => {
       setBackground(getBackground());

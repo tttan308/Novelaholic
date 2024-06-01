@@ -134,6 +134,4 @@ const getLineHeight = () => {
     return localStorage.getItem("lineHeight") || "1.625";
 }
 
-
-
 export { text_font, text_size, line_height, setFont, setFontSize, setBackground, setTextColor, setLineHeight, getFont, getFontSize, getBackground, getTextColor, getLineHeight};
