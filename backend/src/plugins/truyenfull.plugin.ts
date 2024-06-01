@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as cheerio from 'cheerio';
-import { ICrawl, Plugin } from './plugin.interface';
+import { Plugin } from './plugin.interface';
 import { DynamicModule } from '@nestjs/common';
 import { HotNovel } from './models/hot-novel.model';
 import { NovelList } from './models/novel-list.model';
@@ -9,7 +9,7 @@ import { Genre } from './models/genre.model';
 import { Chapter } from './models/chapter.model';
 import { SearchResult } from './models/search-result.model';
 
-export class TruyenFullPlugin implements ICrawl, Plugin {
+export class TruyenFullPlugin implements Plugin {
 	id = 1;
 	name = 'truyenfull';
 
@@ -25,11 +25,11 @@ export class TruyenFullPlugin implements ICrawl, Plugin {
 			module: TruyenFullPlugin,
 			providers: [
 				{
-					provide: 'ICrawl',
+					provide: 'Plugin',
 					useClass: TruyenFullPlugin,
 				},
 			],
-			exports: ['ICrawl'],
+			exports: ['Plugin'],
 		};
 	}
 

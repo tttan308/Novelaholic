@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ICrawl, Plugin } from './plugin.interface';
+import { Plugin } from './plugin.interface';
 
 @Injectable()
 export class PluginFactory {
