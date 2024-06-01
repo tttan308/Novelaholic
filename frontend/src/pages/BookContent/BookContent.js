@@ -4,8 +4,7 @@ import { FaCog, FaDownload, FaBars, FaFileExport  } from "react-icons/fa";
 import SettingBox from "./settingBox";
 import { setFont, setFontSize, setBackground, setTextColor, setLineHeight,
   getFont, getFontSize, getBackground, getTextColor, getLineHeight } from './textConfig';
-import { useParams } from "react-router-dom";
-import { getChapter } from "./fetchAPI";
+import ExportButton from "./export";
 
 
 const dumbChapterData = {
@@ -151,9 +150,11 @@ const SideBox = () => {
       <button className="text-main hover:text-black">
         <FaDownload size={26} />
       </button>
-      <button className="text-main hover:text-black">
+      {/* <button className="text-main hover:text-black"
+      >
         <FaFileExport size={24} />
-      </button>
+      </button> */}
+      <ExportButton novelId="nang-khong-muon-lam-hoang-hau" chapter="1"/>     
     </div>
     {showSettings && 
       <div ref={boxRef}>

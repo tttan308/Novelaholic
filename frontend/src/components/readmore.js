@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import ExportDialog from "./exportDialog";
 
-const ReadMore = ({ fullText }) => {
+const ReadMore = ({ fullText, novelId }) => {
   const SEE_MORE = "Xem thêm";
   const SEE_LESS = "Thu gọn";
   const [collapse, setCollapse] = useState(false);
@@ -60,7 +60,7 @@ const ReadMore = ({ fullText }) => {
           {" "}
           Tải xuống
         </button>
-        <ExportDialog />
+        <ExportDialog novelId={novelId} />
       </div>
     </div>
   );

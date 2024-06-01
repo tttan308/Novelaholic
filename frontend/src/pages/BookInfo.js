@@ -104,7 +104,7 @@ function BookInfo() {
               <h1 className="text-base font-bold font-Poppins text-sub">
                 Mô tả
               </h1>
-              <ReadMore fullText={book.description} />
+              <ReadMore fullText={book.description} novelId={id}/>
             </div>
           </div>
         </div>
