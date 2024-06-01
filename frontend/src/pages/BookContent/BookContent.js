@@ -5,6 +5,8 @@ import SettingBox from "./settingBox";
 import { setFont, setFontSize, setBackground, setTextColor, setLineHeight,
   getFont, getFontSize, getBackground, getTextColor, getLineHeight } from './textConfig';
 import ExportButton from "./export";
+import { useParams } from "react-router-dom";
+import { getChapter } from "./fetchAPI";
 
 
 const dumbChapterData = {
