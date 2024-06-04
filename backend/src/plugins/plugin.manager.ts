@@ -8,7 +8,7 @@ export class PluginManager {
 	public plugins: { [key: string]: Plugin } = {};
 
 	async loadPlugins(): Promise<DynamicModule[]> {
-		const pluginsDir = path.join(__dirname, '../../src/plugins');
+		const pluginsDir = path.join(__dirname, '../../dist/plugins');
 
 		const pluginFiles = fs
 			.readdirSync(pluginsDir)
@@ -18,11 +18,14 @@ export class PluginManager {
 
 		const dynamicModules: DynamicModule[] = [];
 		for (const file of pluginFiles) {
+			console.log(`Loading plugin: ${file}`);
 			const pluginPath = path.join(pluginsDir, file);
 			const modulePath = pluginPath
 				.replace(/\\/g, '/')
 				.replace('.ts', '')
 				.replace('.js', '');
+
+			console.log(`Module path: ${modulePath}`);
 
 			const pluginModule = await import(modulePath);
 

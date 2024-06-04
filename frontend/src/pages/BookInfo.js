@@ -7,10 +7,11 @@ const pageSize = 50;
 
 async function getInfo(source, name, page) {
   try {
-    if (source == "") source = "truyenfull.vn";
+    if (source == "") source = "truyenfull";
     const response = await fetch(
       `http://localhost:3001/novels?source=${source}&name=${name}&page=${page}`
     );
+    console.log(`http://localhost:3001/novels?source=${source}&name=${name}&page=${page}`);
     const info = await response.json();
     return info;
   } catch (error) {
@@ -22,7 +23,7 @@ async function getInfo(source, name, page) {
 function getGenres(genres) {
   const uniqueGenre = [];
   genres.forEach((item) => {
-    if (uniqueGenre.indexOf(item.genre) == -1) uniqueGenre.push(item.genre);
+    if (uniqueGenre.indexOf(item.name) == -1) uniqueGenre.push(item.name);
   });
   return uniqueGenre.join(", ");
 }
@@ -49,7 +50,7 @@ function BookInfo() {
   }
 
   useEffect(() => {
-    getInfo("truyenfull.vn", id, currentPage)
+    getInfo("truyenfull", id, currentPage)
       .then((info) => {
         setBook(info);
         setMaxPage(info.maxPage);
