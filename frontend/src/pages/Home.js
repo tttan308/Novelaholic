@@ -1,35 +1,18 @@
 import { FaChevronDown } from "react-icons/fa";
 import HotNovels from "../components/HotNovels";
 import SearchBox from "../components/SearchBox";
+import { getFiveRecentBooks, getBookHistory } from "./BookContent/storage";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 function Home() {
-  const recentlyBooks = [
-    {
-      id: 1,
-      title: "Nàng không muốn làm hoàng hậu",
-      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
-    },
-    {
-      id: 2,
-      title: "Nàng không muốn làm hoàng hậu",
-      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
-    },
-    {
-      id: 3,
-      title: "Nàng không muốn làm hoàng hậu",
-      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
-    },
-    {
-      id: 4,
-      title: "Nàng không muốn làm hoàng hậu",
-      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
-    },
-    {
-      id: 5,
-      title: "Nàng không muốn làm hoàng hậu",
-      image: "https://images.penguinrandomhouse.com/cover/9780316760113",
-    },
-  ];
+  const lastFiveReading = getFiveRecentBooks() || [];
+  const historyReading = getBookHistory() || [];
+
+  const [recentNovels, setRecentNovels] = useState(lastFiveReading);
+  const [isShowAllHistory, setIsShowAllHistory] = useState(historyReading.length <= 5);
+
+  
 
   return (
     <>
@@ -39,28 +22,31 @@ function Home() {
           Đã đọc gần đây
         </h2>
         <div className="flex justify-around mx-14 my-6">
-          {recentlyBooks.map((book) => (
-            <div
-              key={book.id}
+          {recentNovels.map((novel) => (
+            <div key={novel.id} className="flex justify-center">
+            <Link
+              to={`/book/${novel.id}`}
               className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
             >
               <img
-                src={book.image}
-                alt={book.title}
+                src={novel.cover}
+                alt={novel.title}
                 className="w-36 h-48 object-cover"
               />
               <h3 className="text-[17px] font-bold text-center leading-relaxed">
-                {book.title}
+                {novel.title}
               </h3>
-            </div>
+            </Link>
+          </div>
           ))}
         </div>
-        <div className="flex items-center justify-center gap-4 cursor-pointer">
-          <div className="w-8 h-8 rounded-full bg-main flex justify-center items-center">
-            <FaChevronDown size={22} color="#dababa" />
-          </div>
-          <span className="font-bold text-sub text-[18px]">Xem thêm</span>
-        </div>
+        {!isShowAllHistory && 
+          <div onClick={setRecentNovels = historyReading} className="flex items-center justify-center gap-4 cursor-pointer">
+            <div className="w-8 h-8 rounded-full bg-main flex justify-center items-center">
+              <FaChevronDown size={22} color="#dababa" />
+            </div>
+            <span className="font-bold text-sub text-[18px]">Xem thêm</span>
+          </div>}
       </div>
       <HotNovels />
     </>

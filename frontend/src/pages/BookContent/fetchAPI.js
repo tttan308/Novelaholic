@@ -1,9 +1,10 @@
 import axios from "axios";
 const apiURL = process.env.REACT_APP_API_URL;
 
-export const getChapter = async (id, chapter) => {
+export const getChapter = async (id, chapter, source) => {
     try{
-        const response = await axios.get(`${apiURL}/book/${id}/${chapter}`);
+        const response = await axios.get(`${apiURL}/novels/${id}/${chapter}?source=${source}`);
+        console.log(`${apiURL}/novels/${id}/${chapter}?source=${source}`);
         return response.data;
     }
     catch(error){

@@ -1,18 +1,47 @@
+import { getBook } from "./fetchAPI";
+
+
 //book history
-const saveBookHistory = async (bookId, chapter) => {
+export const saveBookHistory = async (bookId, chapterNumber) => {
     let history = JSON.parse(localStorage.getItem("history")) || [];
-    history = history.filter((item) => item.bookId !== bookId);
-    history.unshift({ bookId, chapter });
+
+    let book = history.find((item) => item.bookId === bookId);
+    if (book) {
+        if(book.chapters.includes(chapterNumber)) return;
+        book.chapters.push(chapterNumber);
+        book.lastRead = new Date();
+
+        history = history.filter((item) => item.bookId !== bookId);
+        history.unshift(book);
+    } else {
+        
+        const apiURL = process.env.REACT_APP_API_URL;
+        const res = await fetch(`${apiURL}/novels?source=truyenfull&name=${bookId}&page=1`);
+        const data = await res.json();
+       
+        book = {
+            id: bookId,
+            title: data.title,
+            cover: data.cover,
+            chapters: [chapterNumber],
+            lastRead: new Date()
+        };
+        history.unshift(book);
+    }
+
     localStorage.setItem("history", JSON.stringify(history));
 };
 
-//get book history
-const getBookHistory = () => {
+export const getBookHistory = () => {
     return JSON.parse(localStorage.getItem("history")) || [];
 };
 
+export const getFiveRecentBooks = () => {
+    const history = getBookHistory();
+    return history.slice(0, 5);
+};
+
 //donwloaded book
-import { getBook } from "./fetchAPI";
 
 const downloadBook = async (bookId) => {
     //save to indexedDB
