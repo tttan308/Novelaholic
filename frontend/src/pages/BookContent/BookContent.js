@@ -45,11 +45,11 @@ const BookContent = () => {
   },[]);
 
   return (
-    <div className="container mx-auto">
+    <div id='bookcontentpage' className="container mx-auto">
       <SideBox />
 
       {/* title */}
-      <p className="text-2xl font-bold text-center my-4 font-opensans text-sub">
+      <p className="text-2xl font-bold text-center py-4 font-opensans text-sub">
         {chapterData.chapterTitle}
       </p>
       <p className="text-xl font-bold text-center my-2 text-main font-opensans">
@@ -83,7 +83,7 @@ const BookContent = () => {
       </div>
 
       {/* chapter */}
-      <div className="text-center my-6">
+      <div className="text-center py-6">
         <div className="flex items-center justify-center space-x-6">
           
           <Link to={`/book/${id}/${parseInt(chapter) - 1}`} className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">

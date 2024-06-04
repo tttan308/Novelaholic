@@ -88,7 +88,7 @@ const setFontSize = (size) => {
 }
 
 const setBackground = (color) => {
-    document.body.style.backgroundColor = color;
+    document.getElementById('bookcontentpage').style.backgroundColor = color;
     document.getElementById("bookcontent-content").style.backgroundColor = color;
 
     localStorage.setItem("background", color);
