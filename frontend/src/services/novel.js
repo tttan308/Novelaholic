@@ -5,7 +5,7 @@ export const fetchHotNovels = async (page) => {
     );
     const data = await response.json();
     return {
-      data: data.hotNovels,
+      data: data.novels,
       total: data.totalPages,
       page: data.currentPage,
     };
