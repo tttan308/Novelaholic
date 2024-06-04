@@ -9,10 +9,6 @@ const text_font = [
         value: "'Roboto', sans-serif",
     },
     {
-        name: "Georgia",
-        value: "'Georgia', serif",
-    },
-    {
         name: "Courier New",
         value: "'Courier New', monospace",
     },
