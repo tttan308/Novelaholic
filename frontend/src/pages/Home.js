@@ -1,7 +1,7 @@
 import { FaChevronDown } from "react-icons/fa";
 import HotNovels from "../components/HotNovels";
 import SearchBox from "../components/SearchBox";
-import { getFiveRecentBooks, getBookHistory } from "./BookContent/storage";
+import { getFiveRecentBooks, getBookHistory } from "../services/localStorage";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -41,7 +41,7 @@ function Home() {
           ))}
         </div>
         {!isShowAllHistory && 
-          <div onClick={setRecentNovels = historyReading} className="flex items-center justify-center gap-4 cursor-pointer">
+          <div onClick={setRecentNovels(historyReading) && setIsShowAllHistory(true)} className="flex items-center justify-center gap-4 cursor-pointer">
             <div className="w-8 h-8 rounded-full bg-main flex justify-center items-center">
               <FaChevronDown size={22} color="#dababa" />
             </div>

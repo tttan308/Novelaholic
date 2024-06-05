@@ -1,4 +1,4 @@
-import { getBook } from "./fetchAPI";
+import { getFullBookContent,  getUpdateBook , getNovelInfo } from "./content";
 
 
 //book history
@@ -41,11 +41,13 @@ export const getFiveRecentBooks = () => {
     return history.slice(0, 5);
 };
 
-//donwloaded book
 
-const downloadBook = async (bookId) => {
+//download books to indexedDB
+export const downloadFullBook = async (bookId, source) => {
+    console.log("Download book: ", bookId, source);
     //save to indexedDB
-    const book = await getBook(bookId);
+    const book = await getFullBookContent(bookId, source);
+    console.log(book);
     const request = indexedDB.open("books", 1);
     request.onupgradeneeded = (event) => {
         const db = event.target.result;
@@ -60,53 +62,104 @@ const downloadBook = async (bookId) => {
     };
 };
 
-const downloadChapters = async (bookId, chapters) => {
+export const isFullDownloaded = async (novel) => {
+    const fetchNovel = await getNovelInfo(novel.id);
+    return fetchNovel.chapters.length === novel.chapters.length;
+}
+
+export const isDownLoaded = async (novel) => {
     const request = indexedDB.open("books", 1);
+    let isDownloaded = false;
     request.onsuccess = (event) => {
         const db = event.target.result;
         const transaction = db.transaction("books", "readwrite");
         const objectStore = transaction.objectStore("books");
-        const request = objectStore.get(bookId);
+        const request = objectStore.get(novel.id);
         request.onsuccess = (event) => {
-            const book = event.target.result;
-            book.chapters = chapters;
-            objectStore.put(book);
+            if (event.target.result) {
+                isDownloaded = true;
+            }
         };
+    };
+    request.onerror = (event) => {
+        return false;
+    }
+    return isDownloaded;
+}
+
+
+export const updateDownloadedNovel = async (oldBook, lastChap, source) => {
+    const updateBook = await getUpdateBook(oldBook, lastChap, source);
+    const request = indexedDB.open("books", 1);
+    
+    //update oldBook in indexedDB
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+        const transaction = db.transaction("books", "readwrite");
+        const objectStore = transaction.objectStore("books");
+        objectStore.put(updateBook);
     };
 }
 
-const getDownloadedBooks = async () => {
+export const getDownloadedBookCardInfo = async () => {
+    //get {id, title, corver, chapters.length} from indexedDB
     const request = indexedDB.open("books", 1);
-    request.onsuccess = (event) => {
+    let books = [];
+    request.onupgradeneeded = (event) => {
         const db = event.target.result;
-        const transaction = db.transaction("books", "readonly");
-        const objectStore = transaction.objectStore("books");
-        const request = objectStore.getAll();
-        request.onsuccess = (event) => {
-            console.log(event.target.result);
-        };
+        if (!db.objectStoreNames.contains("books")) {
+            db.createObjectStore("books", { keyPath: "id" });
+        }
     };
-};
-
-const getDownloadedBook = async (bookId) => {
-    const request = indexedDB.open("books", 1);
-    request.onsuccess = (event) => {
-        const db = event.target.result;
-        const transaction = db.transaction("books", "readonly");
-        const objectStore = transaction.objectStore("books");
-        const request = objectStore.get(bookId);
-        request.onsuccess = (event) => {
-            console.log(event.target.result);
-        };
-    };
-};
-
-const deleteDownloadedBook = async (bookId) => {
-    const request = indexedDB.open("books", 1);
     request.onsuccess = (event) => {
         const db = event.target.result;
         const transaction = db.transaction("books", "readwrite");
         const objectStore = transaction.objectStore("books");
-        objectStore.delete(bookId);
+        const request = objectStore.getAll();
+        request.onsuccess = (event) => {
+            books = event.target.result.map(book => {
+                return {
+                    id: book.id,
+                    title: book.title,
+                    cover: book.cover,
+                    chapters: book.chapters.length,
+                };
+            });
+        };
     };
+    //sort by lastRead
+    return books;
+}
+
+export const getDownloadedBookInfo = async (bookId) => {
+    //get {id,title,    cover,    author,    gneres,    source,    status,    description,    chapters } exclude chaptersContent from indexedDB
+    const request = indexedDB.open("books", 1);
+    let book = {};
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+        const transaction = db.transaction("books", "readwrite");
+        const objectStore = transaction.objectStore("books");
+        const request = objectStore.get(bookId);
+        request.onsuccess = (event) => {
+            book = event.target.result;
+            delete book.chaptersContent;
+        };
+    };
+    return book; 
+}
+
+export const getDownloadedBookChapter = async (bookId, chapter) => {
+    //get chapterContent from indexedDB
+    const request = indexedDB.open("books", 1);
+    let chapterContent = {};
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+        const transaction = db.transaction("books", "readwrite");
+        const objectStore = transaction.objectStore("books");
+        const request = objectStore.get(bookId);
+        request.onsuccess = (event) => {
+            chapterContent = event.target.result.chaptersContent.find(chap => chap.chapter === chapter);
+        };
+    };
+    return chapterContent;
 }

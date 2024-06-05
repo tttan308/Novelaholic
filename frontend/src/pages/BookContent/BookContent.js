@@ -6,15 +6,15 @@ import { setFont, setFontSize, setBackground, setTextColor, setLineHeight,
   getFont, getFontSize, getBackground, getTextColor, getLineHeight } from './textConfig';
 import ExportButton from "./export";
 import { useParams, Link, useNavigate  } from "react-router-dom";
-import { saveBookHistory } from "./storage";
-import { getChapter } from "./fetchAPI";
+import { saveBookHistory } from "../../services/localStorage";
+import { getChapter } from "../../services/content";
+import DownloadOptionModal from "./DownloadOptionModal";
 
 const BookContent = () => {
 
   const [chapterData, setChapterData] = useState([]);
   const { id, chapter } = useParams();
   const [source, setSource] = useState('truyenfull');
-  const chapterRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate(); 
 
@@ -24,9 +24,9 @@ const BookContent = () => {
       const res = await getChapter(id, chapter, source);
       if(res){
         setChapterData(res)
-        saveBookHistory(id, null, chapter);
+        saveBookHistory(id, chapter);
       } else {
-        //
+        setChapterData({novelTitle: 'Không tìm thấy truyện', chapterTitle: 'Không tìm thấy chương', chapterContent: ''});
       }
       setLoading(false);
     }
@@ -51,8 +51,6 @@ const BookContent = () => {
   return (
     <div id='bookcontentpage' className="container mx-auto">
       <SideBox />
-      
-
       {/* title */}
       {loading && <p className="text-2xl font-bold text-center py-4 font-opensans text-sub">Loading...</p>}
       {!loading && <p className="text-2xl font-bold text-center py-4 font-opensans text-sub">{chapterData.chapterTitle}</p>}
@@ -116,6 +114,9 @@ const BookContent = () => {
 
 const SideBox = () => {
   const [showSettings, setShowSettings] = useState(false);
+  const [showDownloadOptionModal, setShowDownloadOptionModal] = useState(false);
+  const { id: bookId } = useParams();
+
   const boxRef = useRef(null);
   const handleClickOutside = (event) => {
     const beforeclick = showSettings;
@@ -148,7 +149,9 @@ const SideBox = () => {
       <button className="text-main hover:text-black">
         <FaBars size={26} />
       </button>
-      <button className="text-main hover:text-black">
+      <button onClick={()=>setTimeout(() => {
+          setShowDownloadOptionModal(true);
+        }, 0)} className="text-main hover:text-black">
         <FaDownload size={26} />
       </button>
       {/* <button className="text-main hover:text-black"
@@ -162,9 +165,12 @@ const SideBox = () => {
         <SettingBox/>
       </div>
       }
+    {showDownloadOptionModal && <DownloadOptionModal sources ={['truyenfull', 'abc']} bookId={bookId} setModalOpen={setShowDownloadOptionModal}/>}
   </div>
 
   );
 };
+
+
 
 export default BookContent;
