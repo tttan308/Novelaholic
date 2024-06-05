@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import * as html2pdf from 'html2pdf.js';
 import JSZip from 'jszip';
 import saveAs from 'file-saver'
+import {getChapter,getInfo} from "../services/Infomation"
 
 
 
@@ -28,17 +29,17 @@ async function downloadAsPDF(novelId, beginChapter,endChapter) {
   let next = `/novels/${novelId}/${beginChapter}`;
   let pos = beginChapter;
   while(next != ""){
-    console.log("http://localhost:3001" + next);
-    const response = await fetch(`http://localhost:3001` + next);
-    const json = await response.json();
+    const json = await getChapter(next,"truyenfull");
     const ParseData = JSON.parse(JSON.stringify(json));
-    const replacePattern1 = /<br>/g
+    const replacePattern1 = /<br>/g;
     const replacePattern2 = /<p>/g;
-    const replacePattern3 = /<\/p>/g
+    const replacePattern3 = /<\/p>/g;
+    const replacePattern4 =/&nbsp/g;
     const content = docs.splitTextToSize(ParseData.chapterContent.replace(replacePattern2 ,"")
       .replace(replacePattern3,"")
+      .replace(replacePattern4,"\t")
       .replace(replacePattern1,"\n") ,500);
-      docs.text(docs.splitTextToSize(ParseData.chapterTitle.replace(replacePattern1,"\n")
+    docs.text(docs.splitTextToSize(ParseData.chapterTitle.replace(replacePattern1,"\n")
       .replace(replacePattern2,"")
       .replace(replacePattern3,""),500),300,50,{align: "center"});
     let i =0 ;
@@ -66,8 +67,7 @@ async function downloadAsPDF(novelId, beginChapter,endChapter) {
 async function downloadAsEpub(novelId, beginChapter, endChapter){
     var zip = new JSZip();
     //get novel infor 
-    const info = await fetch(`http://localhost:3001/novels?source=truyenfull.vn&name=${novelId}`);
-    const detail = await info.json();
+    const detail = await getInfo("truyenfull",novelId,1);
     //set meta data for book
     var mimetype = 'application/epub+zip';
     zip.file('mimetype',mimetype);
@@ -125,9 +125,7 @@ async function downloadAsEpub(novelId, beginChapter, endChapter){
     let i = 1;
     let pos = beginChapter;
     while(next != ""){
-      console.log("http://localhost:3001" + next);
-      const response = await fetch("http://localhost:3001" + next);
-      const json = await response.json();
+      const json = await getChapter(next,"truyenfull");
       next = json.nextChapter;
       text += `<section><h1 style="text-align: center">${json.chapterTitle}</h1>` + 
               `   <p>${json.chapterContent.replace(/<br>/g,"</p><p>").replace(/&nbsp/g," ")}</p> ` + 
@@ -165,8 +163,7 @@ async function downloadAsEpub(novelId, beginChapter, endChapter){
 
 async function getNumberChapter(novelId){
   try{
-    const response = await fetch(`http://localhost:3001/novels/${novelId}/1`);
-    const json = await response.json();
+    const json = await getChapter(`/novels/${novelId}/1`,"truyenfull");
     return json;
   }catch (error) {
     console.log("FAILED: ", error);
@@ -184,7 +181,6 @@ export default function ExportDialog({novelId}) {
   const [endChapter, setEndChapter] = useState(1);
 
   useEffect(()=>{
-    console.log("enter use effect 1");
     getNumberChapter(novelId).then((data) => {
       setEndChapter(data.totalChapters);
       setChapters(data.totalChapters);
@@ -192,7 +188,6 @@ export default function ExportDialog({novelId}) {
     })
   },[]);
   useEffect(()=>{
-    console.log("enter use effect 2");
     setBeginChapter(1);
   },[])
 

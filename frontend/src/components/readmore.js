@@ -1,11 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ExportDialog from "./exportDialog";
+import { getChapter } from "../services/Infomation";
+
 
 const ReadMore = ({ fullText, novelId }) => {
   const SEE_MORE = "Xem thêm";
   const SEE_LESS = "Thu gọn";
   const [collapse, setCollapse] = useState(false);
+  const [lastchapter,setLastChapter] = useState(1);
+
+  
+
+  useEffect(() => {
+    const getLast = async () => { 
+      const data = await getChapter(`/novels/${novelId}/1`,"truyenfull");
+      setLastChapter(data.totalChapters);
+    }
+    getLast();
+    console.log(lastchapter);
+  },[])
+
   return (
     <div className="container relative">
       <div
@@ -44,13 +59,13 @@ const ReadMore = ({ fullText, novelId }) => {
         </span>
       </button>
       <div className="Groupbtn flex justify-center flex-skrink-0 mt-4">
-        <Link to={{ pathname: "/bookContent", search: `?chapter=${1}` }}>
+        <Link to={`1`}>
           <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
             {" "}
             Đọc từ đầu
           </button>
         </Link>
-        <Link to={{ pathname: "/bookContent", search: `?chapter=last` }}>
+        <Link to={`${lastchapter}`}>
           <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
             {" "}
             Đọc mới nhất

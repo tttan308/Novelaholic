@@ -50,7 +50,7 @@ const BookContent = () => {
 
   return (
     <div id='bookcontentpage' className="container mx-auto">
-      <SideBox />
+      <SideBox id={id} chapter={chapter}/>
       
 
       {/* title */}
@@ -114,7 +114,7 @@ const BookContent = () => {
 };
 
 
-const SideBox = () => {
+const SideBox = ({id,chapter}) => {
   const [showSettings, setShowSettings] = useState(false);
   const boxRef = useRef(null);
   const handleClickOutside = (event) => {
@@ -155,7 +155,7 @@ const SideBox = () => {
       >
         <FaFileExport size={24} />
       </button> */}
-      <ExportButton novelId="nang-khong-muon-lam-hoang-hau" chapter="1"/>     
+      <ExportButton novelId={id} chapter={chapter}/>     
     </div>
     {showSettings && 
       <div ref={boxRef}>
