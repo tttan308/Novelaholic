@@ -115,7 +115,7 @@ const BookContent = () => {
 const SideBox = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [showDownloadOptionModal, setShowDownloadOptionModal] = useState(false);
-  const { id: bookId } = useParams();
+  const { id, chapter } = useParams();
 
   const boxRef = useRef(null);
   const handleClickOutside = (event) => {
@@ -158,14 +158,14 @@ const SideBox = () => {
       >
         <FaFileExport size={24} />
       </button> */}
-      <ExportButton novelId="nang-khong-muon-lam-hoang-hau" chapter="1"/>     
+      <ExportButton novelId={id} chapter={chapter}/>     
     </div>
     {showSettings && 
       <div ref={boxRef}>
         <SettingBox/>
       </div>
       }
-    {showDownloadOptionModal && <DownloadOptionModal sources ={['truyenfull', 'abc']} bookId={bookId} setModalOpen={setShowDownloadOptionModal}/>}
+    {showDownloadOptionModal && <DownloadOptionModal sources ={['truyenfull', 'abc']} bookId={id} setModalOpen={setShowDownloadOptionModal}/>}
   </div>
 
   );

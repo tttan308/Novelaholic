@@ -1,13 +1,13 @@
-import { IoIosSearch } from "react-icons/io";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { searchNovels } from "../services/novel";
-import { fetchGenres } from "../services/genre";
+import { IoIosSearch } from 'react-icons/io';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { searchNovels } from '../services/novel';
+import { fetchGenres } from '../services/genre';
 
 const SearchBox = () => {
   const navigate = useNavigate();
   const { genre } = useParams();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const searchRef = useRef(null);
   const [genres, setGenres] = useState([]);
@@ -28,9 +28,9 @@ const SearchBox = () => {
         setSearchResults([]);
       }
     };
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, []);
 
@@ -50,13 +50,13 @@ const SearchBox = () => {
         <select
           className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-sub"
           onChange={(e) => {
-            if (e.target.value === "") {
-              navigate("/");
+            if (e.target.value === '') {
+              navigate('/');
               return;
             }
             navigate(`/category/${e.target.value}`);
           }}
-          value={genre || ""}
+          value={genre || ''}
         >
           <option value="">Tất cả</option>
           {genres.map((genre) => (
@@ -76,7 +76,7 @@ const SearchBox = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               navigate(`/search?keyword=${searchQuery}`);
             }
           }}

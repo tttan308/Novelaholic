@@ -21,7 +21,7 @@ export const searchNovels = async (keyword, page) => {
     );
     const data = await response.json();
     return {
-      data: data.searchResults,
+      data: data.novels,
       total: data.totalPages,
       page: data.currentPage,
     };

@@ -6,6 +6,7 @@ import * as html2pdf from 'html2pdf.js';
 import JSZip from 'jszip';
 import saveAs from 'file-saver'
 import { FaFileExport  } from "react-icons/fa";
+import { getChapter, getInfo } from "../../services/Infomation";
 
 
 async function downloadAsPDF(novelId, chapter){
@@ -30,8 +31,7 @@ async function downloadAsPDF(novelId, chapter){
     console.log(`http://localhost:3001/novels/${novelId}/${chapter}`);
     
     //fetch data
-    const response = await(fetch(`http://localhost:3001/novels/${novelId}/${chapter}`));
-    const json = await response.json();
+    const json = await getChapter(`/novels/${novelId}/${chapter}`,"truyenfull");
 
     const ParseData = JSON.parse(JSON.stringify(json));
     const replacePattern1 = /<br>/g
@@ -61,8 +61,7 @@ async function downloadAsPDF(novelId, chapter){
 
 async function downloadAsEpub(novelId, chapter){
     var zip = new JSZip();
-    const info = await fetch(`http://localhost:3001/novels?source=truyenfull.vn&name=${novelId}`);
-    const detail = await info.json();
+    const detail = await getInfo("truyenfull",novelId,1);
     //set metadata for novel
     var mimetype = 'application/epub+zip';
     zip.file('mimetype',mimetype);
@@ -96,8 +95,7 @@ async function downloadAsEpub(novelId, chapter){
   zip.file("OEBPS/content.opf",metadata);
 
     // fetch data 
-    const response = await fetch(`http://localhost:3001/novels/${novelId}/${chapter}`);
-    const json = await response.json();
+    const json = await getChapter(`/novels/${novelId}/${chapter}`,"truyenfull");
 
     var text = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>' + 
     '<!DOCTYPE html>' + 
@@ -144,15 +142,6 @@ async function downloadAsEpub(novelId, chapter){
 
 }
 
-async function ReadFont(){
-    try{
-        const respone = await fetch('/font.txt');
-        const data = await respone.text();
-        return data;
-    }catch(error){
-        console.log("Lỗi đọc file!!");
-    }
-}
 
 
 export default function ExportButton({novelId, chapter}){
