@@ -10,8 +10,6 @@ const SettingBox = () => {
   const [fontSizeState, setFontSizeState] = useState(getFontSize());
   const [lineHeightState, setLineHeightState] = useState(getLineHeight());
 
-  
-
     return (
       <div className="fixed left-20 top-1/2 transform -translate-y-1/2 bg-white p-4 rounded-lg border-4 w-64">
         <h3 className="font-bold mb-4">Cài đặt</h3>
