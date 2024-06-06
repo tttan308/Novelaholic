@@ -36,7 +36,6 @@ export const searchByGenre = async (genre, page) => {
       `http://localhost:3001/novels/genres/${genre}?page=${page}`
     );
     const data = await response.json();
-    console.log(data);
     return {
       data: data.novels,
       total: data.totalPages,

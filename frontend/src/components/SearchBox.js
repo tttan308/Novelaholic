@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { searchNovels } from '../services/novel';
 import { fetchGenres } from '../services/genre';
+import { getGenreFromHref } from '../utils/genre';
 
 const SearchBox = () => {
   const navigate = useNavigate();
@@ -56,11 +57,11 @@ const SearchBox = () => {
             }
             navigate(`/category/${e.target.value}`);
           }}
-          value={genre || ''}
+          defaultValue={genre || ''}
         >
           <option value="">Tất cả</option>
           {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
+            <option key={genre.href} value={getGenreFromHref(genre.href)}>
               {genre.name}
             </option>
           ))}
