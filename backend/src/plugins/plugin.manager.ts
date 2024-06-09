@@ -34,6 +34,7 @@ export class PluginManager {
 				this.plugins[pluginInstance.name.toLowerCase()] = pluginInstance;
 				dynamicModules.push(pluginInstance.init());
 			}
+			console.log(`Plugin loaded: ${file}`);
 		}
 
 		return dynamicModules;

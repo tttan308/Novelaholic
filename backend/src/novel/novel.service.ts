@@ -5,36 +5,36 @@ import { PluginFactory } from '../plugins/plugin.factory';
 export class NovelService {
 	constructor(private readonly pluginFactory: PluginFactory) {}
 
-	async getDetails(source: string, name: string, page: number): Promise<any> {
+	async getDetails(source: number, name: string, page: number): Promise<any> {
 		return this.pluginFactory.getPlugin(source).getDetails(name, page);
 	}
 
 	async getDetailsChapter(
-		source: string,
+		source: number,
 		id: string,
 		chapter: number,
 	): Promise<any> {
 		return this.pluginFactory.getPlugin(source).getDetailsChapter(id, chapter);
 	}
 
-	async getHotNovels(source: string, page: number): Promise<any> {
+	async getHotNovels(source: number, page: number): Promise<any> {
 		return this.pluginFactory.getPlugin(source).getHotNovels(page);
 	}
 
 	async searchNovels(
-		source: string,
+		source: number,
 		keyword: string,
 		page: number,
 	): Promise<any> {
 		return this.pluginFactory.getPlugin(source).searchNovels(keyword, page);
 	}
 
-	async getGenres(source: string): Promise<any> {
+	async getGenres(source: number): Promise<any> {
 		return this.pluginFactory.getPlugin(source).getGenres();
 	}
 
 	async getNovelsByGenre(
-		source: string,
+		source: number,
 		genre: string,
 		page: number,
 	): Promise<any> {

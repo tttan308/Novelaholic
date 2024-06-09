@@ -20,9 +20,9 @@ axiosRetry(axios, {
 	},
 });
 
-export class TruyenFullPlugin implements Plugin {
-	id = 1;
-	name = 'truyenfull';
+export class TruyenFull2Plugin implements Plugin {
+	id = 2;
+	name = 'truyenfull2';
 
 	private readonly axiosConfig: AxiosRequestConfig = {
 		headers: {
@@ -33,11 +33,11 @@ export class TruyenFullPlugin implements Plugin {
 
 	init(): DynamicModule {
 		return {
-			module: TruyenFullPlugin,
+			module: TruyenFull2Plugin,
 			providers: [
 				{
 					provide: 'Plugin',
-					useClass: TruyenFullPlugin,
+					useClass: TruyenFull2Plugin,
 				},
 			],
 			exports: ['Plugin'],
@@ -105,7 +105,6 @@ export class TruyenFullPlugin implements Plugin {
 
 	async getDetailsChapter(id: string, chapter: number): Promise<any> {
 		const url = `https://truyenfull.vn/${id}/chuong-${chapter}`;
-
 		const $ = await this.fetchHtml(url);
 
 		const chapterDetails = {
@@ -291,4 +290,4 @@ export class TruyenFullPlugin implements Plugin {
 	}
 }
 
-export default TruyenFullPlugin;
+export default TruyenFull2Plugin;

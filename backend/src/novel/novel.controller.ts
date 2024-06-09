@@ -15,10 +15,10 @@ export class NovelController {
 		`,
 	})
 	@ApiQuery({
-		name: 'source',
+		name: 'id',
 		required: false,
-		description: 'Source of the novel',
-		example: 'truyenfull',
+		description: 'Id Source of the novel',
+		example: '1',
 	})
 	@ApiQuery({
 		name: 'name',
@@ -33,7 +33,7 @@ export class NovelController {
 		example: 1,
 	})
 	async getDetails(
-		@Query('source') source: string = 'truyenfull',
+		@Query('id') source: number = 1,
 		@Query('name') name: string,
 		@Query('page') page: number = 1,
 	) {
@@ -48,10 +48,10 @@ export class NovelController {
 		`,
 	})
 	@ApiQuery({
-		name: 'source',
+		name: 'id',
 		required: false,
-		description: 'Source of the novel',
-		example: 'truyenfull',
+		description: 'Id Source of the novel',
+		example: '1',
 	})
 	@ApiQuery({
 		name: 'page',
@@ -60,7 +60,7 @@ export class NovelController {
 		example: 2,
 	})
 	async getHotNovels(
-		@Query('source') source: string = 'truyenfull',
+		@Query('id') source: number = 1,
 		@Query('page') page: number = 1,
 	) {
 		return this.novelService.getHotNovels(source, page);
@@ -74,10 +74,10 @@ export class NovelController {
 		`,
 	})
 	@ApiQuery({
-		name: 'source',
+		name: 'id',
 		required: false,
-		description: 'Source of the novel',
-		example: 'truyenfull',
+		description: 'Id source of the novel',
+		example: '1',
 	})
 	@ApiQuery({
 		name: 'keyword',
@@ -92,7 +92,7 @@ export class NovelController {
 		example: 3,
 	})
 	async searchNovels(
-		@Query('source') source: string = 'truyenfull',
+		@Query('id') source: number = 1,
 		@Query('keyword') keyword: string,
 		@Query('page') page: number = 1,
 	) {
@@ -107,12 +107,12 @@ export class NovelController {
 		`,
 	})
 	@ApiQuery({
-		name: 'source',
+		name: 'id',
 		required: false,
-		description: 'Source of the genres',
-		example: 'truyenfull',
+		description: 'Id source of the genres',
+		example: '1',
 	})
-	async getGenres(@Query('source') source: string = 'truyenfull') {
+	async getGenres(@Query('id') source: number = 1) {
 		return this.novelService.getGenres(source);
 	}
 
@@ -124,10 +124,10 @@ export class NovelController {
 		`,
 	})
 	@ApiQuery({
-		name: 'source',
+		name: 'id',
 		required: false,
 		description: 'Source of the novels',
-		example: 'truyenfull',
+		example: '1',
 	})
 	@ApiQuery({
 		name: 'page',
@@ -143,7 +143,7 @@ export class NovelController {
 	})
 	async getNovelsByGenre(
 		@Param('genre') genre: string,
-		@Query('source') source: string = 'truyenfull',
+		@Query('id') source: number = 1,
 		@Query('page') page: number = 1,
 	) {
 		return this.novelService.getNovelsByGenre(source, genre, page);
@@ -157,10 +157,10 @@ export class NovelController {
 		`,
 	})
 	@ApiQuery({
-		name: 'source',
+		name: 'id',
 		required: false,
-		description: 'Source of the novel chapter',
-		example: 'truyenfull',
+		description: 'Id source of the novel chapter',
+		example: '1',
 	})
 	@ApiParam({
 		name: 'id',
@@ -177,7 +177,7 @@ export class NovelController {
 	getNovelChapter(
 		@Param('id') id: string,
 		@Param('chapter') chapter: number,
-		@Query('source') source: string = 'truyenfull',
+		@Query('id') source: number = 1,
 	) {
 		return this.novelService.getDetailsChapter(source, id, chapter);
 	}

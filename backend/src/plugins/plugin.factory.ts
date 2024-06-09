@@ -3,17 +3,18 @@ import { Plugin } from './plugin.interface';
 
 @Injectable()
 export class PluginFactory {
-	private plugins: { [key: string]: Plugin } = {};
+	private plugins: { [key: number]: Plugin } = {};
 
 	constructor(@Inject('PLUGINS') private readonly loadedPlugins: Plugin[]) {
 		loadedPlugins.forEach((plugin) => {
-			this.plugins[plugin.constructor.name.toLowerCase()] = plugin;
+			this.plugins[plugin.id] = plugin;
 		});
 	}
 
-	getPlugin(source: string): Plugin {
-		const realSource = source.toLowerCase() + 'plugin';
-		const plugin = this.plugins[realSource];
+	getPlugin(source: number): Plugin {
+		console.log(this.plugins);
+		const plugin = this.plugins[source];
+
 		if (!plugin) {
 			throw new Error(`Source plugin not found: ${source}`);
 		}
@@ -22,6 +23,7 @@ export class PluginFactory {
 	}
 
 	getPlugins(): { id: number; name: string }[] {
+		console.log(this.loadedPlugins);
 		return this.loadedPlugins.map((plugin) => {
 			return {
 				id: plugin.id || 0,
