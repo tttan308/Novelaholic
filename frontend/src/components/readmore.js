@@ -4,7 +4,7 @@ import ExportDialog from "./exportDialog";
 import { getChapter } from "../services/Infomation";
 
 
-const ReadMore = ({ fullText, novelId }) => {
+const ReadMore = ({ fullText, novelId, setModalOpen }) => {
   const SEE_MORE = "Xem thêm";
   const SEE_LESS = "Thu gọn";
   const [collapse, setCollapse] = useState(false);
@@ -71,7 +71,12 @@ const ReadMore = ({ fullText, novelId }) => {
             Đọc mới nhất
           </button>
         </Link>
-        <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
+        <button 
+          onClick={() =>
+            setTimeout(() => {
+              setModalOpen(true);
+            }, 0)}
+            className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
           {" "}
           Tải xuống
         </button>

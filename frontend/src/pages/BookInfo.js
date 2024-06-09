@@ -3,6 +3,8 @@ import ReadMore from "../components/readmore";
 import Pagination from "../components/pagination";
 import { Link } from "react-router-dom";
 import {getInfo} from "../services/Infomation"
+import DownloadOptionModal from "./BookContent/DownloadOptionModal";
+import {getSources} from "../services/content"
 
 const pageSize = 50;
 
@@ -22,6 +24,8 @@ function BookInfo() {
   const [left,setLeft] = useState([]);
   const [right,setRight] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sources, setSources] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
   // Lấy URL hiện tại
   const currentUrl = window.location.href;
 
@@ -52,8 +56,17 @@ function BookInfo() {
       .catch((error) => console.error("Error fetching book: ", error));
   }, [currentPage]);
 
+  useEffect(() => {
+    getSources().then((res) => {
+      setSources(res);
+    });
+  }, []);
+
   return (
     <div className="inline">
+
+      {modalOpen && <DownloadOptionModal sources={sources} bookId={id} setModalOpen={setModalOpen} /> }
+
       <div className="container px-8">
         <h1 className="text-2xl font-bold border-b-4 w-fit border-main pr-6 pb-2 pt-6">
           Thông tin truyện
@@ -97,7 +110,7 @@ function BookInfo() {
               <h1 className="text-base font-bold font-Poppins text-sub">
                 Mô tả
               </h1>
-              <ReadMore fullText={book.description} novelId={id}/>
+              <ReadMore setModalOpen={setModalOpen} fullText={book.description} novelId={id}/>
             </div>
           </div>
         </div>
