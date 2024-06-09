@@ -2,41 +2,31 @@ import React, { useState, useEffect } from "react";
 import ReadMore from "../../components/readmore";
 import Pagination from "../../components/pagination";
 import { Link } from "react-router-dom";
+import {getDownloadedBookInfo} from "../../services/localStorage"
 
 const pageSize = 50;
 
-async function getInfo(source, name, page) {
-    //getInfo in indexedDB
-    const request = indexedDB.open("books", 1);
-    let book = {};
-    request.onsuccess = (event) => {
-        const db = event.target.result;
-        const transaction = db.transaction("books", "readwrite");
-        const objectStore = transaction.objectStore("books");
-        const request = objectStore.get(name);
-        request.onsuccess = (event) => {
-            book = event.target.result;
-        };
-    };
-    request.onerror = (event) => {
-        return false;
-    }
-    return book;
+function getGenres(genres) {
+  const uniqueGenre = [];
+  genres.forEach((item) => {
+    if (uniqueGenre.indexOf(item.name) == -1) uniqueGenre.push(item.name);
+  });
+  return uniqueGenre.join(", ");
 }
 
-
-function BookInfo() {
+function DownloadedBookInfo() {
   const [book, setBook] = useState({});
   const [maxPage, setMaxPage] = useState(0);
   const [genres, setGenres] = useState([]);
   const [list, setList] = useState([]);
+  const [left,setLeft] = useState([]);
+  const [right,setRight] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   // Lấy URL hiện tại
   const currentUrl = window.location.href;
-  console.log("currrent url: ", currentUrl);
 
   // Sử dụng biểu thức chính quy (regex) để lấy ID (bao gồm cả chữ và số)
-  const match = currentUrl.match(/\/book\/([a-zA-Z0-9-/-]+)/);
+  const match = currentUrl.match(/\/downloaded\/([a-zA-Z0-9-/-]+)/);
 
   const id = match ? match[1] : null;
 
@@ -47,12 +37,18 @@ function BookInfo() {
   }
 
   useEffect(() => {
-    getInfo("truyenfull", id, currentPage)
+    getDownloadedBookInfo(id)
       .then((info) => {
+        console.log(info)
         setBook(info);
         setMaxPage(info.maxPage);
         setGenres(getGenres(info.genres));
         setList(info.chapters);
+        let size = info.chapters.length;
+        let middle = size/2;
+        if(size % 2 != 0) middle++;
+        setLeft(info.chapters.slice(0,middle));
+        setRight(info.chapters.slice(middle,size));
       })
       .catch((error) => console.error("Error fetching book: ", error));
   }, [currentPage]);
@@ -114,33 +110,41 @@ function BookInfo() {
           </h1>
         </div>
 
-        <table className="border-collapse ml-[50px] mt-[36px] mb-[20px]">
-          <tbody>
-            {list.map((item, index) => {
+        <div className="flex mt-[36px] mb-[20px]">
+          <ul className="w-[45%] ml-[40px]">
+            {left.map((item,index) => {
               return (
-                <Link
-                  to={{
-                    pathname: "bookContent",
-                    search: `?name=${id}?chapter=${item.title}`, //pass chapter as a querry string
-                  }}
-                  className="w-1311px"
-                >
-                  <tr key={index} onClick={() => {}}>
-                    {/* <td className={`border border-2 border-[#9F9F9F] p-[14px] w-[1311px] ${item.viewed === true? "bg-white" : "bg-[#EFEFEF]"} ` }> */}
-                    <td
-                      className={` border-2 border-[#9F9F9F] p-[14px] w-[1311px] bg-[#EFEFEF] `}
-                    >
-                      <span className="font-Poppins font-base text-sub font-bold">
-                        Chương {item.title.split(":")[0]} :{" "}
-                      </span>
-                      <span className="">{item.title.split(": ")[1]}</span>
-                    </td>
-                  </tr>
+                <Link to={`${index + (currentPage-1)*pageSize +1}`} className="" >
+                  <li key={index} className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] ">
+                    <span className="font-Poppins font-base text-sub font-bold">
+                      Chương {item.title.split(":")[0]} : {" "}
+                    </span>
+                    <span className="">{item.title.split(": ")[1]}</span>
+                  </li> 
                 </Link>
-              );
+              )
+            
             })}
-          </tbody>
-        </table>
+          </ul>
+
+          <ul className="w-[45%] ml-[20px]">
+          {right.map((item,index) => {
+            return (
+              <Link to={`${index + left.length + (currentPage-1)*pageSize+1}`} className="" >
+                <li key={index} className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] ">
+                  <span className="font-Poppins font-base text-sub font-bold">
+                    Chương {item.title.split(":")[0]} : {" "}
+                  </span>
+                  <span className="">{item.title.split(": ")[1]}</span>
+                </li> 
+              </Link>
+            )
+          
+          })}
+        </ul>
+       
+
+        </div>
 
         <Pagination
           className="pagination-bar flex justify-center pt-[15px] mb-[20px]"
@@ -154,5 +158,4 @@ function BookInfo() {
   );
 }
 
-export default BookInfo;
-
+export default DownloadedBookInfo;

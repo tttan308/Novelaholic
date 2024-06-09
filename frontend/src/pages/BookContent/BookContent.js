@@ -16,21 +16,22 @@ import {
 } from './textConfig';
 import ExportButton from './export';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { saveBookHistory } from '../../services/localStorage';
-import { getChapter } from '../../services/content';
+import { saveBookHistory, getDownloadedBookChapter } from '../../services/localStorage';
+import { getChapter, getSources } from '../../services/content';
 import DownloadOptionModal from './DownloadOptionModal';
 
 const BookContent = () => {
   const [chapterData, setChapterData] = useState([]);
+  const [source, setSource] = useState('truyenfull'); 
   const { id, chapter } = useParams();
-  const [source, setSource] = useState('truyenfull');
+  const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchChapterData() {
       setLoading(true);
-      const res = await getChapter(id, chapter, source);
+      const res = await getChapter(id, chapter, chapter.source);
       if (res) {
         setChapterData(res);
         saveBookHistory(id, chapter);
@@ -43,7 +44,20 @@ const BookContent = () => {
       }
       setLoading(false);
     }
-    fetchChapterData();
+    getDownloadedBookChapter(id, chapter).then((res) => {
+      if (res) {
+        setChapterData(res);
+        setLoading(false);
+        console.log('Loaded from downloaded');
+      } else {
+        fetchChapterData();
+        console.log('Loaded from server 1');
+      }
+    }).catch((error) => {
+      console.error("Error fetching book chapter: ", error);
+      fetchChapterData();
+      console.log('Loaded from server 2');
+    });
   }, [id, chapter, source]);
 
   //DOM loaded event
@@ -53,6 +67,9 @@ const BookContent = () => {
     setFont(getFont());
     setFontSize(getFontSize());
     setLineHeight(getLineHeight());
+    getSources().then((res) => {
+      setSources(res);
+    });
   }, []);
 
   const handleChapterSelectionChanged = (event) => {
@@ -62,7 +79,7 @@ const BookContent = () => {
 
   return (
     <div id="bookcontentpage" className="container mx-auto">
-      <SideBox />
+      <SideBox sources={sources}/>
       {/* title */}
       {loading && (
         <p className="text-2xl font-bold text-center py-4 font-opensans text-sub">
@@ -106,6 +123,20 @@ const BookContent = () => {
             &gt;
           </Link>
         </div>
+      </div>
+
+      <div id='source-selection' className='pb-6 text-center'>
+            {sources.map((source) => (
+                <button
+                    key={source.id}
+                    className="bg-main mx-1 text-white px-4 py-2 rounded-md"
+                    onClick={() => {
+                        setSource(source.id);
+                    }}
+                >
+                    {source.name}
+                </button>
+            ))}
       </div>
 
       {/* content */}
@@ -153,7 +184,7 @@ const BookContent = () => {
   );
 };
 
-const SideBox = () => {
+const SideBox = ({sources}) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showDownloadOptionModal, setShowDownloadOptionModal] = useState(false);
   const { id, chapter } = useParams();
@@ -216,7 +247,7 @@ const SideBox = () => {
       )}
       {showDownloadOptionModal && (
         <DownloadOptionModal
-          sources={['truyenfull', 'abc']}
+          sources={sources}
           bookId={id}
           setModalOpen={setShowDownloadOptionModal}
         />
@@ -224,5 +255,15 @@ const SideBox = () => {
     </div>
   );
 };
+
+const DownloadingNotification = ({ message, onClose, duration = 3000 }) => {
+
+  return (
+      <div className="fixed bottom-4 left-4 bg-blue-500 text-white p-3 rounded shadow-lg">
+          {message}
+      </div>
+  );
+};
+
 
 export default BookContent;

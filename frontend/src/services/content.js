@@ -24,11 +24,12 @@ export const getFullBookContent = async (id, downSource) => {
       title,
       cover,
       author,
-      gneres,
+      genres,
       source,
       status,
       description,
       chapters,
+      maxPage
     } = bookResponse.data;
 
     // const chapterPromises = [];
@@ -47,12 +48,13 @@ export const getFullBookContent = async (id, downSource) => {
       title,
       cover,
       author,
-      gneres,
+      genres,
       source,
       status,
       description,
       chapters,
       chaptersContent,
+      maxPage
     };
   } catch (error) {
     console.error('Error fetching book data:', error);
@@ -81,5 +83,19 @@ export const getUpdateBook = async (oldBook, lastChap, source) => {
 };
 
 export const getNovelInfo = async (id) => {
-  //TODO: get novel info from API
+  try {
+    const response = await axios.get(`${apiURL}/novels?id=1&name=${id}&page=1`);
+    return response.data;
+  } catch (error) {
+    console.log('Get novel info failed: ', error);
+  }
 };
+
+export const getSources = async () =>{
+  try {
+    const response = await axios.get(`${apiURL}/sources`);
+    return response.data;
+  } catch (error) {
+    console.log('Get sources failed: ', error);
+  }
+}

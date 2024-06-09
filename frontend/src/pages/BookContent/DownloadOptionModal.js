@@ -1,32 +1,51 @@
-import { useRef, useState } from 'react';
-import { downloadFullBook } from '../../services/localStorage';
+import { useEffect, useRef, useState } from 'react';
+import { downloadFullBook, getDownloadedBookInfo, isDownLoaded, isFullDownloaded } from '../../services/localStorage';
 
-const DownloadOptionModal = ({ sources, setModalOpen, bookId }) => {
+const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
   const boxRef = useRef(null);
   const handleClickOutside = (event) => {
-    if (boxRef.current && !boxRef.current.contains(event.target)) {
+    if (!isDownloading && boxRef.current && !boxRef.current.contains(event.target)) {
       setModalOpen(false);
     }
   };
   document.addEventListener('click', handleClickOutside);
-
+  const [isGettingInfo, setIsGettingInfo] = useState(true);
   const [fullDownloaded, setfullDownload] = useState(false);
   const [downloaded, setdownloaded] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  useEffect(() => {
+    getDownloadedBookInfo(bookId)
+    .then((novel) => {
+        console.log(`1. ${novel}`);
+
+        if (novel) {
+            return Promise.all([isDownLoaded(novel), isFullDownloaded(novel)]);
+        } else {
+            throw new Error("Novel not found");
+        }
+    })
+    .then(([isDownloadedRes, isFullDownloadedRes]) => {
+        setdownloaded(isDownloadedRes);
+        setfullDownload(isFullDownloadedRes);
+        setIsGettingInfo(false);
+    })
+    .catch((error) => {
+        console.error("An error occurred:", error);
+        setIsGettingInfo(false);
+    });
+  }, [isDownloading]);
 
   return (
-    <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
+    <>
+    {!isDownloading && 
+      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
       <div
         ref={boxRef}
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg z-50"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-white p-4 rounded-lg z-50"
       >
-        {!fullDownloaded && (
+        {!isGettingInfo && !fullDownloaded && (
           <div>
-            <div>
-              <h1>id: {bookId}</h1>
-              {sources.map((item, index) => (
-                <h1>source: {item}</h1>
-              ))}
-            </div>
             {!downloaded && (
               <div>
                 <div className="flex justify-between items-center px-2">
@@ -37,11 +56,15 @@ const DownloadOptionModal = ({ sources, setModalOpen, bookId }) => {
                 <div className="flex flex-col space-y-4">
                   {sources.map((item, index) => (
                     <button
-                      onClick={() => downloadFullBook(bookId, item)}
-                      key={index}
+                      onClick={() => {
+                        downloadFullBook(bookId, item, setIsDownloading);
+                        setIsDownloading(true);
+                      }
+                      }
+                      key={item.id}
                       className="bg-main text-white p-2 rounded-md"
                     >
-                      {item}
+                      {item.name}
                     </button>
                   ))}
                 </div>
@@ -57,10 +80,10 @@ const DownloadOptionModal = ({ sources, setModalOpen, bookId }) => {
                 <div className="flex flex-col space-y-4">
                   {sources.map((item, index) => (
                     <button
-                      key={index}
+                      key={item.id}
                       className="bg-main text-white p-2 rounded-md"
                     >
-                      {item}
+                      {item.name}
                     </button>
                   ))}
                 </div>
@@ -68,15 +91,24 @@ const DownloadOptionModal = ({ sources, setModalOpen, bookId }) => {
             )}
           </div>
         )}
-        {fullDownloaded && (
+        {!isGettingInfo && fullDownloaded && (
           <div>
-            <h1 className="text-xl font-bold pb-7">
+            <h1 className="text-xl font-bold">
               Truyện đã được tải về toàn bộ
             </h1>
           </div>
         )}
       </div>
     </div>
+    }
+    {isDownloading &&
+      <div className="fixed bottom-4 left-4 bg-blue-500 text-white p-3 rounded shadow-lg">
+        Đang tải về...
+      </div>
+
+    }
+    </>
+    
   );
 };
 export default DownloadOptionModal;
