@@ -11,7 +11,7 @@ import { SearchResult } from './models/search-result.model';
 
 export class TruyenFull2Plugin implements Plugin {
 	id = 2;
-	name = 'Truyện Full2';
+	name = 'Truyện Full 2';
 	url = 'https://truyenfull2.vn/';
 
 	private readonly axiosConfig: AxiosRequestConfig = {

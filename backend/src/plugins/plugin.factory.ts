@@ -21,11 +21,11 @@ export class PluginFactory {
 		return plugin;
 	}
 
-	getPlugins(): { id: number; name: string, url: string }[] {
+	getPlugins(): { id: number; name: string; url: string }[] {
 		return this.loadedPlugins.map((plugin) => {
 			return {
 				id: plugin.id || 0,
-				name: plugin.constructor.name.toLowerCase().replace('plugin', ''),
+				name: plugin.name,
 				url: plugin.url,
 			};
 		});
