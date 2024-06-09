@@ -23,11 +23,10 @@ export class PluginFactory {
 	}
 
 	getPlugins(): { id: number; name: string }[] {
-		console.log(this.loadedPlugins);
 		return this.loadedPlugins.map((plugin) => {
 			return {
 				id: plugin.id || 0,
-				name: plugin.constructor.name.toLowerCase(),
+				name: plugin.constructor.name.toLowerCase().replace('plugin', ''),
 			};
 		});
 	}
