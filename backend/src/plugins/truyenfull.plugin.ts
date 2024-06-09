@@ -22,7 +22,8 @@ axiosRetry(axios, {
 
 export class TruyenFullPlugin implements Plugin {
 	id = 1;
-	name = 'truyenfull';
+	name = 'Truyện Full';
+	url = 'https://truyenfull.vn/';
 
 	private readonly axiosConfig: AxiosRequestConfig = {
 		headers: {

@@ -8,21 +8,11 @@ import { Details } from './models/details.model';
 import { Genre } from './models/genre.model';
 import { Chapter } from './models/chapter.model';
 import { SearchResult } from './models/search-result.model';
-import axiosRetry from 'axios-retry';
-
-axiosRetry(axios, {
-	retries: 3, // Số lần thử lại tối đa
-	retryDelay: (retryCount) => {
-		return retryCount * 1000; // Thời gian chờ trước khi thử lại (tính bằng ms)
-	},
-	retryCondition: (error) => {
-		return error.response?.status === 503; // Chỉ thử lại khi gặp lỗi 503
-	},
-});
 
 export class TruyenFull2Plugin implements Plugin {
 	id = 2;
-	name = 'truyenfull2';
+	name = 'Truyện Full2';
+	url = 'https://truyenfull2.vn/';
 
 	private readonly axiosConfig: AxiosRequestConfig = {
 		headers: {
@@ -131,7 +121,7 @@ export class TruyenFull2Plugin implements Plugin {
 		const nextChapter = $('#next_chap').attr('href') || '';
 		chapterDetails.nextChapter =
 			nextChapter !== 'javascript:void(0)'
-				? `/novels/${id}/${Number(chapter) + 1}`
+				? `/novels/${id}/${chapter + 1}`
 				: '';
 
 		const chapters = await this.getAllChapter(id);

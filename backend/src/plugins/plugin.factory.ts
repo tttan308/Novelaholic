@@ -18,15 +18,15 @@ export class PluginFactory {
 		if (!plugin) {
 			throw new Error(`Source plugin not found: ${source}`);
 		}
-
 		return plugin;
 	}
 
-	getPlugins(): { id: number; name: string }[] {
+	getPlugins(): { id: number; name: string, url: string }[] {
 		return this.loadedPlugins.map((plugin) => {
 			return {
 				id: plugin.id || 0,
 				name: plugin.constructor.name.toLowerCase().replace('plugin', ''),
+				url: plugin.url,
 			};
 		});
 	}
