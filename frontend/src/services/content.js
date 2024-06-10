@@ -100,5 +100,6 @@ export const getSources = async () => {
         return response.data;
     } catch (error) {
         console.log("Get sources failed: ", error);
+        return [];
     }
 };

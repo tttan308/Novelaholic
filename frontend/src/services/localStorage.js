@@ -1,4 +1,3 @@
-import { f } from "html2pdf.js";
 import { getFullBookContent, getUpdateBook, getNovelInfo } from "./content";
 
 const apiURL = process.env.REACT_APP_API_URL;
