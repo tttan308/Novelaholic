@@ -1,5 +1,5 @@
 export const getGenreFromHref = (href) => {
-  const arr = href.split('/');
+    const arr = href.split("/");
 
-  return arr[arr.length - 2];
+    return arr[arr.length - 1];
 };
