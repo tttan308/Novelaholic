@@ -74,12 +74,15 @@ const ReadMore = ({ fullText, novelId, setModalOpen }) => {
                         Đọc mới nhất
                     </button>
                 </Link>
-                <Link to={`${chaptersHistory[chaptersHistory.length-1]}`}>
+                { chaptersHistory.length > 0 && 
+                    <Link to={`${chaptersHistory[chaptersHistory.length-1]}`}>
                     <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
                         {" "}
                         Đọc tiếp
                     </button>
                 </Link>
+                }
+                
                 <button
                     onClick={() =>
                         setTimeout(() => {
