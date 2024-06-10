@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ExportDialog from "./exportDialog";
 import { getChapter } from "../services/Infomation";
+import { getBookHistoryChapter } from "../services/localStorage";
 
 const ReadMore = ({ fullText, novelId, setModalOpen }) => {
     const SEE_MORE = "Xem thêm";
     const SEE_LESS = "Thu gọn";
     const [collapse, setCollapse] = useState(false);
     const [lastchapter, setLastChapter] = useState(1);
+    const [chaptersHistory, setChaptersHistory] = useState([]);
+
 
     useEffect(() => {
         const getLast = async () => {
@@ -16,6 +19,9 @@ const ReadMore = ({ fullText, novelId, setModalOpen }) => {
         };
         getLast();
         console.log(lastchapter);
+
+        setChaptersHistory(getBookHistoryChapter(novelId));
+
     }, []);
 
     return (
@@ -66,6 +72,12 @@ const ReadMore = ({ fullText, novelId, setModalOpen }) => {
                     <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
                         {" "}
                         Đọc mới nhất
+                    </button>
+                </Link>
+                <Link to={`${chaptersHistory[chaptersHistory.length-1]}`}>
+                    <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
+                        {" "}
+                        Đọc tiếp
                     </button>
                 </Link>
                 <button

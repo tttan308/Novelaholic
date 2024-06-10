@@ -62,6 +62,13 @@ export const getFiveRecentBooks = () => {
     return history.slice(0, 5);
 };
 
+export const getBookHistoryChapter = (bookId) => {
+    const history = getBookHistory();
+    const book = history.find((item) => item.bookId === bookId);
+    return book ? book.chapters : [];
+};
+
+
 //download books to indexedDB
 export const downloadFullBook = async (bookId, sourceId, setIsDownloading) => {
     console.log("Download book: ", bookId, sourceId);
