@@ -52,7 +52,7 @@ export class TruyenFullPlugin implements Plugin {
 
 	async getDetails(name: string, page: number): Promise<Details> {
 		const url = `https://truyenfull.vn/${name}${page > 1 ? `/trang-${page}/#list-chapter` : ''}`;
-
+		console.log(url);
 		const $ = await this.fetchHtml(url);
 
 		const details = new Details();
@@ -63,10 +63,15 @@ export class TruyenFullPlugin implements Plugin {
 		details.source = $('.source').text().trim();
 		details.status = $('.text-success').text().trim();
 		$('a[itemprop="genre"]').each((index, element) => {
-			details.genres.push({
-				name: $(element).text().trim(),
-				href: $(element).attr('href') || '',
-			});
+			const genreHref = $(element).attr('href') || '';
+			let type = genreHref?.split('/').slice(-2)[0] || '';
+			type = '/novels/genres/' + type;
+
+			const genreName = $(element).text().trim();
+
+			if (genreName && type) {
+				details.genres.push(new Genre(genreName, type));
+			}
 		});
 		details.description = $('.desc-text.desc-text-full').html()?.trim() || '';
 		details.maxPage = parseInt($('#total-page').val() as string, 10) || 1;
@@ -74,10 +79,14 @@ export class TruyenFullPlugin implements Plugin {
 			const chapterElement = $(element).find('a');
 			const chapterTitle = chapterElement.text().replace('Chương ', '').trim();
 			const chapterLink = chapterElement.attr('href');
-			details.chapters.push({
-				title: chapterTitle,
-				link: chapterLink || '',
-			});
+			// https://truyenfull.vn/tu-cam-270192/chuong-50/
+			// /tu-cam-270192/50
+			const parts = chapterLink?.split('/');
+			const id = parts?.[3];
+			const chapter = parts?.[4].replace('chuong-', '') || '';
+			details.chapters.push(
+				new Chapter(chapterTitle, `/novels/${id}/${chapter}`),
+			);
 		});
 		return details;
 	}
@@ -156,6 +165,8 @@ export class TruyenFullPlugin implements Plugin {
 			const titleElement = $(el).find('.truyen-title a');
 			const title = titleElement.text().trim();
 			const titleLink = titleElement.attr('href');
+			const parts1 = titleLink?.split('/');
+			const titleId = '/novels/' + parts1?.slice(-2)[0];
 			const id = titleLink?.split('/').slice(-2)[0];
 			const author = $(el).find('.author').text().trim();
 			const isFull = $(el).find('.label-title.label-full').length > 0;
@@ -163,18 +174,21 @@ export class TruyenFullPlugin implements Plugin {
 			const chapterElement = $(el).find('.col-xs-2.text-info a');
 			const chapter = chapterElement.text().replace('Chương ', '').trim();
 			const chapterLink = chapterElement.attr('href');
+			const parts = chapterLink?.split('/');
+			const link =
+				'/novels/' + parts?.[3] + '/' + parts?.[4].replace('chuong-', '');
 
 			hotNovels.push(
 				new HotNovel(
 					id || '',
 					cover.toString(),
 					title,
-					titleLink!,
+					titleId,
 					isFull,
 					isHot,
 					author,
 					chapter,
-					chapterLink!,
+					link,
 				),
 			);
 		});
@@ -200,6 +214,9 @@ export class TruyenFullPlugin implements Plugin {
 			const titleElement = $(el).find('.truyen-title a');
 			const title = titleElement.text().trim();
 			const titleLink = titleElement.attr('href');
+			const parts1 = titleLink?.split('/');
+			const titleId = '/novels/' + parts1?.slice(-2)[0];
+
 			const id = titleLink?.split('/').slice(-2)[0];
 			const author = $(el).find('.author').text().trim();
 			const isFull = $(el).find('.label-title.label-full').length > 0;
@@ -207,18 +224,21 @@ export class TruyenFullPlugin implements Plugin {
 			const chapterElement = $(el).find('.col-xs-2.text-info a');
 			const chapter = chapterElement.text().replace('Chương ', '').trim();
 			const chapterLink = chapterElement.attr('href');
+			const parts = chapterLink?.split('/');
+			const link =
+				'/novels/' + parts?.[3] + '/' + parts?.[4].replace('chuong-', '');
 
 			searchResults.push(
 				new SearchResult(
 					id || '',
 					cover.toString(),
 					title,
-					titleLink!,
+					titleId,
 					isFull,
 					isHot,
 					author,
 					chapter,
-					chapterLink!,
+					link,
 				),
 			);
 		});
@@ -240,8 +260,10 @@ export class TruyenFullPlugin implements Plugin {
 			.find('div.dropdown-menu.multi-column ul.dropdown-menu li a')
 			.each((_, el) => {
 				const href = $(el).attr('href');
+				let type = href?.split('/').slice(-2)[0];
+				type = '/novels/genres/' + type;
 				const name = $(el).text().trim();
-				genres.push(new Genre(name, href!));
+				genres.push(new Genre(name, type!));
 			});
 
 		return genres;
@@ -265,6 +287,8 @@ export class TruyenFullPlugin implements Plugin {
 			const titleElement = $(el).find('.truyen-title a');
 			const title = titleElement.text().trim();
 			const titleLink = titleElement.attr('href');
+			const parts1 = titleLink?.split('/');
+			const titleId = '/novels/' + parts1?.slice(-2)[0];
 			const id = titleLink?.split('/').slice(-2)[0];
 			const author = $(el).find('.author').text().trim();
 			const isFull = $(el).find('.label-title.label-full').length > 0;
@@ -272,18 +296,21 @@ export class TruyenFullPlugin implements Plugin {
 			const chapterElement = $(el).find('.col-xs-2.text-info a');
 			const chapter = chapterElement.text().replace('Chương ', '').trim();
 			const chapterLink = chapterElement.attr('href');
+			const parts = chapterLink?.split('/');
+			const link =
+				'/novels/' + parts?.[3] + '/' + parts?.[4].replace('chuong-', '');
 
 			novels.push(
 				new HotNovel(
 					id!,
 					cover.toString(),
 					title,
-					titleLink!,
+					titleId,
 					isFull,
 					isHot,
 					author,
 					chapter,
-					chapterLink!,
+					link,
 				),
 			);
 		});

@@ -12,7 +12,6 @@ export class PluginFactory {
 	}
 
 	getPlugin(source: number): Plugin {
-		console.log(this.plugins);
 		const plugin = this.plugins[source];
 
 		if (!plugin) {

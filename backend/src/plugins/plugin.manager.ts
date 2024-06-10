@@ -8,13 +8,22 @@ export class PluginManager {
 	public plugins: { [key: string]: Plugin } = {};
 
 	async loadPlugins(): Promise<DynamicModule[]> {
+		const pluginsDirInSrc = path.join(__dirname, '../../src/plugins');
 		const pluginsDir = path.join(__dirname, '../../dist/plugins');
+
+		const pluginsDirExistsInSrc = fs
+			.readdirSync(pluginsDirInSrc)
+			.filter(
+				(file) => file.endsWith('.plugin.ts') || file.endsWith('.plugin.js'),
+			)
+			.map((file) => file.split('.')[0]);
 
 		const pluginFiles = fs
 			.readdirSync(pluginsDir)
 			.filter(
 				(file) => file.endsWith('.plugin.ts') || file.endsWith('.plugin.js'),
-			);
+			)
+			.filter((file) => pluginsDirExistsInSrc.includes(file.split('.')[0]));
 
 		const dynamicModules: DynamicModule[] = [];
 		for (const file of pluginFiles) {
