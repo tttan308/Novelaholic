@@ -41,11 +41,15 @@ export const getFiveRecentBooks = () => {
 };
 
 //download books to indexedDB
-export const downloadFullBook = async (bookId, source, setIsDownloading) => {
-    console.log("Download book: ", bookId, source);
+export const downloadFullBook = async (bookId, sourceId, setIsDownloading) => {
+    console.log("Download book: ", bookId, sourceId);
     //save to indexedDB
-    const book = await getFullBookContent(bookId, source);
-    console.log(book);
+    const book = await getFullBookContent(bookId, sourceId);
+    if(!book) 
+    {
+        setIsDownloading(false);
+        return;
+    }
     const request = indexedDB.open("books", 1);
     request.onupgradeneeded = (event) => {
         const db = event.target.result;

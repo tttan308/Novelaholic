@@ -15,11 +15,12 @@ export const getChapter = async (id, chapter, source) => {
     }
 };
 
-export const getFullBookContent = async (id, downSource) => {
-    console.log("Get full book content: ", id, downSource);
+export const getFullBookContent = async (id, downSourceId) => {
+    console.log("Get full book content: ", id, downSourceId);
     try {
+        console.log(`${apiURL}/novels?id=${downSourceId}&name=${id}&page=1`);
         const bookResponse = await axios.get(
-            `${apiURL}/novels?id=${downSource}&name=${id}&page=1`
+            `${apiURL}/novels?id=${downSourceId}&name=${id}&page=1`
         );
         const {
             title,
@@ -39,7 +40,7 @@ export const getFullBookContent = async (id, downSource) => {
         // });
 
         const chapterPromises = chapters.map((chapter, index) =>
-            getChapter(id, index + 1, downSource)
+            getChapter(id, index + 1, downSourceId)
         );
 
         const chaptersContent = await Promise.all(chapterPromises);
@@ -59,6 +60,7 @@ export const getFullBookContent = async (id, downSource) => {
         };
     } catch (error) {
         console.error("Error fetching book data:", error);
+        alert("Error fetching book data: ", error.message);
     }
 };
 
