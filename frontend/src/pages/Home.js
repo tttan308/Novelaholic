@@ -25,7 +25,7 @@ function Home() {
                     {recentNovels.map((novel) => (
                         <div key={novel.id} className="flex justify-center">
                             <Link
-                                to={`/book/${novel.id}`}
+                                to={`/book/${novel.bookId}`}
                                 className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
                             >
                                 <img
@@ -42,10 +42,10 @@ function Home() {
                 </div>
                 {!isShowAllHistory && (
                     <div
-                        onClick={
-                            setRecentNovels(historyReading) &&
-                            setIsShowAllHistory(true)
-                        }
+                        onClick={ () =>{
+                            setRecentNovels(historyReading);
+                            setIsShowAllHistory(true);
+                        }}
                         className="flex items-center justify-center gap-4 cursor-pointer"
                     >
                         <div className="w-8 h-8 rounded-full bg-main flex justify-center items-center">

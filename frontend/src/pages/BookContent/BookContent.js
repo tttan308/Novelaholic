@@ -47,6 +47,7 @@ const BookContent = () => {
     getDownloadedBookChapter(id, chapter).then((res) => {
       if (res) {
         setChapterData(res);
+        saveBookHistory(id, chapter);
         setLoading(false);
         console.log('Loaded from downloaded');
       } else {

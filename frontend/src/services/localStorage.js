@@ -4,31 +4,53 @@ const apiURL = process.env.REACT_APP_API_URL;
 
 //book history
 export const saveBookHistory = async (bookId, chapterNumber) => {
-    let history = JSON.parse(localStorage.getItem("history")) || [];
+    try {
+        // Get the history from local storage or initialize an empty array if not present
+        let history = JSON.parse(localStorage.getItem("history")) || [];
 
-    let book = history.find((item) => item.bookId === bookId);
-    if (book) {
-        if (book.chapters.includes(chapterNumber)) return;
-        book.chapters.push(chapterNumber);
-        book.lastRead = new Date();
+        // Find the book in the history
+        let book = history.find((item) => item.bookId === bookId);
 
-        history = history.filter((item) => item.bookId !== bookId);
-        history.unshift(book);
-    } else {
-        const res = await fetch(`${apiURL}/novels?id=1&name=${bookId}&page=1`);
-        const data = await res.json();
+        if (book) {
+            // Check if the chapter is already in the book's chapters list
+            if (book.chapters.includes(chapterNumber)){
+                //delete the chapter from the list
+                book.chapters = book.chapters.filter((item) => item !== chapterNumber);
+            }
 
-        book = {
-            id: bookId,
-            title: data.title,
-            cover: data.cover,
-            chapters: [chapterNumber],
-            lastRead: new Date(),
-        };
-        history.unshift(book);
+            // Add the new chapter number
+            book.chapters.push(chapterNumber);
+            book.lastRead = new Date().toISOString();
+
+            // Remove the old entry and add the updated book at the beginning
+            history = history.filter((item) => item.bookId !== bookId);
+            history.unshift(book);
+        } else {
+            // Fetch book details from the API
+            const response = await fetch(`${apiURL}/novels?id=1&name=${bookId}&page=1`);
+            
+            if (!response.ok) {
+                throw new Error("Failed to fetch book details");
+            }
+
+            const data = await response.json();
+
+            // Create a new book entry
+            book = {
+                bookId: bookId,
+                title: data.title,
+                cover: data.cover,
+                chapters: [chapterNumber],
+                lastRead: new Date().toISOString(),
+            };
+            history.unshift(book);
+        }
+
+        // Update local storage with the new history
+        localStorage.setItem("history", JSON.stringify(history));
+    } catch (error) {
+        console.error("Error saving book history:", error);
     }
-
-    localStorage.setItem("history", JSON.stringify(history));
 };
 
 export const getBookHistory = () => {
@@ -222,6 +244,13 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open("books", 1);
 
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains("books")) {
+                const objectStore = db.createObjectStore("books", { keyPath: "id" });
+                objectStore.createIndex("chaptersContent", "chaptersContent", { unique: false });
+            }
+        };
         request.onsuccess = (event) => {
             const db = event.target.result;
             const transaction = db.transaction("books", "readonly");
@@ -239,12 +268,10 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
                     resolve(null); // Return null if no content is found
                 }
             };
-
             getRequest.onerror = (event) => {
                 reject(new Error("Failed to retrieve the book"));
             };
         };
-
         request.onerror = (event) => {
             reject(new Error("Failed to open the database"));
         };
