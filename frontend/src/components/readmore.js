@@ -11,17 +11,14 @@ const ReadMore = ({ fullText, novelId, setModalOpen }) => {
     const [lastchapter, setLastChapter] = useState(1);
     const [chaptersHistory, setChaptersHistory] = useState([]);
 
-
     useEffect(() => {
         const getLast = async () => {
             const data = await getChapter(`/novels/${novelId}/1`);
             setLastChapter(data.totalChapters);
         };
         getLast();
-        console.log(lastchapter);
-
+        // console.log(lastchapter);
         setChaptersHistory(getBookHistoryChapter(novelId));
-
     }, []);
 
     return (
@@ -74,7 +71,7 @@ const ReadMore = ({ fullText, novelId, setModalOpen }) => {
                         Đọc mới nhất
                     </button>
                 </Link>
-                <Link to={`${chaptersHistory[chaptersHistory.length-1]}`}>
+                <Link to={`${chaptersHistory[chaptersHistory.length - 1]}`}>
                     <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
                         {" "}
                         Đọc tiếp

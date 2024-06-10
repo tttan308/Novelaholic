@@ -1,4 +1,4 @@
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaLongArrowAltRight } from "react-icons/fa";
 import HotNovels from "../components/HotNovels";
 import SearchBox from "../components/SearchBox";
 import { getFiveRecentBooks, getBookHistory } from "../services/localStorage";
@@ -17,6 +17,7 @@ function Home() {
     return (
         <>
             <SearchBox />
+
             <div className="bg-main-light p-6">
                 <h2 className="text-[24px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
                     Đã đọc gần đây
@@ -40,9 +41,10 @@ function Home() {
                         </div>
                     ))}
                 </div>
+
                 {!isShowAllHistory && (
                     <div
-                        onClick={ () =>{
+                        onClick={() => {
                             setRecentNovels(historyReading);
                             setIsShowAllHistory(true);
                         }}
@@ -57,6 +59,23 @@ function Home() {
                     </div>
                 )}
             </div>
+
+            <div className="flex mt-10 p-6">
+                <h2 className="text-[24px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
+                    Đã tải về
+                </h2>
+
+                <Link to={`/downloaded`}>
+                    <div className="flex text-sub font-semibold transition duration-200 hover:scale-110 hover:cursor-pointer mt-1">
+                        <div className="text-[18px] italic ml-7 mr-3">
+                            Xem danh sách
+                        </div>
+
+                        <FaLongArrowAltRight size={20} />
+                    </div>
+                </Link>
+            </div>
+
             <HotNovels />
         </>
     );
