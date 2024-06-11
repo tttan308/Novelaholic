@@ -175,7 +175,7 @@ async function downloadAsEpub(novelId, beginChapter, endChapter) {
 }
 
 
-const ReadMore = ({ fullText, novelId, setModalOpen }) => {
+const ReadMore = ({ fullText, novelId, setModalOpen , maxChapter}) => {
     const SEE_MORE = "Xem thêm";
     const SEE_LESS = "Thu gọn";
     const [collapse, setCollapse] = useState(false);
@@ -189,9 +189,8 @@ const ReadMore = ({ fullText, novelId, setModalOpen }) => {
 
     useEffect(() => {
         const getLast = async () => {
-            const data = await getChapter(`/novels/${novelId}/1`);
-            setLastChapter(data.totalChapters);
-            setChapters(data.totalChapters);
+            setLastChapter(maxChapter);
+            setChapters(maxChapter);
         };
         getLast();
         
