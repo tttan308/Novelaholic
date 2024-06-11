@@ -41,7 +41,8 @@ function BookInfo() {
     }
 
     useEffect(() => {
-        getInfo(id, currentPage)
+        async function restartPage(){
+            const data = await getInfo(id, currentPage)
             .then((info) => {
                 setBook(info);
                 setMaxPage(info.maxPage);
@@ -53,7 +54,10 @@ function BookInfo() {
                 setLeft(info.chapters.slice(0, middle));
                 setRight(info.chapters.slice(middle, size));
             })
-            .catch((error) => console.error("Error fetching book: ", error));
+            .catch((error) => console.error("Error fetching book: ", error)); 
+        }
+        restartPage();
+        
     }, [currentPage]);
 
     useEffect(() => {
