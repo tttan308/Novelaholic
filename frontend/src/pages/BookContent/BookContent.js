@@ -97,48 +97,49 @@ const BookContent = () => {
         {chapterData.novelTitle}
       </p>
 
-      {/* chapter */}
-      <div className="text-center my-6">
-        <div className="flex items-center justify-center space-x-6">
-          <Link
-            to={`/book/${id}/${parseInt(chapter) - 1}`}
-            className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
-          >
-            &lt;
-          </Link>
-          <select
-            onChange={handleChapterSelectionChanged}
-            value={chapter}
-            className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500"
-          >
-            {[...Array(chapterData.totalChapters).keys()].map((index) => (
-              <option key={index} value={index + 1}>
-                Chương {index + 1}
-              </option>
-            ))}
-          </select>
-          <Link
-            to={`/book/${id}/${parseInt(chapter) + 1}`}
-            className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
-          >
-            &gt;
-          </Link>
-        </div>
-      </div>
+      {!loading && (
+        <div className="text-center my-6">
+          <div className="flex items-center justify-center space-x-6">
+            <Link
+              to={`/book/${id}/${parseInt(chapter) - 1}`}
+              className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
+            >
+              &lt;
+            </Link>
+            <select
+              onChange={handleChapterSelectionChanged}
+              value={chapter}
+              className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500"
+            >
+              {[...Array(chapterData.totalChapters).keys()].map((index) => (
+                <option key={index} value={index + 1}>
+                  Chương {index + 1}
+                </option>
+              ))}
+            </select>
+            <Link
+              to={`/book/${id}/${parseInt(chapter) + 1}`}
+              className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
+            >
+              &gt;
+            </Link>
+          </div>
+        </div>)}
 
-      <div id='source-selection' className='pb-6 text-center'>
-            {sources.map((item) => (
-                <button
-                    key={item.id}
-                    className={`mx-1 text-white px-4 py-2 rounded-md ${item.id === source ? '  bg-blue-500' : 'bg-main'}`}
-                    onClick={() => {
-                        setSource(item.id);
-                    }}
-                >
-                    {item.name}
-                </button>
-            ))}
-      </div>
+      {!loading && (
+        <div id='source-selection' className='pb-6 text-center'>
+              {sources.map((item) => (
+                  <button
+                      key={item.id}
+                      className={`mx-1 text-white px-4 py-2 rounded-md ${item.id === source ? '  bg-blue-500' : 'bg-main'}`}
+                      onClick={() => {
+                          setSource(item.id);
+                      }}
+                  >
+                      {item.name}
+                  </button>
+              ))}
+        </div>)}
 
       {/* content */}
       <div id="bookcontent-content" className=" mx-52">
@@ -153,7 +154,7 @@ const BookContent = () => {
         )}
       </div>
 
-      {/* chapter */}
+      {!loading &&
       <div className="text-center py-6">
         <div className="flex items-center justify-center space-x-6">
           <Link
@@ -180,7 +181,7 @@ const BookContent = () => {
             &gt;
           </Link>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

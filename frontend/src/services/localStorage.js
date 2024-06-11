@@ -74,6 +74,7 @@ export const downloadFullBook = async (bookId, sourceId, setIsDownloading) => {
     console.log("Download book: ", bookId, sourceId);
     //save to indexedDB
     const book = await getFullBookContent(bookId, sourceId);
+    console.log("Downloaded book: ", book);
     if(!book) 
     {
         setIsDownloading(false);
