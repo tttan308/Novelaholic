@@ -22,7 +22,7 @@ import DownloadOptionModal from './DownloadOptionModal';
 
 const BookContent = () => {
   const [chapterData, setChapterData] = useState([]);
-  const [source, setSource] = useState('truyenfull'); 
+  const [source, setSource] = useState(1); 
   const { id, chapter } = useParams();
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ const BookContent = () => {
   useEffect(() => {
     async function fetchChapterData() {
       setLoading(true);
-      const res = await getChapter(id, chapter, chapter.source);
+      const res = await getChapter(id, chapter, source);
       if (res) {
         setChapterData(res);
         saveBookHistory(id, chapter);
@@ -47,6 +47,7 @@ const BookContent = () => {
     getDownloadedBookChapter(id, chapter).then((res) => {
       if (res) {
         setChapterData(res);
+        saveBookHistory(id, chapter);
         setLoading(false);
         console.log('Loaded from downloaded');
       } else {
@@ -126,15 +127,15 @@ const BookContent = () => {
       </div>
 
       <div id='source-selection' className='pb-6 text-center'>
-            {sources.map((source) => (
+            {sources.map((item) => (
                 <button
-                    key={source.id}
-                    className="bg-main mx-1 text-white px-4 py-2 rounded-md"
+                    key={item.id}
+                    className={`mx-1 text-white px-4 py-2 rounded-md ${item.id === source ? '  bg-blue-500' : 'bg-main'}`}
                     onClick={() => {
-                        setSource(source.id);
+                        setSource(item.id);
                     }}
                 >
-                    {source.name}
+                    {item.name}
                 </button>
             ))}
       </div>

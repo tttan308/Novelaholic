@@ -17,7 +17,6 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
   useEffect(() => {
     getDownloadedBookInfo(bookId)
     .then((novel) => {
-        console.log(`1. ${novel}`);
 
         if (novel) {
             return Promise.all([isDownLoaded(novel), isFullDownloaded(novel)]);
@@ -31,7 +30,6 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
         setIsGettingInfo(false);
     })
     .catch((error) => {
-        console.error("An error occurred:", error);
         setIsGettingInfo(false);
     });
   }, [isDownloading]);
@@ -57,7 +55,7 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
                   {sources.map((item, index) => (
                     <button
                       onClick={() => {
-                        downloadFullBook(bookId, item, setIsDownloading);
+                        downloadFullBook(bookId, item.id, setIsDownloading);
                         setIsDownloading(true);
                       }
                       }
