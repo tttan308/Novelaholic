@@ -19,6 +19,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { saveBookHistory, getDownloadedBookChapter } from '../../services/localStorage';
 import { getChapter, getSources } from '../../services/content';
 import DownloadOptionModal from './DownloadOptionModal';
+import ChaptersModal from './ChaptersModel';
 
 const BookContent = () => {
   const [chapterData, setChapterData] = useState([]);
@@ -80,7 +81,7 @@ const BookContent = () => {
 
   return (
     <div id="bookcontentpage" className="container mx-auto">
-      <SideBox sources={sources}/>
+      <SideBox sources={sources} chapterCount ={chapterData.totalChapters}/>
       {/* title */}
       {loading && (
         <p className="text-2xl font-bold text-center py-4 font-opensans text-sub">
@@ -100,12 +101,18 @@ const BookContent = () => {
       {!loading && (
         <div className="text-center my-6">
           <div className="flex items-center justify-center space-x-6">
-            <Link
+            {chapter>1 && <Link
               to={`/book/${id}/${parseInt(chapter) - 1}`}
               className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
             >
               &lt;
-            </Link>
+            </Link>}
+            {chapter == 1&&
+                <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
+                  &lt;
+                </div>
+            }
+            
             <select
               onChange={handleChapterSelectionChanged}
               value={chapter}
@@ -117,12 +124,19 @@ const BookContent = () => {
                 </option>
               ))}
             </select>
-            <Link
-              to={`/book/${id}/${parseInt(chapter) + 1}`}
-              className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
-            >
-              &gt;
-            </Link>
+            {chapter < chapterData.totalChapters &&
+              <Link
+                to={`/book/${id}/${parseInt(chapter) + 1}`}
+                className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
+              >
+                &gt;
+              </Link>}
+
+            {chapter == chapterData.totalChapters&&
+              <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
+                &lt;
+              </div>
+            }
           </div>
         </div>)}
 
@@ -157,12 +171,17 @@ const BookContent = () => {
       {!loading &&
       <div className="text-center py-6">
         <div className="flex items-center justify-center space-x-6">
-          <Link
+          {chapter>1 && <Link
             to={`/book/${id}/${parseInt(chapter) - 1}`}
             className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
           >
             &lt;
-          </Link>
+          </Link>}
+          {chapter == 1&&
+              <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
+                &lt;
+              </div>
+            }
           <select
             onChange={handleChapterSelectionChanged}
             value={chapter}
@@ -174,21 +193,28 @@ const BookContent = () => {
               </option>
             ))}
           </select>
-          <Link
-            to={`/book/${id}/${parseInt(chapter) + 1}`}
-            className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
-          >
-            &gt;
-          </Link>
+          {chapter < chapterData.totalChapters &&
+              <Link
+                to={`/book/${id}/${parseInt(chapter) + 1}`}
+                className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
+              >
+                &gt;
+              </Link>}
+              {chapter == chapterData.totalChapters&&
+              <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
+                &lt;
+              </div>
+            }
         </div>
       </div>}
     </div>
   );
 };
 
-const SideBox = ({sources}) => {
+const SideBox = ({sources, chapterCount}) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showDownloadOptionModal, setShowDownloadOptionModal] = useState(false);
+  const [showChaptersModal, setShowChaptersModal] = useState(false);
   const { id, chapter } = useParams();
 
   const boxRef = useRef(null);
@@ -223,7 +249,13 @@ const SideBox = ({sources}) => {
         >
           <FaCog size={26} />
         </button>
-        <button className="text-main hover:text-black">
+        <button 
+          onClick={() =>
+            setTimeout(() => {
+              setShowChaptersModal(true);
+            }, 0)
+          }
+          className="text-main hover:text-black">
           <FaBars size={26} />
         </button>
         <button
@@ -254,6 +286,14 @@ const SideBox = ({sources}) => {
           setModalOpen={setShowDownloadOptionModal}
         />
       )}
+      {
+        showChaptersModal && (
+          <ChaptersModal
+            chapterCount={chapterCount}
+            setModalOpen={setShowChaptersModal}
+          />
+        )
+      }
     </div>
   );
 };
