@@ -1,29 +1,42 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as cheerio from 'cheerio';
-import { Plugin } from './plugin.interface';
+import { NovelPlugin } from './novel-plugin.interface';
 import { DynamicModule } from '@nestjs/common';
-import { HotNovel } from './models/hot-novel.model';
-import { NovelList } from './models/novel-list.model';
-import { Details } from './models/details.model';
-import { Genre } from './models/genre.model';
-import { Chapter } from './models/chapter.model';
-import { SearchResult } from './models/search-result.model';
+import { HotNovel } from '../models/hot-novel.model';
+import { NovelList } from '../models/novel-list.model';
+import { Details } from '../models/details.model';
+import { Genre } from '../models/genre.model';
+import { Chapter } from '../models/chapter.model';
+import { SearchResult } from '../models/search-result.model';
 import axiosRetry from 'axios-retry';
 
 axiosRetry(axios, {
-	retries: 3, // Số lần thử lại tối đa
+	retries: 10,
 	retryDelay: (retryCount) => {
-		return retryCount * 1000; // Thời gian chờ trước khi thử lại (tính bằng ms)
+		return retryCount * 1000;
 	},
 	retryCondition: (error) => {
-		return error.response?.status === 503; // Chỉ thử lại khi gặp lỗi 503
+		return error.response?.status === 503;
 	},
 });
 
-export class TruyenFullPlugin implements Plugin {
+export class TruyenFullPlugin implements NovelPlugin {
 	id = 1;
 	name = 'Truyện Full';
 	url = 'https://truyenfull.vn/';
+
+	init(): DynamicModule {
+		return {
+			module: TruyenFullPlugin,
+			providers: [
+				{
+					provide: 'NovelPlugin',
+					useClass: TruyenFullPlugin,
+				},
+			],
+			exports: ['NovelPlugin'],
+		};
+	}
 
 	private readonly axiosConfig: AxiosRequestConfig = {
 		headers: {
@@ -31,19 +44,6 @@ export class TruyenFullPlugin implements Plugin {
 				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
 		},
 	};
-
-	init(): DynamicModule {
-		return {
-			module: TruyenFullPlugin,
-			providers: [
-				{
-					provide: 'Plugin',
-					useClass: TruyenFullPlugin,
-				},
-			],
-			exports: ['Plugin'],
-		};
-	}
 
 	private async fetchHtml(url: string): Promise<cheerio.CheerioAPI> {
 		const response = await axios.get(url, this.axiosConfig);

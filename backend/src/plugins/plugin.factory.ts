@@ -1,18 +1,27 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Plugin } from './plugin.interface';
+import { NovelPlugin } from './novel-plugin/novel-plugin.interface';
+import { ExportFilePlugin } from './export-plugin/export-plugin.interface';
 
 @Injectable()
 export class PluginFactory {
-	private plugins: { [key: number]: Plugin } = {};
+	private novelPlugins: { [key: number]: NovelPlugin } = {};
+	private exportPlugins: { [key: number]: ExportFilePlugin } = {};
 
-	constructor(@Inject('PLUGINS') private readonly loadedPlugins: Plugin[]) {
+	constructor(
+		@Inject('PLUGINS') private readonly loadedPlugins: NovelPlugin[],
+		@Inject('PLUGINS') private readonly loadedExportPlugins: ExportFilePlugin[],
+	) {
 		loadedPlugins.forEach((plugin) => {
-			this.plugins[plugin.id] = plugin;
+			this.novelPlugins[plugin.id] = plugin;
+		});
+
+		loadedExportPlugins.forEach((plugin) => {
+			this.exportPlugins[plugin.id] = plugin;
 		});
 	}
 
-	getPlugin(source: number): Plugin {
-		const plugin = this.plugins[source];
+	getNovelPlugin(source: number): NovelPlugin {
+		const plugin = this.novelPlugins[source];
 
 		if (!plugin) {
 			throw new Error(`Source plugin not found: ${source}`);
@@ -20,7 +29,18 @@ export class PluginFactory {
 		return plugin;
 	}
 
-	getPlugins(): { id: number; name: string; url: string }[] {
+	getExportPlugins(): { id: number; type: string }[] {
+		return this.loadedExportPlugins
+			.filter((plugin) => plugin.type.includes('Export'))
+			.map((plugin) => {
+				return {
+					id: plugin.id || 0,
+					type: plugin.type,
+				};
+			});
+	}
+
+	getNovelPlugins(): { id: number; name: string; url: string }[] {
 		return this.loadedPlugins.map((plugin) => {
 			return {
 				id: plugin.id || 0,
@@ -28,5 +48,14 @@ export class PluginFactory {
 				url: plugin.url,
 			};
 		});
+	}
+
+	getExportPlugin(id: number): ExportFilePlugin {
+		const plugin = this.exportPlugins[id];
+
+		if (!plugin) {
+			throw new Error(`Export plugin not found: ${id}`);
+		}
+		return plugin;
 	}
 }

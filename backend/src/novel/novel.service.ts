@@ -6,7 +6,7 @@ export class NovelService {
 	constructor(private readonly pluginFactory: PluginFactory) {}
 
 	async getDetails(source: number, name: string, page: number): Promise<any> {
-		return this.pluginFactory.getPlugin(source).getDetails(name, page);
+		return this.pluginFactory.getNovelPlugin(source).getDetails(name, page);
 	}
 
 	async getDetailsChapter(
@@ -14,11 +14,13 @@ export class NovelService {
 		id: string,
 		chapter: number,
 	): Promise<any> {
-		return this.pluginFactory.getPlugin(source).getDetailsChapter(id, chapter);
+		return this.pluginFactory
+			.getNovelPlugin(source)
+			.getDetailsChapter(id, chapter);
 	}
 
 	async getHotNovels(source: number, page: number): Promise<any> {
-		return this.pluginFactory.getPlugin(source).getHotNovels(page);
+		return this.pluginFactory.getNovelPlugin(source).getHotNovels(page);
 	}
 
 	async searchNovels(
@@ -26,11 +28,13 @@ export class NovelService {
 		keyword: string,
 		page: number,
 	): Promise<any> {
-		return this.pluginFactory.getPlugin(source).searchNovels(keyword, page);
+		return this.pluginFactory
+			.getNovelPlugin(source)
+			.searchNovels(keyword, page);
 	}
 
 	async getGenres(source: number): Promise<any> {
-		return this.pluginFactory.getPlugin(source).getGenres();
+		return this.pluginFactory.getNovelPlugin(source).getGenres();
 	}
 
 	async getNovelsByGenre(
@@ -38,6 +42,8 @@ export class NovelService {
 		genre: string,
 		page: number,
 	): Promise<any> {
-		return this.pluginFactory.getPlugin(source).getNovelsByGenre(genre, page);
+		return this.pluginFactory
+			.getNovelPlugin(source)
+			.getNovelsByGenre(genre, page);
 	}
 }

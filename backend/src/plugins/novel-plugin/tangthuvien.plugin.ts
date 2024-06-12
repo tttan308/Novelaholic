@@ -1,15 +1,15 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as cheerio from 'cheerio';
-import { Plugin } from './plugin.interface';
+import { NovelPlugin } from './novel-plugin.interface';
 import { DynamicModule } from '@nestjs/common';
-import { HotNovel } from './models/hot-novel.model';
-import { NovelList } from './models/novel-list.model';
-import { Details } from './models/details.model';
-import { Genre } from './models/genre.model';
-import { Chapter } from './models/chapter.model';
-import { SearchResult } from './models/search-result.model';
+import { HotNovel } from '../models/hot-novel.model';
+import { NovelList } from '../models/novel-list.model';
+import { Details } from '../models/details.model';
+import { Genre } from '../models/genre.model';
+import { Chapter } from '../models/chapter.model';
+import { SearchResult } from '../models/search-result.model';
 
-export class TangThuVienPlugin implements Plugin {
+export class TangThuVienPlugin implements NovelPlugin {
 	id = 3;
 	name = 'Tàng Thư Viện';
 	url = 'https://truyen.tangthuvien.vn/';
@@ -26,11 +26,11 @@ export class TangThuVienPlugin implements Plugin {
 			module: TangThuVienPlugin,
 			providers: [
 				{
-					provide: 'Plugin',
+					provide: 'NovelPlugin',
 					useClass: TangThuVienPlugin,
 				},
 			],
-			exports: ['Plugin'],
+			exports: ['NovelPlugin'],
 		};
 	}
 
@@ -311,20 +311,20 @@ export class TangThuVienPlugin implements Plugin {
 					.text()
 					.replace('Tác giả: ', '')
 					.trim() || '';
-			const genre =
-				$(element)
-					.find('.item-author')
-					.eq(1)
-					.text()
-					.replace('Thể loại: ', '')
-					.trim() || '';
-			const views =
-				$(element)
-					.find('.item-update')
-					.eq(0)
-					.text()
-					.replace('Lượt xem: ', '')
-					.trim() || '';
+			// const genre =
+			// 	$(element)
+			// 		.find('.item-author')
+			// 		.eq(1)
+			// 		.text()
+			// 		.replace('Thể loại: ', '')
+			// 		.trim() || '';
+			// const views =
+			// 	$(element)
+			// 		.find('.item-update')
+			// 		.eq(0)
+			// 		.text()
+			// 		.replace('Lượt xem: ', '')
+			// 		.trim() || '';
 			const status =
 				$(element)
 					.find('.item-update')
@@ -339,12 +339,12 @@ export class TangThuVienPlugin implements Plugin {
 					.text()
 					.replace('Số chương: ', '')
 					.trim() || '';
-			const updateDate =
-				$(element)
-					.find('.text-info .chapter-text')
-					.text()
-					.replace('Cập nhật: ', '')
-					.trim() || '';
+			// const updateDate =
+			// 	$(element)
+			// 		.find('.text-info .chapter-text')
+			// 		.text()
+			// 		.replace('Cập nhật: ', '')
+			// 		.trim() || '';
 
 			const isFull = status === 'Hoàn thành';
 			const isHot = true;

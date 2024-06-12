@@ -10,20 +10,27 @@ import { AppService } from '../app.service';
 export class PluginModule {
 	static async forRoot(): Promise<DynamicModule> {
 		const pluginManager = new PluginManager();
-		const dynamicModules = await pluginManager.loadPlugins();
+		const dynamicNovelModules = await pluginManager.loadNovelPlugins();
+		const dynamicExportModules = await pluginManager.loadExportPlugins();
+
+		console.log('Dynamic export modules:', dynamicExportModules);
 
 		return {
 			module: PluginModule,
-			imports: [...dynamicModules],
+			imports: [...dynamicNovelModules, ...dynamicExportModules],
 			providers: [
 				PluginManager,
 				PluginFactory,
 				{
 					provide: 'PLUGINS',
-					useFactory: () => pluginManager.getPlugins(),
+					useFactory: () => pluginManager.getNovelPlugins(),
+				},
+				{
+					provide: 'EXPORT_PLUGINS',
+					useFactory: () => pluginManager.getExportPlugins(),
 				},
 			],
-			exports: [PluginFactory, PluginManager, 'PLUGINS'],
+			exports: [PluginFactory, PluginManager, 'PLUGINS', 'EXPORT_PLUGINS'],
 		};
 	}
 }

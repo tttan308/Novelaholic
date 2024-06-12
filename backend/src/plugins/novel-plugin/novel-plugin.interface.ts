@@ -1,6 +1,6 @@
 import { DynamicModule } from '@nestjs/common';
 
-export interface Plugin {
+export interface NovelPlugin {
 	id: number;
 	name: string;
 	url: string;
