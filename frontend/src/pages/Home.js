@@ -22,25 +22,30 @@ function Home() {
                 <h2 className="text-[24px] font-bold border-b-4 border-main w-fit pr-6 pb-2">
                     Đã đọc gần đây
                 </h2>
-                <div className="flex justify-around mx-14 my-6">
-                    {recentNovels.map((novel) => (
-                        <div key={novel.id} className="flex justify-center">
-                            <Link
-                                to={`/book/${novel.bookId}`}
-                                className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
-                            >
-                                <img
-                                    src={novel.cover}
-                                    alt={novel.title}
-                                    className="w-36 h-48 object-cover"
-                                />
-                                <h3 className="text-[17px] font-bold text-center leading-relaxed">
-                                    {novel.title}
-                                </h3>
-                            </Link>
-                        </div>
-                    ))}
-                </div>
+                {recentNovels.length === 0 && (
+                    <div className="text-center text-[18px] font-bold my-6">
+                        Bạn chưa đọc truyện nào gần đây
+                    </div>
+                )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mx-14 my-6">
+    {recentNovels.map((novel) => (
+        <div key={novel.id} className="flex justify-center">
+            <Link
+                to={`/book/${novel.bookId}`}
+                className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
+            >
+                <img
+                    src={novel.cover}
+                    alt={novel.title}
+                    className="w-36 h-48 object-cover"
+                />
+                <h3 className="text-[17px] font-bold text-center leading-relaxed">
+                    {novel.title}
+                </h3>
+            </Link>
+        </div>
+    ))}
+</div>
 
                 {!isShowAllHistory && (
                     <div

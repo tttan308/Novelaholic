@@ -26,6 +26,8 @@ function BookInfo() {
     const [currentPage, setCurrentPage] = useState(1);
     const [sources, setSources] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
+    const [endPage, setEndPage] = useState(1);
+    const [isFinish, setIsFinish] = useState(false);
     // Lấy URL hiện tại
     const currentUrl = window.location.href;
 
@@ -34,14 +36,11 @@ function BookInfo() {
 
     const id = match ? match[1] : null;
 
-    if (id !== null) {
-        console.log(`ID là: ${id}`); // Xuất ra ID nếu tìm thấy
-    } else {
-        console.log("Không tìm thấy ID trong URL"); // Thông báo nếu không tìm thấy
-    }
+  
 
     useEffect(() => {
-        getInfo(id, currentPage)
+        async function restartPage(){
+            const data = await getInfo(id, currentPage)
             .then((info) => {
                 setBook(info);
                 setMaxPage(info.maxPage);
@@ -52,8 +51,17 @@ function BookInfo() {
                 if (size % 2 != 0) middle++;
                 setLeft(info.chapters.slice(0, middle));
                 setRight(info.chapters.slice(middle, size));
+
+                getInfo(id,info.maxPage).then((inside) =>{
+                    const max = inside.chapters[inside.chapters.length-1].title;
+                    setEndPage(parseInt(max.substr(0,max.indexOf(":"))));
+                    setIsFinish(true);
+                })
             })
-            .catch((error) => console.error("Error fetching book: ", error));
+            .catch((error) => console.error("Error fetching book: ", error)); 
+        }
+        restartPage();
+        
     }, [currentPage]);
 
     useEffect(() => {
@@ -121,11 +129,12 @@ function BookInfo() {
                             <h1 className="text-base font-bold font-Poppins text-sub">
                                 Mô tả
                             </h1>
-                            <ReadMore
+                            {isFinish && <ReadMore
                                 setModalOpen={setModalOpen}
                                 fullText={book.description}
                                 novelId={id}
-                            />
+                                maxChapter={endPage}
+                            />}
                         </div>
                     </div>
                 </div>
