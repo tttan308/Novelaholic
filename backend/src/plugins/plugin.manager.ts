@@ -90,8 +90,8 @@ export class PluginManager {
 			if (pluginModule && pluginModule.default) {
 				const pluginInstance = new pluginModule.default();
 				console.log('Plugin instance:', pluginInstance);
-				// this.exportPlugins[pluginInstance.type.toLowerCase()] = pluginInstance;
-				// dynamicModules.push(pluginInstance.init());
+				this.exportPlugins[pluginInstance.type.toLowerCase()] = pluginInstance;
+				dynamicModules.push(pluginInstance.init());
 			}
 		}
 

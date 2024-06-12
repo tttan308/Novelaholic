@@ -5,5 +5,5 @@ export interface ExportFilePlugin {
 	id: number;
 	type: string;
 	init(): DynamicModule;
-	export(exportFileDto: ExportFileDto): Promise<ExportFileDto>;
+	export(exportFileDto: ExportFileDto): Promise<Buffer>;
 }

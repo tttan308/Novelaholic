@@ -13,8 +13,6 @@ export class PluginModule {
 		const dynamicNovelModules = await pluginManager.loadNovelPlugins();
 		const dynamicExportModules = await pluginManager.loadExportPlugins();
 
-		console.log('Dynamic export modules:', dynamicExportModules);
-
 		return {
 			module: PluginModule,
 			imports: [...dynamicNovelModules, ...dynamicExportModules],

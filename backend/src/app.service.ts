@@ -17,4 +17,8 @@ export class AppService {
 			.getExportPlugin(exportFileDto.id)
 			.export(exportFileDto);
 	}
+
+	async getExportType(id: number) {
+		return this.pluginFactory.getExportPlugin(id).type;
+	}
 }

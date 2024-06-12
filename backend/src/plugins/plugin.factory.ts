@@ -8,10 +8,11 @@ export class PluginFactory {
 	private exportPlugins: { [key: number]: ExportFilePlugin } = {};
 
 	constructor(
-		@Inject('PLUGINS') private readonly loadedPlugins: NovelPlugin[],
-		@Inject('PLUGINS') private readonly loadedExportPlugins: ExportFilePlugin[],
+		@Inject('PLUGINS') private readonly loadedNovelPlugins: NovelPlugin[],
+		@Inject('EXPORT_PLUGINS')
+		private readonly loadedExportPlugins: ExportFilePlugin[],
 	) {
-		loadedPlugins.forEach((plugin) => {
+		loadedNovelPlugins.forEach((plugin) => {
 			this.novelPlugins[plugin.id] = plugin;
 		});
 
@@ -29,19 +30,8 @@ export class PluginFactory {
 		return plugin;
 	}
 
-	getExportPlugins(): { id: number; type: string }[] {
-		return this.loadedExportPlugins
-			.filter((plugin) => plugin.type.includes('Export'))
-			.map((plugin) => {
-				return {
-					id: plugin.id || 0,
-					type: plugin.type,
-				};
-			});
-	}
-
 	getNovelPlugins(): { id: number; name: string; url: string }[] {
-		return this.loadedPlugins.map((plugin) => {
+		return this.loadedNovelPlugins.map((plugin) => {
 			return {
 				id: plugin.id || 0,
 				name: plugin.name,
@@ -57,5 +47,15 @@ export class PluginFactory {
 			throw new Error(`Export plugin not found: ${id}`);
 		}
 		return plugin;
+	}
+
+	getExportPlugins(): { id: number; type: string }[] {
+		console.log(this.loadedExportPlugins);
+		return this.loadedExportPlugins.map((plugin) => {
+			return {
+				id: plugin.id || 0,
+				type: plugin.type,
+			};
+		});
 	}
 }

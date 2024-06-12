@@ -17,10 +17,11 @@
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {
       // "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/novel/novel.controller.int.spec.ts", "src/novel/novel.controller.spec.ts", "src/novel/novel.service.spec.ts"],
+  "include": ["src/**/*.ts", "types", "src/novel/novel.controller.int.spec.ts", "src/novel/novel.controller.spec.ts", "src/novel/novel.service.spec.ts"],
   "exclude": ["node_modules", "dist"]
 }
