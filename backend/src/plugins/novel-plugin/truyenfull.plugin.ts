@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import * as cheerio from 'cheerio';
 import { NovelPlugin } from './novel-plugin.interface';
 import { DynamicModule } from '@nestjs/common';
-import { HotNovel } from '../models/hot-novel.model';
+import { Novel } from '../models/novel.model';
 import { NovelList } from '../models/novel-list.model';
 import { Details } from '../models/details.model';
 import { Genre } from '../models/genre.model';
@@ -154,7 +154,7 @@ export class TruyenFullPlugin implements NovelPlugin {
 	async getHotNovels(page: number): Promise<NovelList> {
 		const url = `https://truyenfull.vn/danh-sach/truyen-hot/${page > 1 ? `trang-${page}/` : ''}`;
 		const $ = await this.fetchHtml(url);
-		const hotNovels: HotNovel[] = [];
+		const hotNovels: Novel[] = [];
 
 		$('.list.list-truyen.col-xs-12 .row').each((_, el) => {
 			const cover =
@@ -179,7 +179,7 @@ export class TruyenFullPlugin implements NovelPlugin {
 				'/novels/' + parts?.[3] + '/' + parts?.[4].replace('chuong-', '');
 
 			hotNovels.push(
-				new HotNovel(
+				new Novel(
 					id || '',
 					cover.toString(),
 					title,
@@ -272,7 +272,7 @@ export class TruyenFullPlugin implements NovelPlugin {
 	async getNovelsByGenre(genre: string, page: number): Promise<NovelList> {
 		const url = `https://truyenfull.vn/the-loai/${genre}${page > 1 ? `/trang-${page}` : ''}`;
 		const $ = await this.fetchHtml(url);
-		const novels: HotNovel[] = [];
+		const novels: Novel[] = [];
 
 		const lastPageLink = $('a:contains("Cuối ")').attr('href');
 		const totalPageMatch = lastPageLink?.match(/trang-(\d+)/);
@@ -301,7 +301,7 @@ export class TruyenFullPlugin implements NovelPlugin {
 				'/novels/' + parts?.[3] + '/' + parts?.[4].replace('chuong-', '');
 
 			novels.push(
-				new HotNovel(
+				new Novel(
 					id!,
 					cover.toString(),
 					title,
@@ -318,34 +318,22 @@ export class TruyenFullPlugin implements NovelPlugin {
 		return new NovelList(novels, totalPages, page);
 	}
 
-	async getIdByTitleAndAuthor(title: string, author: string): Promise<string> {
+	async getIdByTitleAndAuthor(title: string, author: string): Promise<any> {
 		// search with keyword = title
-		let result1 = await this.searchNovels(title, 1);
-		const totalPage1 = result1.totalPages;
+		let result = await this.searchNovels(title, 1);
+		const totalPage1 = result.totalPages;
 		for (let i = 2; i <= totalPage1; i++) {
 			const data = await this.searchNovels(title, i);
-			result1.novels.push(...data.novels);
+			result.novels.push(...data.novels);
 		}
 
-		// search with keyword = author
-		let result2 = await this.searchNovels(author, 1);
-		const totalPage2 = result2.totalPages;
-		for (let i = 2; i <= totalPage2; i++) {
-			const data = await this.searchNovels(author, i);
-			result2.novels.push(...data.novels);
-		}
-
-		// find the novel that has the same title and author
-		const novel = result1.novels.find((n) =>
-			result2.novels.some((m) => m.id === n.id),
+		const novel = result.novels.find(
+			(novel) => novel.author.includes(author) && novel.title.includes(title),
 		);
 
-		if (!novel) {
-			return '';
+		if (novel) {
+			return novel.id;
 		}
-
-		// only return the first match
-		return novel.id;
 	}
 }
 

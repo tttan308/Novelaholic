@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import * as cheerio from 'cheerio';
 import { NovelPlugin } from './novel-plugin.interface';
 import { DynamicModule } from '@nestjs/common';
-import { HotNovel } from '../models/hot-novel.model';
+import { Novel } from '../models/novel.model';
 import { NovelList } from '../models/novel-list.model';
 import { Details } from '../models/details.model';
 import { Genre } from '../models/genre.model';
@@ -156,7 +156,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 	async getHotNovels(page: number): Promise<NovelList> {
 		const url = `https://truyen.tangthuvien.vn/tong-hop?rank=vw&time=m&page=${page > 1 ? page : ''}`;
 		const $ = await this.fetchHtml(url);
-		const hotNovels: HotNovel[] = [];
+		const hotNovels: Novel[] = [];
 
 		$('#rank-view-list .book-img-text ul li').each((index, element) => {
 			const cover = $(element).find('.book-img-box img').attr('src') || '';
@@ -184,7 +184,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 			const isHot = true;
 
 			hotNovels.push(
-				new HotNovel(
+				new Novel(
 					id,
 					cover,
 					title,
@@ -237,7 +237,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 			const isHot = true;
 
 			searchResults.push(
-				new HotNovel(
+				new Novel(
 					id,
 					cover,
 					title,
@@ -296,7 +296,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 		const url = `https://truyen.tangthuvien.vn/bang-xep-hang?selOrder=view_&category=${novelsLink.get(genre)}&selComplete=0&selTime=all&page=${page > 1 ? page : ''}`;
 		console.log(url);
 		const $ = await this.fetchHtml(url);
-		const novels: HotNovel[] = [];
+		const novels: Novel[] = [];
 
 		$('.row').each((index, element) => {
 			const cover = $(element).find('.item-image img').attr('src') || '';
@@ -352,7 +352,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 			const chapterLink = titleLink;
 
 			novels.push(
-				new HotNovel(
+				new Novel(
 					id,
 					cover,
 					title,
@@ -371,30 +371,21 @@ export class TangThuVienPlugin implements NovelPlugin {
 		return new NovelList(novels, totalPages, page);
 	}
 
-	async getIdByTitleAndAuthor(title: string, author: string): Promise<string> {
-		const result1 = await this.searchNovels(title, 1);
-		const totalPage1 = result1.totalPages;
-		for (let i = 2; i <= totalPage1; i++) {
+	async getIdByTitleAndAuthor(title: string, author: string): Promise<any> {
+		const result = await this.searchNovels(title, 1);
+		const totalPage = result.totalPages;
+		for (let i = 2; i <= totalPage; i++) {
 			const data = await this.searchNovels(title, i);
-			result1.novels.push(...data.novels);
+			result.novels.push(...data.novels);
 		}
 
-		const result2 = await this.searchNovels(author, 1);
-		const totalPage2 = result2.totalPages;
-		for (let i = 2; i <= totalPage2; i++) {
-			const data = await this.searchNovels(author, i);
-			result2.novels.push(...data.novels);
-		}
-
-		const novel = result1.novels.find(
-			(novel) => result2.novels.findIndex((n) => n.id === novel.id) !== -1,
+		const novel = result.novels.find(
+			(novel) => novel.title.includes(title) && novel.author.includes(author),
 		);
 
 		if (novel) {
 			return novel.id;
 		}
-
-		return '';
 	}
 }
 

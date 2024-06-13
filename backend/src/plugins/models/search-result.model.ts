@@ -1,3 +1,3 @@
-import { HotNovel } from './hot-novel.model';
+import { Novel } from './novel.model';
 
-export class SearchResult extends HotNovel {}
+export class SearchResult extends Novel {}

@@ -1,4 +1,4 @@
-export class HotNovel {
+export class Novel {
 	id: string;
 	cover: string;
 	title: string;
