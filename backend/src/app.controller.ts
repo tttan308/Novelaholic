@@ -48,9 +48,4 @@ export class AppController {
 				.send('Error generating file');
 		}
 	}
-
-	@Get('test')
-	async test() {
-		return '<h1>Test</h1>';
-	}
 }

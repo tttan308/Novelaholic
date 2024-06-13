@@ -328,7 +328,7 @@ export class TruyenFullPlugin implements NovelPlugin {
 		}
 
 		const novel = result.novels.find(
-			(novel) => novel.author.includes(author) && novel.title.includes(title),
+			(novel) => novel.title === title && novel.author === author,
 		);
 
 		if (novel) {

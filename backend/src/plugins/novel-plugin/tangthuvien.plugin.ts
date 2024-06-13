@@ -380,7 +380,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 		}
 
 		const novel = result.novels.find(
-			(novel) => novel.title.includes(title) && novel.author.includes(author),
+			(novel) => novel.title === title && novel.author === author,
 		);
 
 		if (novel) {
