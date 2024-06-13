@@ -11,4 +11,5 @@ export interface NovelPlugin {
 	searchNovels(keyword: string, page: number): Promise<any>;
 	getGenres(): Promise<any>;
 	getNovelsByGenre(genre: string, page: number): Promise<any>;
+	getIdByTitleAndAuthor(title: string, author: string): Promise<string>;
 }

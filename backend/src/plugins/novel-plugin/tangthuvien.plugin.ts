@@ -11,6 +11,7 @@ import { SearchResult } from '../models/search-result.model';
 
 export class TangThuVienPlugin implements NovelPlugin {
 	id = 3;
+
 	name = 'Tàng Thư Viện';
 	url = 'https://truyen.tangthuvien.vn/';
 
@@ -368,6 +369,32 @@ export class TangThuVienPlugin implements NovelPlugin {
 		const totalPages = parseInt($('.pagination li').last().prev().text()) || 1;
 
 		return new NovelList(novels, totalPages, page);
+	}
+
+	async getIdByTitleAndAuthor(title: string, author: string): Promise<string> {
+		const result1 = await this.searchNovels(title, 1);
+		const totalPage1 = result1.totalPages;
+		for (let i = 2; i <= totalPage1; i++) {
+			const data = await this.searchNovels(title, i);
+			result1.novels.push(...data.novels);
+		}
+
+		const result2 = await this.searchNovels(author, 1);
+		const totalPage2 = result2.totalPages;
+		for (let i = 2; i <= totalPage2; i++) {
+			const data = await this.searchNovels(author, i);
+			result2.novels.push(...data.novels);
+		}
+
+		const novel = result1.novels.find(
+			(novel) => result2.novels.findIndex((n) => n.id === novel.id) !== -1,
+		);
+
+		if (novel) {
+			return novel.id;
+		}
+
+		return '';
 	}
 }
 

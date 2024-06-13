@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PluginFactory } from '../plugins/plugin.factory';
+import { SearchByTitleAndAuthorDto } from '../dtos/SearchByTitleAndAuthor.dto';
 
 @Injectable()
 export class NovelService {
@@ -45,5 +46,16 @@ export class NovelService {
 		return this.pluginFactory
 			.getNovelPlugin(source)
 			.getNovelsByGenre(genre, page);
+	}
+
+	async getIdByTitleAndAuthor(
+		searchByTitleAndAuthorDto: SearchByTitleAndAuthorDto,
+	): Promise<any> {
+		return this.pluginFactory
+			.getNovelPlugin(Number(searchByTitleAndAuthorDto.id))
+			.getIdByTitleAndAuthor(
+				searchByTitleAndAuthorDto.title,
+				searchByTitleAndAuthorDto.author,
+			);
 	}
 }

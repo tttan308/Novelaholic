@@ -1,6 +1,13 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Post, Body } from '@nestjs/common';
 import { NovelService } from './novel.service';
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+	ApiOperation,
+	ApiParam,
+	ApiQuery,
+	ApiTags,
+	ApiBody,
+} from '@nestjs/swagger';
+import { SearchByTitleAndAuthorDto } from '../dtos/SearchByTitleAndAuthor.dto';
 
 @Controller('novels')
 @ApiTags('novels')
@@ -180,5 +187,27 @@ export class NovelController {
 		@Query('id') source: number = 1,
 	) {
 		return this.novelService.getDetailsChapter(source, id, chapter);
+	}
+
+	@Post('/getIdByTitleAndAuthor')
+	@ApiOperation({
+		summary: 'Get novel id by title and author',
+		description: `
+			* The "source" parameter is optional, defaulting to "truyenfull". This indicates that the source of the novel id is from Truyen Full.
+		`,
+	})
+	@ApiBody({
+		schema: {
+			example: {
+				id: 1,
+				title: 'Tự Cẩm',
+				author: 'Đông Thiên Đích Liễu Diệp',
+			},
+		},
+	})
+	getIdByTitleAndAuthor(
+		@Body() searchByTitleAndAuthorDto: SearchByTitleAndAuthorDto,
+	) {
+		return this.novelService.getIdByTitleAndAuthor(searchByTitleAndAuthorDto);
 	}
 }

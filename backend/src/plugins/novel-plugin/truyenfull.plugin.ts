@@ -205,7 +205,7 @@ export class TruyenFullPlugin implements NovelPlugin {
 		const $ = await this.fetchHtml(url);
 		const searchResults: SearchResult[] = [];
 
-		$('.list.list-truyen.col-xs-12 .row').each((_, el) => {
+		$('.list.list-truyen.col-xs-12 .row').each((_: any, el: any) => {
 			const cover =
 				$(el).find('.lazyimg').data('image') ||
 				$(el).find('.lazyimg').data('desk-image');
@@ -316,6 +316,36 @@ export class TruyenFullPlugin implements NovelPlugin {
 		});
 
 		return new NovelList(novels, totalPages, page);
+	}
+
+	async getIdByTitleAndAuthor(title: string, author: string): Promise<string> {
+		// search with keyword = title
+		let result1 = await this.searchNovels(title, 1);
+		const totalPage1 = result1.totalPages;
+		for (let i = 2; i <= totalPage1; i++) {
+			const data = await this.searchNovels(title, i);
+			result1.novels.push(...data.novels);
+		}
+
+		// search with keyword = author
+		let result2 = await this.searchNovels(author, 1);
+		const totalPage2 = result2.totalPages;
+		for (let i = 2; i <= totalPage2; i++) {
+			const data = await this.searchNovels(author, i);
+			result2.novels.push(...data.novels);
+		}
+
+		// find the novel that has the same title and author
+		const novel = result1.novels.find((n) =>
+			result2.novels.some((m) => m.id === n.id),
+		);
+
+		if (!novel) {
+			return '';
+		}
+
+		// only return the first match
+		return novel.id;
 	}
 }
 
