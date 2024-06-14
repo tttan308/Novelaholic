@@ -10,6 +10,8 @@ const apiURL = process.env.REACT_APP_API_URL;
 
 
 async function download(novelId, beginChapter, endChapter, id, author) {
+    console.log("Start download!!!");
+
     //create data 
     var chapters = [];
     let next = `/novels/${novelId}/${beginChapter}`;
@@ -30,7 +32,6 @@ async function download(novelId, beginChapter, endChapter, id, author) {
         chapters: chapters
     };
 
-
     axios.create({
         baseURL: 'http://localhost:3001/export',
         timeout: 600000,
@@ -43,15 +44,18 @@ async function download(novelId, beginChapter, endChapter, id, author) {
         var file_name = data.novelTitle + "." +file_type;
         var blob = new Blob([file_data], {type: file_type});
         saveAs(blob,file_name);
+        console.log("download finish!!!");
     })
     .catch(error => {
         console.log("FAILED: ", error); 
     })
-   
-
-    
 }
 
+const Overlay = () => {
+    return (
+        <div id="overlay" className="fixed bottom-[10px] right-[40px] text-sub "> <b>Downloading... </b></div>
+    )
+}
 
 
 
@@ -68,6 +72,7 @@ const ReadMore = ({ fullText, novelId, setModalOpen , maxChapter, authorNovel}) 
     const [types, setType] = useState([{}]);
     const [isFinish, setIsFinish] = useState(false);
     const [author, setAuthor] = useState("");
+    const [onDownloading, setOnDownloading] = useState(false);
 
     
     useEffect(() => {
@@ -88,15 +93,17 @@ const ReadMore = ({ fullText, novelId, setModalOpen , maxChapter, authorNovel}) 
     
    
 
-    const handleButtonClick = (id) => {
+    const handleButtonClick = async (id) => {
+        setVisible(false); // close dialog
         if (beginChapter > lastChapter) {
             alert("chương bắt đầu không được lớn hơn chương kết thúc");
         } else {
-            download(novelId, beginChapter, lastChapter, id, author);
+            setOnDownloading(true);
+            await download(novelId, beginChapter, lastChapter, id, author);
+            setOnDownloading(false);
         }
         setBeginChapter(1);
         setLastChapter(chapters);
-        setVisible(false); // close dialog
     };
 
     const handleFromChapterChange = (event) => {
@@ -241,6 +248,7 @@ const ReadMore = ({ fullText, novelId, setModalOpen , maxChapter, authorNovel}) 
                     </Dialog>
                 </div>
             </div>
+            {onDownloading && <Overlay/>}
         </div>
     );
 };
