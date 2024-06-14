@@ -20,7 +20,7 @@ import {
     saveBookHistory,
     getDownloadedBookChapter,
 } from "../../services/localStorage";
-import { getChapter, getSources } from "../../services/content";
+import { getChapter, getSources, getChapterCount } from "../../services/content";
 import DownloadOptionModal from "./DownloadOptionModal";
 import ChaptersModal from "./ChaptersModel";
 
@@ -30,6 +30,7 @@ const BookContent = () => {
     const { id, chapter } = useParams();
     const [sources, setSources] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [chapterCount, setChapterCount] = useState(0);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,10 +55,12 @@ const BookContent = () => {
                     setChapterData(res);
                     saveBookHistory(id, chapter);
                     setLoading(false);
-                    console.log("Loaded from downloaded");
+                    console.log(res);
+                    setChapterCount(res.chapterCount);
+                    console.log("chapter Load from indexDB");
                 } else {
                     fetchChapterData();
-                    console.log("Loaded from server 1");
+                    console.log("chapter fetch from server");
                 }
             })
             .catch((error) => {
@@ -77,6 +80,7 @@ const BookContent = () => {
         getSources().then((res) => {
             setSources(res);
         });
+
     }, []);
 
     const handleChapterSelectionChanged = (event) => {
@@ -88,7 +92,7 @@ const BookContent = () => {
         <div id="bookcontentpage" className="container mx-auto">
             <SideBox
                 sources={sources}
-                chapterCount={chapterData.totalChapters}
+                chapterCount={chapterCount}
             />
             {/* title */}
             {loading && (
@@ -128,7 +132,7 @@ const BookContent = () => {
                             value={chapter}
                             className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500"
                         >
-                            {[...Array(chapterData.totalChapters).keys()].map(
+                            {[...Array(chapterCount).keys()].map(
                                 (index) => (
                                     <option key={index} value={index + 1}>
                                         Chương {index + 1}
@@ -136,7 +140,7 @@ const BookContent = () => {
                                 )
                             )}
                         </select>
-                        {chapter < chapterData.totalChapters && (
+                        {chapter < chapterCount && (
                             <Link
                                 to={`/book/${id}/${parseInt(chapter) + 1}`}
                                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
@@ -145,7 +149,7 @@ const BookContent = () => {
                             </Link>
                         )}
 
-                        {chapter == chapterData.totalChapters && (
+                        {chapter == chapterCount && (
                             <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
                                 &gt;
                             </div>
@@ -210,7 +214,7 @@ const BookContent = () => {
                             value={chapter}
                             className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500"
                         >
-                            {[...Array(chapterData.totalChapters).keys()].map(
+                            {[...Array(chapterCount).keys()].map(
                                 (index) => (
                                     <option key={index} value={index + 1}>
                                         Chương {index + 1}
@@ -218,7 +222,7 @@ const BookContent = () => {
                                 )
                             )}
                         </select>
-                        {chapter < chapterData.totalChapters && (
+                        {chapter < chapterCount && (
                             <Link
                                 to={`/book/${id}/${parseInt(chapter) + 1}`}
                                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
@@ -226,7 +230,7 @@ const BookContent = () => {
                                 &gt;
                             </Link>
                         )}
-                        {chapter == chapterData.totalChapters && (
+                        {chapter == chapterCount && (
                             <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
                                 &gt;
                             </div>
@@ -313,6 +317,7 @@ const SideBox = ({ sources, chapterCount }) => {
                     sources={sources}
                     bookId={id}
                     setModalOpen={setShowDownloadOptionModal}
+                    chapterCount={chapterCount}
                 />
             )}
             {showChaptersModal && (

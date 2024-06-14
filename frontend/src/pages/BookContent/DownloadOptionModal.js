@@ -3,7 +3,7 @@ import { downloadFullBook, downloadBook, getDownloadedBookInfo, isDownLoaded, is
 import { getChapterCount } from '../../services/content';
 import { Button } from "primereact/button";
 
-const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
+const DownloadOptionModal = ({sources, setModalOpen, bookId, chapterCount}) => {
   const boxRef = useRef(null);
   const handleClickOutside = (event) => {
     if (!isDownloading && boxRef.current && !boxRef.current.contains(event.target)) {
@@ -12,10 +12,8 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
   };
   document.addEventListener('click', handleClickOutside);
   const [isGettingInfo, setIsGettingInfo] = useState(true);
-  const [isGettingChapterCount, setIsGettingChapterCount] = useState(true);
   const [fullDownloadedState, setFullDownloadedState] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [chapterCount, setChapterCount] = useState(null);
   
   const [beginChapter, setBeginChapter] = useState(1);
   const [endChapter, setEndChapter] = useState(1);
@@ -46,16 +44,7 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
     });
   }, [isDownloading]);
 
-  useEffect(() => {
-    getChapterCount(bookId)
-    .then((count) => {
-        setChapterCount(count);
-        setIsGettingChapterCount(false);
-    })
-    .catch((error) => {
-        setIsGettingChapterCount(false);
-    });
-  }, []);
+  
 
   const handleSourceClick = async (sourceId) => {
     setIsDownloading(true);
@@ -75,8 +64,7 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
         ref={boxRef}
         className="fixed top-1/2 left-1/2 transform -translate-x-1/2  -translate-y-1/2 rounded-lg z-50"
       >
-       
-        {!isGettingInfo && !isGettingChapterCount && (
+        {!isGettingInfo && (
           <div>
             {!fullDownloadedState && (
              <div className="m-0 bg-sub p-6 w-full h-full rounded-lg">

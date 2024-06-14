@@ -17,7 +17,7 @@ export const getChapter = async (id, chapter, source, retries = 3) => {
                 throw new Error(`Fetch chapter ${chapter} failed after ${retries} attempts: ${error.message}`);
             }
             // Optionally, add a delay before retrying
-            await new Promise(resolve => setTimeout(resolve, 2000)); // wait 5 second before retrying
+            await new Promise(resolve => setTimeout(resolve, 2000)); // wait 2 second before retrying
         }
     }
 };
@@ -85,10 +85,13 @@ export const getBookContent = async (id, source, from, to) => {
             };
         });
 
+        const chapterCount = await getChapterCount(id);
+
         return {
             id,
             ...novelInfo.data,
             chapters,
+            chapterCount,
             chaptersContent,
         };
     } catch (error) {
@@ -142,9 +145,9 @@ export const getChapterCount = async (id) => {
             `${apiURL}/novels?id=1&name=${id}&page=${maxPage}`
         );
 
-        console.log("Get chapter count: ", res2.data.chapters.length + 50*(maxPage-1));
-
-        return res2.data.chapters.length + 50*(maxPage-1);
+        const last = res2.data.chapters[res2.data.chapters.length-1].title;
+        console.log(parseInt(last.substr(0,last.indexOf(":"))));
+        return parseInt(last.substr(0,last.indexOf(":")));
     } catch (error) {
         console.log("Get chapter count failed: ", error);
         alert("Get chapter count failed: ", error.message);

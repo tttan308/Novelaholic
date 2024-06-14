@@ -88,6 +88,7 @@ function BookInfo() {
                     sources={sources}
                     bookId={id}
                     setModalOpen={setModalOpen}
+                    chapterCount={endPage}
                 />
             )}
 

@@ -162,8 +162,6 @@ export const downloadFullBook = async (bookId, chapterFrom, chapterTo, sourceId)
 
 export const isFullDownloaded = async (novel) => {
     const fetchNovel = await getNovelInfo(novel.id);
-    console.log(`novel: ${novel.chapters.length}`);
-    console.log(`fetchNovel: ${fetchNovel.chapters.length}  `);
     if (!novel.chapters || !fetchNovel.chapters) return false;
     return fetchNovel.chapters.length === novel.chapters.length;
 };
@@ -331,7 +329,11 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
                 if (book && book.chaptersContent) {
                     const chapterContent = book.chaptersContent[chapter - 1];
                     console.log("Chapter found: ", chapterContent);
-                    resolve(chapterContent);
+                    resolve({
+                        ...chapterContent,
+                        chapterCount: book.chapterCount
+                    }
+                    );
                 } else {
                     console.log("Chapter not found");
                     resolve(null); // Return null if no content is found
