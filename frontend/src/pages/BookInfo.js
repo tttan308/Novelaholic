@@ -4,7 +4,8 @@ import Pagination from "../components/pagination";
 import { Link } from "react-router-dom";
 import { getInfo } from "../services/Infomation";
 import DownloadOptionModal from "./BookContent/DownloadOptionModal";
-import { getSources, getChapterCount } from "../services/content";
+import { getSources, } from "../services/content";
+import {getDownloadedBookInfo} from "../services/localStorage";
 
 const pageSize = 50;
 
@@ -28,6 +29,7 @@ function BookInfo() {
     const [modalOpen, setModalOpen] = useState(false);
     const [endPage, setEndPage] = useState(1);
     const [isFinish, setIsFinish] = useState(false);
+    const [downloadedChapters, setDownloadedChapters] = useState([]);
 
     // Lấy URL hiện tại
     const currentUrl = window.location.href;
@@ -69,6 +71,14 @@ function BookInfo() {
         getSources().then((res) => {
             setSources(res);
         });
+
+        getDownloadedBookInfo(id).then((novel) => {
+            if (novel) {
+                setDownloadedChapters(novel.chapters);
+                console.log(novel.chapters);
+            } 
+        })
+
     }, []);
 
     return (
@@ -159,14 +169,20 @@ function BookInfo() {
                                 >
                                     <li
                                         key={index}
-                                        className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] "
+                                        className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] flex justify-between items-center"
                                     >
-                                        <span className="font-Poppins font-base text-sub font-bold">
-                                            Chương {item.title.split(":")[0]} :{" "}
-                                        </span>
-                                        <span className="">
-                                            {item.title.split(": ")[1]}
-                                        </span>
+                                        <div className="flex-grow">
+                                            <span className="font-Poppins font-base text-sub font-bold">
+                                                Chương {item.title.split(":")[0]} :{" "}
+                                            </span>
+                                            <span className="">
+                                                {item.title.split(": ")[1]}
+                                            </span>
+                                        </div>
+                                        { downloadedChapters.some(chapter => chapter.title === 'Chương ' + item.title) && 
+                                            <span className="ml-4 text-amber-700">
+                                                đã tải
+                                            </span>}
                                     </li>
                                 </Link>
                             );
