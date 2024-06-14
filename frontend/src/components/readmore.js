@@ -119,7 +119,7 @@ const ReadMore = ({ fullText, novelId, setModalOpen , maxChapter, authorNovel}) 
     return (
         <div className="container relative">
             <div
-                className={`content relative font-Poppins text-base max-w-[967px] pt-4 text-justify  ${
+                className={`content relative font-Poppins text-base mr-[50px] max-w-[967px] pt-4 text-justify  ${
                     collapse
                         ? "expanded max-h-none transition-max-height duration-500"
                         : " max-h-[7.1rem] overflow-hidden transition-max-height duration-500"
