@@ -99,7 +99,7 @@ function BookInfo() {
       </div>
 
       <div>
-        <h1 className="font-Poppins font-bold text-2xl text-main text-center">
+        <h1 className="font-Poppins font-bold text-2xl text-main text-center pt-[15px] pb-[20px]">
           {book.title}
         </h1>
       </div>
@@ -169,7 +169,7 @@ function BookInfo() {
                   >
                     <div className="flex-grow">
                       <span className="font-Poppins font-base text-sub font-bold">
-                      {sources === 1 ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
+                      {item.title.indexOf("Chương") == -1 && item.title.indexOf("chương") ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
                       </span>
                       <span className="">{item.title.split(":")[1]}</span>
                     </div>
@@ -196,7 +196,7 @@ function BookInfo() {
                     className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] "
                   >
                     <span className="font-Poppins font-base text-sub font-bold">
-                      {sources === 1 ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
+                      {item.title.indexOf("Chương") == -1 && item.title.indexOf("chương")  ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
                     </span>
                     <span className="">{item.title.split(":")[1]}</span>
                   </li>
