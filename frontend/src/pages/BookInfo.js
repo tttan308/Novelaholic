@@ -134,6 +134,7 @@ function BookInfo() {
                                 fullText={book.description}
                                 novelId={id}
                                 maxChapter={endPage}
+                                authorNovel = {book.author}
                             />}
                         </div>
                     </div>

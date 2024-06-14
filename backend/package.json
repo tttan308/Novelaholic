@@ -36,7 +36,8 @@
     "mustache": "^4.2.0",
     "puppeteer": "^22.11.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "vn-str": "^0.4.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

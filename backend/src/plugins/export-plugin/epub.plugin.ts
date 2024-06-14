@@ -3,6 +3,7 @@ import { DynamicModule } from '@nestjs/common';
 import { ExportFilePlugin } from './export-plugin.interface';
 import { ExportFileDto } from 'src/dtos/exportfile.dto';
 const JSZip = require('jszip');
+const vnStr = require("vn-str");
 
 @Injectable()
 export class EPUBPlugin implements ExportFilePlugin {
@@ -23,13 +24,14 @@ export class EPUBPlugin implements ExportFilePlugin {
 	}
 
 	async export(exportFileDto: ExportFileDto): Promise<Buffer> {
-		const { novelTitle, author, chapterTitle, chapterContent } = exportFileDto;
+		const { novelTitle, author, chapters } = exportFileDto;
 
 		try {
 			const zip = new JSZip();
 			// Add mimetype file (required for EPUB)
 			const mimetype = 'application/epub+zip';
 			zip.file('mimetype', mimetype);
+    
 
 			const containerXml = `<?xml version="1.0"?>
       <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
@@ -58,7 +60,7 @@ export class EPUBPlugin implements ExportFilePlugin {
       </package>`;
 			zip.folder('OEBPS')?.file('content.opf', contentOpf);
 
-			const tocNcx = `<?xml version="1.0" encoding="UTF-8"?>
+			var tocNcx = `<?xml version="1.0" encoding="UTF-8"?>
       <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
         <head>
           <meta name="dtb:uid" content="urn:uuid:${this.generateUUID()}"/>
@@ -71,16 +73,18 @@ export class EPUBPlugin implements ExportFilePlugin {
         </docTitle>
         <navMap>
           <navPoint id="navPoint-1" playOrder="1">
-            <navLabel>
-              <text>${chapterTitle}</text>
-            </navLabel>
+            <navLabel>`;
+            chapters.map((item, index) => {
+              tocNcx += `<text> ${item.chapterTitle} </text>`;
+            })            
+        tocNcx +=`</navLabel>
             <content src="content.xhtml"/>
           </navPoint>
         </navMap>
       </ncx>`;
 			zip.folder('OEBPS')?.file('toc.ncx', tocNcx);
 
-			const contentXhtml = `<?xml version="1.0" encoding="UTF-8"?>
+			var contentXhtml = `<?xml version="1.0" encoding="UTF-8"?>
       <html xmlns="http://www.w3.org/1999/xhtml">
       <head>
         <title>${novelTitle}</title>
@@ -92,11 +96,15 @@ export class EPUBPlugin implements ExportFilePlugin {
         </style>
       </head>
       <body>
-        <h1>${novelTitle}</h1>
-        <h2>${chapterTitle}</h2>
-        <p>${chapterContent}</p>
-      </body>
-      </html>`;
+      <h1>${novelTitle}</h1>`;
+      chapters.map((item,index) => {
+        contentXhtml += `<h2>${item.chapterTitle}</h2>
+                         <p>${item.chapterContent
+                          .replace(/<br>/g, "</p><p>")
+                          .replace(/&nbsp/g, " ")}</p>`
+      })
+      contentXhtml += `</body>
+                      </html>`;
 			zip.folder('OEBPS')?.file('content.xhtml', contentXhtml);
 			const buffer = await zip.generateAsync({ type: 'nodebuffer' });
 			return buffer;

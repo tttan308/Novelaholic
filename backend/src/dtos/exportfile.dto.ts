@@ -1,7 +1,12 @@
+export class Chapter{
+	chapterContent: string;
+	chapterTitle: string;
+}
+
+
 export class ExportFileDto {
 	id: number;
 	author: string;
-	chapterContent: string;
-	chapterTitle: string;
+	chapters: Chapter[];
 	novelTitle: string;
 }

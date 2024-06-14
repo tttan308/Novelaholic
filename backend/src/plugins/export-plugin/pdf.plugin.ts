@@ -6,6 +6,7 @@ import * as puppeteer from 'puppeteer';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as Mustache from 'mustache';
+import { error } from 'console';
 
 @Injectable()
 export class PDFPlugin implements ExportFilePlugin {
@@ -26,7 +27,13 @@ export class PDFPlugin implements ExportFilePlugin {
 	}
 
 	async export(exportFileDto: ExportFileDto): Promise<Buffer> {
-		const htmlContent = this.generateHtml(exportFileDto);
+		// xử lý nội dung content 
+		const refactordata = exportFileDto;
+		refactordata.chapters.map((item,index)=> {
+			item.chapterContent.replace('\<p>\g','\n')
+								.replace('\<\p>\g','');
+		})
+		const htmlContent = this.generateHtml(refactordata);
 		const pdfBuffer = await this.generatePdfFromHtml(htmlContent);
 		return pdfBuffer;
 	}
@@ -39,17 +46,25 @@ export class PDFPlugin implements ExportFilePlugin {
 			'template.html',
 		);
 		const template = fs.readFileSync(templatePath, 'utf8');
-		const html = Mustache.render(template, exportFileDto);
+		// const html = Mustache.render(template, exportFileDto);
+		const html = Mustache.render(template,exportFileDto);
+		
+
 		return html;
 	}
 
 	private async generatePdfFromHtml(html: string): Promise<Buffer> {
-		const browser = await puppeteer.launch();
-		const page = await browser.newPage();
-		await page.setContent(html);
-		const pdfBuffer = await page.pdf({ format: 'A4' });
-		await browser.close();
-		return pdfBuffer;
+		try{
+			const browser = await puppeteer.launch({headless: true, args: ['--no-sandbox']});
+			const page = await browser.newPage();
+			await page.setContent(html, {waitUntil: 'load', timeout: 0});
+			const pdfBuffer = await page.pdf({ format: 'A4' ,  printBackground: true, displayHeaderFooter: false, timeout: 0 });
+			await browser.close();
+			return pdfBuffer;
+		}catch(error){
+			console.log("Lỗi PDF: ", error);
+			throw error;
+		}
 	}
 }
 
