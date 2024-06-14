@@ -4,7 +4,7 @@ import Pagination from "../components/pagination";
 import { Link } from "react-router-dom";
 import { getInfo } from "../services/Infomation";
 import DownloadOptionModal from "./BookContent/DownloadOptionModal";
-import { getSources } from "../services/content";
+import { getSources, getChapterCount } from "../services/content";
 
 const pageSize = 50;
 
@@ -28,6 +28,7 @@ function BookInfo() {
     const [modalOpen, setModalOpen] = useState(false);
     const [endPage, setEndPage] = useState(1);
     const [isFinish, setIsFinish] = useState(false);
+
     // Lấy URL hiện tại
     const currentUrl = window.location.href;
 
