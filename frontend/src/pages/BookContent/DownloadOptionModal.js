@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { downloadFullBook, getDownloadedBookInfo, isDownLoaded, isFullDownloaded } from '../../services/localStorage';
+import { downloadFullBook, downloadBook, getDownloadedBookInfo, isDownLoaded, isFullDownloaded } from '../../services/localStorage';
+import { getChapterCount } from '../../services/content';
+import { Button } from "primereact/button";
 
-const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
+const DownloadOptionModal = ({sources, setModalOpen, bookId, chapterCount}) => {
   const boxRef = useRef(null);
   const handleClickOutside = (event) => {
     if (!isDownloading && boxRef.current && !boxRef.current.contains(event.target)) {
@@ -10,23 +12,31 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
   };
   document.addEventListener('click', handleClickOutside);
   const [isGettingInfo, setIsGettingInfo] = useState(true);
-  const [fullDownloaded, setfullDownload] = useState(false);
-  const [downloaded, setdownloaded] = useState(false);
+  const [fullDownloadedState, setFullDownloadedState] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  
+  const [beginChapter, setBeginChapter] = useState(1);
+  const [endChapter, setEndChapter] = useState(1);
+
+  const handleFromChapterChange = (event) => {
+    setBeginChapter(parseInt(event.target.value));
+  };
+
+  const handleToChapterChange = (event) => {
+    setEndChapter(parseInt(event.target.value));
+  };
 
   useEffect(() => {
     getDownloadedBookInfo(bookId)
     .then((novel) => {
-
         if (novel) {
-            return Promise.all([isDownLoaded(novel), isFullDownloaded(novel)]);
+            return Promise.all([isFullDownloaded(novel)]);
         } else {
             throw new Error("Novel not found");
         }
     })
-    .then(([isDownloadedRes, isFullDownloadedRes]) => {
-        setdownloaded(isDownloadedRes);
-        setfullDownload(isFullDownloadedRes);
+    .then(([isFullDownloadedRes]) => {
+        setFullDownloadedState(isFullDownloadedRes);
         setIsGettingInfo(false);
     })
     .catch((error) => {
@@ -34,68 +44,90 @@ const DownloadOptionModal = ({sources, setModalOpen, bookId}) => {
     });
   }, [isDownloading]);
 
+  
+
+  const handleSourceClick = async (sourceId) => {
+    setIsDownloading(true);
+    await downloadBook(bookId, beginChapter, endChapter, sourceId);
+    setIsDownloading(false);
+  }
+
+ 
+
+
+
   return (
     <>
     {!isDownloading && 
       <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50">
       <div
         ref={boxRef}
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-white p-4 rounded-lg z-50"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2  -translate-y-1/2 rounded-lg z-50"
       >
-        {!isGettingInfo && !fullDownloaded && (
+        {!isGettingInfo && (
           <div>
-            {!downloaded && (
-              <div>
-                <div className="flex justify-between items-center px-2">
-                  <h1 className="text-xl font-bold pb-7">
-                    Chọn nguồn tải về toàn bộ truyện
-                  </h1>
-                </div>
-                <div className="flex flex-col space-y-4">
-                  {sources.map((item, index) => (
-                    <button
-                      onClick={() => {
-                        downloadFullBook(bookId, item.id, setIsDownloading);
-                        setIsDownloading(true);
-                      }
-                      }
-                      key={item.id}
-                      className="bg-main text-white p-2 rounded-md"
-                    >
-                      {item.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {!fullDownloadedState && (
+             <div className="m-0 bg-sub p-6 w-full h-full rounded-lg">
+             <h1 className="text-2xl text-white font-bold text-center py-5">
+               Chọn danh sách chương muốn tải
+             </h1>
+             <div className="flex justify-center items-center">
+               <p className="text-white font-bold px-4">Từ chương:</p>
+               <select
+                 className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500 text-black mx-2"
+                 defaultValue={1}
+
+                  onChange={handleFromChapterChange}
+               >
+                 {[...Array(chapterCount).keys()].map((index) => (
+                   <option key={index} value={index + 1}>
+                     Chương {index + 1}
+                   </option>
+                 ))}
+               </select>
+               <p className=" text-white font-bold px-4">Đến chương:</p>
+               <select
+                 className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500 text-black mx-2"
+                 defaultValue={1}
+                 onChange={handleToChapterChange}
+               >
+                 {[...Array(chapterCount).keys()].map((index) => (
+                   <option key={index} value={index + 1}>
+                     Chương {index + 1}
+                   </option>
+                 ))}
+               </select>
+             </div>
+           
+             <h1 className="text-2xl text-white font-bold text-center py-5 mt-5">
+               Chọn nguồn tải truyện
+             </h1>
+           
+             <div className="flex justify-center flex-wrap">
+               {sources.map((source) => (
+                 <Button
+                   key={source.id}
+                   label={source.name}
+                   className="py-2 px-5 bg-main rounded-md m-2 text-white transition duration-200 transform hover:scale-110"
+                   onClick={() => handleSourceClick(source.id)}
+                 />
+               ))}
+             </div>
+           </div>
+           
             )}
-            {downloaded && (
-              <div>
+            {fullDownloadedState && (
+              <>
                 <div className="flex justify-between items-center px-2">
                   <h1 className="text-xl font-bold pb-7">
-                    Tải về bản cập nhật
+                    Truyện đã được tải toàn bộ
                   </h1>
                 </div>
-                <div className="flex flex-col space-y-4">
-                  {sources.map((item, index) => (
-                    <button
-                      key={item.id}
-                      className="bg-main text-white p-2 rounded-md"
-                    >
-                      {item.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              </>
             )}
           </div>
         )}
-        {!isGettingInfo && fullDownloaded && (
-          <div>
-            <h1 className="text-xl font-bold">
-              Truyện đã được tải về toàn bộ
-            </h1>
-          </div>
-        )}
+        
       </div>
     </div>
     }
