@@ -1,10 +1,8 @@
-import { sourceQuery } from "./sourceQuery";
-
 const apiURL = process.env.REACT_APP_API_URL;
 
-export const fetchGenres = async () => {
+export const fetchSources = async () => {
   try {
-    const response = await fetch(`${apiURL}/novels/genres` + sourceQuery(0));
+    const response = await fetch(`${apiURL}/sources`);
     const data = await response.json();
     return data;
   } catch (error) {
