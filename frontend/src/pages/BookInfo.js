@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import ReadMore from "../components/readmore";
 import Pagination from "../components/pagination";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getInfo } from "../services/Infomation";
 import DownloadOptionModal from "./BookContent/DownloadOptionModal";
 import { getSources } from "../services/content";
 import { getDownloadedBookInfo } from "../services/localStorage";
+import global from "../GlobalVariables";
+import { findId } from "../services/novel";
 
 const pageSize = 50;
 
@@ -30,6 +32,69 @@ function BookInfo() {
   const [endPage, setEndPage] = useState(1);
   const [isFinish, setIsFinish] = useState(false);
   const [downloadedChapters, setDownloadedChapters] = useState([]);
+  const location = useLocation();
+  const [state, setState] = useState(false);
+  let shouldRender = false;
+
+  if (global.currentState > 0) {
+    shouldRender = true;
+  } else {
+    const queryParams = new URLSearchParams(location.search);
+
+    const getAvailableSource = async () => {
+      while (global.currentState === -1) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      let shouldNavigate = false;
+
+      if (!queryParams.has("source")) {
+        shouldNavigate = true;
+      } else {
+        const sourceParam = queryParams.get("source");
+
+        if (
+          global.removeSources.some(
+            (item) => item.id === parseInt(sourceParam, 10)
+          )
+        ) {
+          shouldNavigate = true;
+        }
+      }
+
+      if (shouldNavigate) {
+        let bookId = "";
+        let newSource = -1;
+        const sourceOrder = JSON.parse(localStorage.getItem("sources"));
+
+        for (let i = 0; i < sourceOrder.length; i++) {
+          bookId = await findId(sourceOrder[i].id, book.title, book.author);
+
+          if (bookId !== "") {
+            newSource = sourceOrder[i].id;
+            break;
+          }
+        }
+
+        if (newSource === -1) {
+          window.location.href = "/";
+        } else {
+          let currentUrl = new URL(window.location.href);
+          const newUrl = `/book/${bookId}?source=${newSource}`;
+          global.currentState = 1;
+          if (currentUrl.pathname + currentUrl.search !== newUrl) {
+            window.location.href = newUrl;
+          }
+        }
+      } else {
+        global.currentState = 1;
+        shouldRender = true;
+        setState(!state);
+      }
+    };
+
+    getAvailableSource();
+  }
 
   // Lấy URL hiện tại
   const currentUrl = window.location.href;
@@ -43,6 +108,9 @@ function BookInfo() {
     async function restartPage() {
       const data = await getInfo(id, currentPage)
         .then((info) => {
+          global.currentTitle = info.title;
+          global.currentAuthor = info.author;
+
           setBook(info);
           setMaxPage(info.maxPage);
           setGenres(getGenres(info.genres));
@@ -55,11 +123,7 @@ function BookInfo() {
 
           getInfo(id, info.maxPage).then((inside) => {
             const max = inside.chapters[inside.chapters.length - 1].title;
-            console.log("max: ", max);
-            let i = 0;
-            while(!(max[i] >= '0' && max[i] <= '9'))
-              ++i;
-            setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
+            setEndPage(parseInt(max.substr(0, max.indexOf(":"))));
             setIsFinish(true);
           });
         })
@@ -80,6 +144,10 @@ function BookInfo() {
       }
     });
   }, []);
+
+  if (!shouldRender) {
+    return null;
+  }
 
   return (
     <div className="inline">
@@ -169,9 +237,9 @@ function BookInfo() {
                   >
                     <div className="flex-grow">
                       <span className="font-Poppins font-base text-sub font-bold">
-                      {sources === 1 ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
+                        Chương {item.title.split(":")[0]} :{" "}
                       </span>
-                      <span className="">{item.title.split(":")[1]}</span>
+                      <span className="">{item.title.split(": ")[1]}</span>
                     </div>
                     {downloadedChapters.some(
                       (chapter) => chapter.title === "Chương " + item.title
@@ -196,9 +264,9 @@ function BookInfo() {
                     className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] "
                   >
                     <span className="font-Poppins font-base text-sub font-bold">
-                      {sources === 1 ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
+                      Chương {item.title.split(":")[0]} :{" "}
                     </span>
-                    <span className="">{item.title.split(":")[1]}</span>
+                    <span className="">{item.title.split(": ")[1]}</span>
                   </li>
                 </Link>
               );

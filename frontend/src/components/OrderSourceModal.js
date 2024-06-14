@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { useLocation, useMatch } from "react-router-dom";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { SourcesContext } from "../context/SourcesContext";
+import global from "../GlobalVariables";
+import { findId } from "../services/novel";
 
 const OrderSourceModal = ({ isVisible, onClose }) => {
   const location = useLocation();
@@ -19,9 +21,8 @@ const OrderSourceModal = ({ isVisible, onClose }) => {
     sourcesCopy.splice(result.destination.index, 0, removed);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     onClose();
-
     if (sources[0] !== sourcesCopy[0]) {
       setSources(sourcesCopy);
 
@@ -31,11 +32,31 @@ const OrderSourceModal = ({ isVisible, onClose }) => {
         const newUrl = `${location.pathname}?${params.toString()}`;
         window.location.href = newUrl;
       } else if (bookInfoMatch) {
-        //TODO
-        setSources(sourcesCopy);
-      } else {
-        setSources(sourcesCopy);
+        let bookId = "";
+        let newSource = -1;
+
+        for (let i = 0; i < sourcesCopy.length; i++) {
+          bookId = await findId(
+            sourcesCopy[i].id,
+            global.currentTitle,
+            global.currentAuthor
+          );
+
+          if (bookId !== "") {
+            newSource = sourcesCopy[i].id;
+            break;
+          }
+        }
+
+        const newUrl = `/book/${bookId}?source=${newSource}`;
+        let currentUrl = new URL(window.location.href);
+
+        if (currentUrl.pathname + currentUrl.search !== newUrl) {
+          window.location.href = newUrl;
+        }
       }
+    } else {
+      setSources(sourcesCopy);
     }
   };
 

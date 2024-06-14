@@ -50,3 +50,31 @@ export const searchByGenre = async (genre, page) => {
     console.error(error);
   }
 };
+
+export const findId = async (source, title, author) => {
+  const requestData = {
+    id: source,
+    title: title,
+    author: author,
+  };
+
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestData),
+  };
+
+  try {
+    const response = await fetch(
+      `${apiURL}/novels/getIdByTitleAndAuthor`,
+      options
+    );
+
+    const bookId = await response.text();
+    return bookId;
+  } catch (error) {
+    console.error(error);
+  }
+};
