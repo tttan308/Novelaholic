@@ -55,7 +55,11 @@ function BookInfo() {
 
           getInfo(id, info.maxPage).then((inside) => {
             const max = inside.chapters[inside.chapters.length - 1].title;
-            setEndPage(parseInt(max.substr(0, max.indexOf(":"))));
+            console.log("max: ", max);
+            let i = 0;
+            while(!(max[i] >= '0' && max[i] <= '9'))
+              ++i;
+            setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
             setIsFinish(true);
           });
         })
@@ -165,9 +169,9 @@ function BookInfo() {
                   >
                     <div className="flex-grow">
                       <span className="font-Poppins font-base text-sub font-bold">
-                        Chương {item.title.split(":")[0]} :{" "}
+                      {sources === 1 ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
                       </span>
-                      <span className="">{item.title.split(": ")[1]}</span>
+                      <span className="">{item.title.split(":")[1]}</span>
                     </div>
                     {downloadedChapters.some(
                       (chapter) => chapter.title === "Chương " + item.title
@@ -192,9 +196,9 @@ function BookInfo() {
                     className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] "
                   >
                     <span className="font-Poppins font-base text-sub font-bold">
-                      Chương {item.title.split(":")[0]} :{" "}
+                      {sources === 1 ? "Chương " : " "} {item.title.split(":")[0]} :{" "}
                     </span>
-                    <span className="">{item.title.split(": ")[1]}</span>
+                    <span className="">{item.title.split(":")[1]}</span>
                   </li>
                 </Link>
               );

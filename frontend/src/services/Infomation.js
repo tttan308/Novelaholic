@@ -7,8 +7,9 @@ export const getInfo = async (name, page) => {
     const response = await fetch(
       `${apiURL}/novels?name=${name}&page=${page}` + sourceQuery(1)
     );
-
+    // console.log("url: ",`${apiURL}/novels?name=${name}&page=${page}` + sourceQuery(1));
     const info = await response.json();
+    // console.log("fetch data:", info);
 
     return info;
   } catch (error) {
