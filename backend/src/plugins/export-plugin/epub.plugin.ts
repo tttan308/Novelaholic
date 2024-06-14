@@ -4,6 +4,7 @@ import { ExportFilePlugin } from './export-plugin.interface';
 import { ExportFileDto } from 'src/dtos/exportfile.dto';
 const JSZip = require('jszip');
 const vnStr = require("vn-str");
+const ReactHtmlParse = require("react-html-parser");
 
 @Injectable()
 export class EPUBPlugin implements ExportFilePlugin {
@@ -99,9 +100,7 @@ export class EPUBPlugin implements ExportFilePlugin {
       <h1>${novelTitle}</h1>`;
       chapters.map((item,index) => {
         contentXhtml += `<h2>${item.chapterTitle}</h2>
-                         <p>${item.chapterContent
-                          .replace(/<br>/g, "</p><p>")
-                          .replace(/&nbsp/g, " ")}</p>`
+                         <p> ${item.chapterContent.replace(/<br>/g,"<br />")} </p>`
       })
       contentXhtml += `</body>
                       </html>`;
