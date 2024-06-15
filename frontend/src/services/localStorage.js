@@ -8,7 +8,7 @@ import {
 const apiURL = process.env.REACT_APP_API_URL;
 
 //book history
-export const saveBookHistory = async (bookId, chapterNumber) => {
+export const saveBookHistory = async (bookId, chapterNumber, sourceId) => {
   try {
     // Get the history from local storage or initialize an empty array if not present
     let history = JSON.parse(localStorage.getItem("history")) || [];
@@ -47,6 +47,7 @@ export const saveBookHistory = async (bookId, chapterNumber) => {
         bookId: bookId,
         title: data.title,
         cover: data.cover,
+        sourceId: sourceId,
         chapters: [chapterNumber],
         lastRead: new Date().toISOString(),
       };

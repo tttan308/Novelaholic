@@ -84,7 +84,7 @@ function Home() {
           {recentNovels.map((novel) => (
             <div key={novel.id} className="flex justify-center">
               <Link
-                to={`/book/${novel.bookId}`}
+                to={`/book/${novel.bookId}?source=${novel.sourceId}`}
                 className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
               >
                 <img

@@ -46,7 +46,7 @@ const BookContent = () => {
       const res = await getChapter(id, chapter, source);
       if (res) {
         setChapterData(res);
-        saveBookHistory(id, chapter);
+        saveBookHistory(id, chapter, sourceId);
         console.log("sources fetch from server:", sources);
       } else {
         setChapterData({
