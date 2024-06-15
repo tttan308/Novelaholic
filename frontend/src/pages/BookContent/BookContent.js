@@ -62,6 +62,7 @@ const BookContent = () => {
           res &&
           res.chapters.some((item) => item.number === parseInt(chapter))
         ) {
+          console.log('asd', res);
           setChapterData(res);
           saveBookHistory(id, chapter);
           setLoading(false);
@@ -70,6 +71,7 @@ const BookContent = () => {
           console.log("chapter Load from indexDB");
           setSources([]);
         } else {
+          console.log('not find')
           fetchChapterData();
           getChapterCount(id, source).then((res) => {
             setChapterCount(res);
@@ -101,10 +103,10 @@ const BookContent = () => {
       })
       .catch((error) => {
         console.error("Error fetching book chapter: ", error);
+        
         fetchChapterData();
         getChapterCount(id, source).then((res) => {
           setChapterCount(res);
-          console.log("1332432", res);
         });
         const tmpSources = getSourcesFromLocalStorage();
         getNovelInfo(id, source)

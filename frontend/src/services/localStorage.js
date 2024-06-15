@@ -349,9 +349,11 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
 
       getRequest.onsuccess = (event) => {
         const book = event.target.result;
-        if (book && book.chaptersContent) {
-          const chapterContent = book.chaptersContent[chapter - 1];
-          console.log("Chapter found: ", chapterContent);
+        if (book && book.chaptersContent && book.chapters) {
+          console.log(book.chapters)
+          const index = book.chapters.findIndex((ch) => ch.number === parseInt(chapter));
+          console.log("Chapter found: ", book.chaptersContent[index]);
+          const chapterContent = book.chaptersContent[index];
           resolve({
             ...chapterContent,
             chapterCount: book.chapterCount,
