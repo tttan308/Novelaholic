@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ReadMore from "../components/readmore";
 import Pagination from "../components/pagination";
 import { Link, useLocation } from "react-router-dom";
-import { getInfo } from "../services/Infomation";
+import { getChapter, getInfo } from "../services/Infomation";
 import DownloadOptionModal from "./BookContent/DownloadOptionModal";
 import { getSources } from "../services/content";
 import { getDownloadedBookInfo } from "../services/localStorage";
@@ -34,6 +34,7 @@ function BookInfo() {
   const [downloadedChapters, setDownloadedChapters] = useState([]);
   const location = useLocation();
   const [state, setState] = useState(false);
+  const [foundBook, setFoundBook] = useState(true);
   let shouldRender = false;
 
   if (global.currentState > 0) {
@@ -98,19 +99,23 @@ function BookInfo() {
 
   // Lấy URL hiện tại
   const currentUrl = window.location.href;
-
+  var from = currentUrl.indexOf("//localhost:3000/book/");
+  var to =currentUrl.indexOf("?source");
+  if( to == -1) to = currentUrl.length;
+  if(from == -1) from = 0;
+  const id = currentUrl.substring(from + ("//localhost:3000/book/").length,to);
+  // const id = "123";
   // Sử dụng biểu thức chính quy (regex) để lấy ID (bao gồm cả chữ và số)
-  const match = currentUrl.match(/\/book\/([a-zA-Z0-9-/-]+)/);
-
-  const id = match ? match[1] : null;
+  // const match = currentUrl.match(/\/book\/([a-zA-Z0-9-/-]+)/);
+  // const id = match ? match[1] : null;
 
   useEffect(() => {
     async function restartPage() {
       const data = await getInfo(id, currentPage)
         .then((info) => {
+          setFoundBook(true);
           global.currentTitle = info.title;
           global.currentAuthor = info.author;
-
           setBook(info);
           setMaxPage(info.maxPage);
           setGenres(getGenres(info.genres));
@@ -120,17 +125,26 @@ function BookInfo() {
           if (size % 2 != 0) middle++;
           setLeft(info.chapters.slice(0, middle));
           setRight(info.chapters.slice(middle, size));
-
-          getInfo(id, info.maxPage).then((inside) => {
-            const max = inside.chapters[inside.chapters.length - 1].title;
-            var i =0;
-            while(!(max[i] >= '0' && max[i] <= '9')) 
-              ++i;
-            setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
+          
+          getChapter(`/novels/${id}/${1}`).then((inside) => {
+            setEndPage(inside.totalChapters);
             setIsFinish(true);
-          });
+          })
+
+          // getInfo(id, info.maxPage).then((inside) => {
+          //   const max = inside.chapters[inside.chapters.length - 1].title;
+          //   var i =0;
+          //   while(!(max[i] >= '0' && max[i] <= '9')) 
+          //     ++i;
+          //   setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
+          //   setIsFinish(true);
+          // });
         })
-        .catch((error) => console.error("Error fetching book: ", error));
+        .catch((error) => {
+          setFoundBook(false);
+          console.error("Error fetching book: ", error)
+        }
+        );
     }
     restartPage();
   }, [currentPage]);
@@ -153,6 +167,9 @@ function BookInfo() {
     return null;
   }
 
+  isFinish && console.log(foundBook);
+
+  if(foundBook)
   return (
     <div className="inline">
       {modalOpen && (
@@ -179,7 +196,7 @@ function BookInfo() {
       <div class="main relative">
         <div className="flex w-full">
           <div className="pl-24 pr-16">
-            <img src={book.cover} alt="book image" />
+            <img src={book.cover} alt="book image" width = "260px" height = "360px"/>
           </div>
           <div className="bookDetail grid-flow-col pt-7 pl-9">
             <div className="Author grid grid-cols-8 p-[3px]">
@@ -285,7 +302,6 @@ function BookInfo() {
             })}
           </ul>
         </div>
-
         <Pagination
           className="pagination-bar flex justify-center pt-[15px] mb-[20px]"
           currentPage={currentPage}
@@ -294,6 +310,11 @@ function BookInfo() {
           onPageChange={(page) => setCurrentPage(page)}
         />
       </div>
+    </div>
+  );
+  else return (
+    <div>
+      <h1 className="w-[100%] h-[420px] text-center text-main text-[30px] pt-[150px]"><b>BOOK NOT FOUND!!!</b></h1>
     </div>
   );
 }
