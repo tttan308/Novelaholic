@@ -27,7 +27,17 @@ const ChaptersModal = ({ chapterCount, setModalOpen }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div ref={boxRef} className="bg-white p-6 rounded-lg max-w-lg w-full">
-        <h2 className="text-2xl font-bold mb-4">Chapters</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">Chapters</h2>
+
+          <button
+            onClick={() => setModalOpen(false)}
+            className="text-4xl bg-transparent border-0 text-gray-700 float-right leading-none outline-none focus:outline-none"
+          >
+            &times;
+          </button>
+        </div>
+
         <ul className="max-h-96 overflow-y-auto">
           {Array.from({ length: chapterCount }, (_, index) => (
             <li
@@ -39,12 +49,12 @@ const ChaptersModal = ({ chapterCount, setModalOpen }) => {
             </li>
           ))}
         </ul>
-        <button
+        {/* <button
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
           onClick={() => setModalOpen(false)}
         >
           Close
-        </button>
+        </button> */}
       </div>
     </div>
   );
