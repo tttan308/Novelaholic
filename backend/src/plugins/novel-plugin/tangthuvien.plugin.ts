@@ -299,6 +299,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 		const novels: Novel[] = [];
 
 		$('.row').each((index, element) => {
+			if (index === 0) return;
 			const cover = $(element).find('.item-image img').attr('src') || '';
 			if (!cover) return;
 			const titleElement = $(element).find('.truyen-title a');
@@ -338,7 +339,7 @@ export class TangThuVienPlugin implements NovelPlugin {
 					.find('.item-update')
 					.eq(2)
 					.text()
-					.replace('Số chương: ', '')
+					.replace('Số chuơng:  ', '')
 					.trim() || '';
 			// const updateDate =
 			// 	$(element)
