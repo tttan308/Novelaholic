@@ -19,8 +19,9 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import {
     saveBookHistory,
     getDownloadedBookChapter,
+    getSourcesFromLocalStorage,
 } from "../../services/localStorage";
-import { getChapter, getSources, getChapterCount } from "../../services/content";
+import { getChapter, getSources, getChapterCount, getSourceChapterIds, getNovelInfo } from "../../services/content";
 import DownloadOptionModal from "./DownloadOptionModal";
 import ChaptersModal from "./ChaptersModel";
 
@@ -40,6 +41,7 @@ const BookContent = () => {
             if (res) {
                 setChapterData(res);
                 saveBookHistory(id, chapter);
+                console.log("sources fetch from server:", sources);
             } else {
                 setChapterData({
                     novelTitle: "Không tìm thấy truyện",
@@ -51,21 +53,31 @@ const BookContent = () => {
         }
         getDownloadedBookChapter(id, chapter)
             .then((res) => {
-                if (res) {
+                console.log("Loaded from indexDB 1", res)
+                if (res && res.chapters.some(item => item.number === parseInt(chapter))) {
                     setChapterData(res);
                     saveBookHistory(id, chapter);
                     setLoading(false);
                     console.log(res);
                     setChapterCount(res.chapterCount);
                     console.log("chapter Load from indexDB");
+                    setSources([])
                 } else {
                     fetchChapterData();
+                    getChapterCount(id).then((res) => {
+                        setChapterCount(res);
+                    });
                     console.log("chapter fetch from server");
                 }
             })
             .catch((error) => {
                 console.error("Error fetching book chapter: ", error);
                 fetchChapterData();
+                
+                setSources(getSourcesFromLocalStorage());
+                getChapterCount(id).then((res) => {
+                    setChapterCount(res);
+                });
                 console.log("Loaded from server 2");
             });
     }, [id, chapter, source]);
@@ -77,10 +89,17 @@ const BookContent = () => {
         setFont(getFont());
         setFontSize(getFontSize());
         setLineHeight(getLineHeight());
-        getSources().then((res) => {
+        // getSources().then((res) => {
+        //     setSources(res);
+        // });
+        
+        const tmpSources = getSourcesFromLocalStorage();
+        getNovelInfo(id).then((res) => {
+            return getSourceChapterIds(res, tmpSources)
+        }).then((res) => {
             setSources(res);
-        });
-
+        }
+        );
     }, []);
 
     const handleChapterSelectionChanged = (event) => {
@@ -158,23 +177,25 @@ const BookContent = () => {
                 </div>
             )}
 
-            {!loading && (
-                <div id="source-selection" className="pb-6 text-center">
-                    {sources.map((item) => (
-                        <button
-                            key={item.id}
-                            className={`mx-1 text-white px-4 py-2 rounded-md ${
-                                item.id === source ? "  bg-blue-500" : "bg-main"
-                            }`}
-                            onClick={() => {
-                                setSource(item.id);
-                            }}
-                        >
-                            {item.name}
-                        </button>
-                    ))}
-                </div>
-            )}
+        
+            <div id="source-selection" className="pb-6 text-center">
+                {sources.map((item) => (
+                    <button
+                        key={item.id}
+                        className={`mx-1 text-white px-4 py-2 rounded-md ${
+                            item.id === source ? "  bg-blue-500" : "bg-main"
+                        }`}
+                        onClick={() => {
+                            setSource(item.id);
+                            
+                            navigate(`/book/${item.chapterId}/${chapter}`);
+                        }}
+                    >
+                        {item.name}
+                    </button>
+                ))}
+            </div>
+        
 
             {/* content */}
             <div id="bookcontent-content" className=" mx-52">
