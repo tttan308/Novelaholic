@@ -141,6 +141,7 @@ export const downloadBook = async (
         // Nếu sách không tồn tại, thêm sách mới
         objectStore.add(book);
       }
+      alert("Tải sách thành công");
     };
 
     getRequest.onerror = () => {
