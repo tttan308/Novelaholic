@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 const ChaptersModal = ({ chapterCount, setModalOpen }) => {
   const boxRef = useRef(null);
   const navigate = useNavigate();
-  const { id, chapter } = useParams();
+  const { id, chapter, sourceId } = useParams();
 
   const handleClickOutside = (event) => {
     if (boxRef.current && !boxRef.current.contains(event.target)) {
@@ -20,7 +20,7 @@ const ChaptersModal = ({ chapterCount, setModalOpen }) => {
   }, []);
 
   const handleChapterClick = (chapter) => {
-    navigate(`/book/${id}/${chapter}`);
+    navigate(`/book/${id}/${chapter}/${sourceId}`);
     setModalOpen(false);
   };
 

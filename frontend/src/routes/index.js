@@ -9,6 +9,7 @@ const routes = [
   { path: "/", component: Home },
   { path: "/book/:id", component: BookInfo },
   { path: "/book/:id/:chapter", component: BookContent },
+  { path: "/book/:id/:chapter/:sourceId", component: BookContent },
   { path: "/search", component: SearchPage },
   { path: "/category/:genre", component: GenrePage },
   { path: "/downloaded", component: DownloadedBookList },

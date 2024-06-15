@@ -178,8 +178,6 @@ export const getSourceChapterIds = async (chapter, sources) => {
 
     const responsePromise = bodies.map((body) => axios.post(url, body));
 
-    //log request
-    console.log("Request source chapter ids: ", bodies);
 
     const responses = await Promise.all(responsePromise);
 
@@ -189,9 +187,11 @@ export const getSourceChapterIds = async (chapter, sources) => {
         chapterId: responses[index].data,
       };
     });
-    console.log("Source chapter ids: ", sourceChapterIds);
+    
+    //remove sources that don't have the chapter
+    sourceChapterIds.filter((source) => source.chapterId.length > 0);
 
-    return sourceChapterIds;
+    return sourceChapterIds.filter((source) => source.chapterId.length > 0);
   } catch (error) {
     console.log("Get chapter id failed: ", error);
     return -1;
