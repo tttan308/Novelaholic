@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useRef, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 const ChaptersModal = ({ chapterCount, setModalOpen }) => {
   const boxRef = useRef(null);
@@ -13,9 +13,9 @@ const ChaptersModal = ({ chapterCount, setModalOpen }) => {
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
@@ -30,10 +30,13 @@ const ChaptersModal = ({ chapterCount, setModalOpen }) => {
         <h2 className="text-2xl font-bold mb-4">Chapters</h2>
         <ul className="max-h-96 overflow-y-auto">
           {Array.from({ length: chapterCount }, (_, index) => (
-            <li key={index} className="cursor-pointer p-2 hover:bg-gray-200" onClick={() => handleChapterClick(index + 1)}>
+            <li
+              key={index}
+              className="cursor-pointer p-2 hover:bg-gray-200"
+              onClick={() => handleChapterClick(index + 1)}
+            >
               Chapter {index + 1}
             </li>
-            
           ))}
         </ul>
         <button

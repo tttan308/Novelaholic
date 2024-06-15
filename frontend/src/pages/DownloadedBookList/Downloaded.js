@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getDownloadedBookCardInfo } from '../../services/localStorage';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getDownloadedBookCardInfo } from "../../services/localStorage";
 
 const DownloadedPage = () => {
   const [downloadNovels, setDownloadNovels] = useState([]);
@@ -41,8 +41,6 @@ const DownloadedPage = () => {
                 <p className="text-[14px] font-bold text-center text-sub">
                   Đã tải {novel.chapterCount} chương
                 </p>
-                
-                
               </div>
             </Link>
           </div>

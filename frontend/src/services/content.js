@@ -6,9 +6,7 @@ export const getChapter = async (id, chapter, source, retries = 3) => {
   console.log("Get chapter: ", id, chapter, source);
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await axios.get(
-        `${apiURL}/novels/${id}/${chapter}`
-      );
+      const response = await axios.get(`${apiURL}/novels/${id}/${chapter}`);
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -82,9 +80,10 @@ export const getBookContent = async (id, source, from, to) => {
 
     const chaptersContent = await Promise.all(novelPromises);
     const chapters = chaptersContent.map((content, index) => {
-      
       return {
-        number: parseInt(content.chapterTitle.substr(6, content.chapterTitle.indexOf(":"))),
+        number: parseInt(
+          content.chapterTitle.substr(6, content.chapterTitle.indexOf(":"))
+        ),
         title: content.chapterTitle,
         link: `/novels/${id}/${index + 1}`,
       };
@@ -170,29 +169,31 @@ export const getSources = async () => {
 
 export const getSourceChapterIds = async (chapter, sources) => {
   try {
-    const url = `${apiURL}/novels/getIdByTitleAndAuthor`
-    const bodies = sources.map(source => ({title: chapter.title, author:chapter.author, id: source.id}))
-    
-    const responsePromise = bodies.map(body => axios.post(url, body))
+    const url = `${apiURL}/novels/getIdByTitleAndAuthor`;
+    const bodies = sources.map((source) => ({
+      title: chapter.title,
+      author: chapter.author,
+      id: source.id,
+    }));
+
+    const responsePromise = bodies.map((body) => axios.post(url, body));
 
     //log request
-    console.log("Request source chapter ids: ", bodies)
+    console.log("Request source chapter ids: ", bodies);
 
-    const responses = await Promise.all(responsePromise)
+    const responses = await Promise.all(responsePromise);
 
     const sourceChapterIds = sources.map((source, index) => {
       return {
         ...source,
-        chapterId: responses[index].data
-      }
-    })
-    console.log("Source chapter ids: ", sourceChapterIds  )
+        chapterId: responses[index].data,
+      };
+    });
+    console.log("Source chapter ids: ", sourceChapterIds);
 
-    return sourceChapterIds
-    
+    return sourceChapterIds;
   } catch (error) {
     console.log("Get chapter id failed: ", error);
     return -1;
   }
-}
-
+};

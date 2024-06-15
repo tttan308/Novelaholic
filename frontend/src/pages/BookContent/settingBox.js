@@ -12,9 +12,9 @@ import {
   getBackground,
   getTextColor,
   getLineHeight,
-} from './textConfig';
+} from "./textConfig";
 
-import { React, useState } from 'react';
+import { React, useState } from "react";
 
 const SettingBox = () => {
   const [fontState, setFontFamilyState] = useState(getFont());

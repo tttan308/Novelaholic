@@ -1,28 +1,28 @@
-import { IoIosSearch } from 'react-icons/io';
-import { useEffect, useRef, useState } from 'react';
+import { IoIosSearch } from "react-icons/io";
+import { useEffect, useRef, useState } from "react";
 import {
   useLocation,
   useNavigate,
   useParams,
   useSearchParams,
-} from 'react-router-dom';
-import { searchNovels } from '../services/novel';
-import { fetchGenres } from '../services/genre';
-import { getGenreFromHref } from '../utils/genre';
+} from "react-router-dom";
+import { searchNovels } from "../services/novel";
+import { fetchGenres } from "../services/genre";
+import { getGenreFromHref } from "../utils/genre";
 
 const SearchBox = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { genre } = useParams();
   const [searchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const searchRef = useRef(null);
   const [genres, setGenres] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState(genre || '');
+  const [selectedGenre, setSelectedGenre] = useState(genre || "");
 
   useEffect(() => {
-    const query = searchParams.get('keyword');
+    const query = searchParams.get("keyword");
     if (query) {
       setSearchQuery(query);
     }
@@ -35,7 +35,7 @@ const SearchBox = () => {
   }, [genre]);
 
   useEffect(() => {
-    const query = searchParams.get('keyword');
+    const query = searchParams.get("keyword");
     if (query === searchQuery) {
       setSearchResults([]);
       return;
@@ -60,23 +60,23 @@ const SearchBox = () => {
         setSearchResults([]);
       }
     };
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
   useEffect(() => {
     const getData = async () => {
       const data = await fetchGenres();
-      setGenres(data.filter((genre) => genre.name !== 'Tất cả'));
+      setGenres(data.filter((genre) => genre.name !== "Tất cả"));
     };
 
     getData();
   }, []);
 
   const queryParams = new URLSearchParams(location.search);
-  const sourceParam = queryParams.get('source');
+  const sourceParam = queryParams.get("source");
 
   return (
     <div className="flex justify-between my-10 px-6">
@@ -85,7 +85,7 @@ const SearchBox = () => {
         <select
           className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-sub"
           onChange={(e) => {
-            if (e.target.value === '') {
+            if (e.target.value === "") {
               navigate(`/?source=${sourceParam}`);
               return;
             }
@@ -113,7 +113,7 @@ const SearchBox = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === "Enter") {
               navigate(`/search?keyword=${searchQuery}&source=${sourceParam}`);
             }
           }}

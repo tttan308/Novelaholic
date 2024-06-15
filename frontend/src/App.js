@@ -16,7 +16,6 @@ function App() {
       const sourcesLocal = sourcesContext.sources;
 
       if (Array.isArray(sourcesLocal) && sourcesLocal.length === 0) {
-        sourcesAPI.sort((source_1, source_2) => source_1.id - source_2.id); // remove
         sourcesContext.setSources(sourcesAPI);
       } else {
         const setSourcesLocal = new Set(
