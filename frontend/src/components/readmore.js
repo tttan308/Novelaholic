@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, json } from "react-router-dom";
+import { Link, json, useLocation } from "react-router-dom";
 import { getChapter, getInfo, getExportType } from "../services/Infomation";
 import { getBookHistoryChapter } from "../services/localStorage";
 import { Dialog } from "primereact/dialog";
@@ -72,6 +72,7 @@ const ReadMore = ({
 }) => {
   const SEE_MORE = "Xem thêm";
   const SEE_LESS = "Thu gọn";
+  const location = useLocation();
   const [collapse, setCollapse] = useState(false);
   const [lastChapter, setLastChapter] = useState(1);
   const [chaptersHistory, setChaptersHistory] = useState([]);
@@ -120,6 +121,9 @@ const ReadMore = ({
     setLastChapter(parseInt(event.target.value));
   };
 
+  const queryParams = new URLSearchParams(location.search);
+  const sourceParam = queryParams.get("source");
+
   return (
     <div className="container relative">
       <div
@@ -158,20 +162,22 @@ const ReadMore = ({
         </span>
       </button>
       <div className="Groupbtn flex justify-center flex-skrink-0 mt-4">
-        <Link to={`1`}>
+        <Link to={`1/${sourceParam}`}>
           <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
             {" "}
             Đọc từ đầu
           </button>
         </Link>
-        <Link to={`${lastChapter}`}>
+        <Link to={`${lastChapter}/${sourceParam}`}>
           <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
             {" "}
             Đọc mới nhất
           </button>
         </Link>
         {chaptersHistory.length > 0 && (
-          <Link to={`${chaptersHistory[chaptersHistory.length - 1]}`}>
+          <Link
+            to={`${chaptersHistory[chaptersHistory.length - 1]}/${sourceParam}`}
+          >
             <button className="font-semibold bg-sub text-white text-base font-inter h-[40px] w-[144px] rounded-[5px] m-[18px] transition duration-200 hover:scale-125">
               {" "}
               Đọc tiếp

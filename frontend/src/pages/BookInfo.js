@@ -109,6 +109,9 @@ function BookInfo() {
   // const match = currentUrl.match(/\/book\/([a-zA-Z0-9-/-]+)/);
   // const id = match ? match[1] : null;
 
+  const queryParams = new URLSearchParams(location.search);
+  const sourceParam = queryParams.get("source");
+
   useEffect(() => {
     async function restartPage() {
       const data = await getInfo(id, currentPage)
@@ -252,7 +255,9 @@ function BookInfo() {
               {left.map((item, index) => {
                 return (
                   <Link
-                    to={`${index + (currentPage - 1) * pageSize + 1}`}
+                    to={`${
+                      index + (currentPage - 1) * pageSize + 1
+                    }/${sourceParam}`}
                     className=""
                   >
                     <li
@@ -284,7 +289,7 @@ function BookInfo() {
                   <Link
                     to={`${
                       index + left.length + (currentPage - 1) * pageSize + 1
-                    }`}
+                    }/${sourceParam}`}
                     className=""
                   >
                     <li

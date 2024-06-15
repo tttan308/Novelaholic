@@ -187,7 +187,7 @@ const BookContent = () => {
         </div>
       )}
 
-      <div id="source-selection" className="pb-6 text-center">
+      <div id="source-selection" className="pb-6 text-center mb-6">
         {sources.map((item) => (
           <button
             key={item.id}
@@ -220,7 +220,7 @@ const BookContent = () => {
       </div>
 
       {!loading && (
-        <div className="text-center py-6">
+        <div className="text-center py-6 mb-10">
           <div className="flex items-center justify-center space-x-6">
             {chapter > 1 && (
               <Link

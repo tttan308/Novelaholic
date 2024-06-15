@@ -19,10 +19,6 @@ const text_font = [
     name: "Tahoma",
     value: "'Tahoma', sans-serif",
   },
-  {
-    name: "Comic Sans MS",
-    value: "'Comic Sans MS', cursive",
-  },
 ];
 
 const text_size = [
