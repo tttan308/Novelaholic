@@ -33,8 +33,8 @@ import ChaptersModal from "./ChaptersModel";
 
 const BookContent = () => {
   const [chapterData, setChapterData] = useState([]);
-  const [source, setSource] = useState(1);
-  const { id, chapter } = useParams();
+  const { id, chapter, sourceId } = useParams();
+  const [source, setSource] = useState();
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [chapterCount, setChapterCount] = useState(0);
@@ -59,7 +59,6 @@ const BookContent = () => {
     }
     getDownloadedBookChapter(id, chapter)
       .then((res) => {
-        console.log("Loaded from indexDB 1", res);
         if (
           res &&
           res.chapters.some((item) => item.number === parseInt(chapter))
@@ -76,17 +75,31 @@ const BookContent = () => {
           getChapterCount(id).then((res) => {
             setChapterCount(res);
           });
+          const tmpSources = getSourcesFromLocalStorage();
+          getNovelInfo(id)
+            .then((res) => {
+              return getSourceChapterIds(res, tmpSources);
+            })
+            .then((res) => {
+              setSources(res);
+            });
           console.log("chapter fetch from server");
         }
       })
       .catch((error) => {
         console.error("Error fetching book chapter: ", error);
         fetchChapterData();
-
-        setSources(getSourcesFromLocalStorage());
         getChapterCount(id).then((res) => {
           setChapterCount(res);
         });
+        const tmpSources = getSourcesFromLocalStorage();
+        getNovelInfo(id)
+          .then((res) => {
+            return getSourceChapterIds(res, tmpSources);
+          })
+          .then((res) => {
+            setSources(res);
+          });
         console.log("Loaded from server 2");
       });
   }, [id, chapter, source]);
@@ -98,23 +111,15 @@ const BookContent = () => {
     setFont(getFont());
     setFontSize(getFontSize());
     setLineHeight(getLineHeight());
-    // getSources().then((res) => {
-    //     setSources(res);
-    // });
-
-    const tmpSources = getSourcesFromLocalStorage();
-    getNovelInfo(id)
-      .then((res) => {
-        return getSourceChapterIds(res, tmpSources);
-      })
-      .then((res) => {
-        setSources(res);
-      });
+    setSource(sourceId);
   }, []);
+
+ 
+  
 
   const handleChapterSelectionChanged = (event) => {
     const value = event.target.value;
-    navigate(`/book/${id}/${value}`);
+    navigate(`/book/${id}/${value}/${source}`);
   };
 
   return (
@@ -141,7 +146,7 @@ const BookContent = () => {
           <div className="flex items-center justify-center space-x-6">
             {chapter > 1 && (
               <Link
-                to={`/book/${id}/${parseInt(chapter) - 1}`}
+                to={`/book/${id}/${parseInt(chapter) - 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
                 &lt;
@@ -166,7 +171,7 @@ const BookContent = () => {
             </select>
             {chapter < chapterCount && (
               <Link
-                to={`/book/${id}/${parseInt(chapter) + 1}`}
+                to={`/book/${id}/${parseInt(chapter) + 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
                 &gt;
@@ -191,8 +196,7 @@ const BookContent = () => {
             }`}
             onClick={() => {
               setSource(item.id);
-
-              navigate(`/book/${item.chapterId}/${chapter}`);
+              navigate(`/book/${item.chapterId}/${chapter}/${item.id}`);
             }}
           >
             {item.name}
@@ -220,7 +224,7 @@ const BookContent = () => {
           <div className="flex items-center justify-center space-x-6">
             {chapter > 1 && (
               <Link
-                to={`/book/${id}/${parseInt(chapter) - 1}`}
+                to={`/book/${id}/${parseInt(chapter) - 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
                 &lt;
@@ -244,7 +248,7 @@ const BookContent = () => {
             </select>
             {chapter < chapterCount && (
               <Link
-                to={`/book/${id}/${parseInt(chapter) + 1}`}
+                to={`/book/${id}/${parseInt(chapter) + 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
                 &gt;
