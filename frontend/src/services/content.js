@@ -149,7 +149,7 @@ export const getChapterCount = async (id, sourceId) => {
     console.log(`sadasd sa: ${apiURL}/novels?id=${sourceId}&name=${id}&page=${maxPage}`)
 
     const last = res2.data.chapters[res2.data.chapters.length - 1].title;
-    const res = parseInt(last.substr(6, last.indexOf(":")));
+    const res = parseInt(last.substr(0, last.indexOf(":")));
     if (res) {
       return res;
     } else {

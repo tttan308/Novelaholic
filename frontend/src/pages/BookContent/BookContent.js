@@ -75,7 +75,9 @@ const BookContent = () => {
           fetchChapterData();
           getChapterCount(id, source).then((res) => {
             setChapterCount(res);
+            console.log("asdsadsa1111: ",res)
           });
+          
           const tmpSources = getSourcesFromLocalStorage();
           getNovelInfo(id, source)
             .then((res) => {
@@ -92,6 +94,7 @@ const BookContent = () => {
         fetchChapterData();
         getChapterCount(id, source).then((res) => {
           setChapterCount(res);
+          console.log("1332432", res);
         });
         const tmpSources = getSourcesFromLocalStorage();
         getNovelInfo(id, source)
