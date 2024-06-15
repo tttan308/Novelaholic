@@ -123,7 +123,10 @@ function BookInfo() {
 
           getInfo(id, info.maxPage).then((inside) => {
             const max = inside.chapters[inside.chapters.length - 1].title;
-            setEndPage(parseInt(max.substr(0, max.indexOf(":"))));
+            var i =0;
+            while(!(max[i] >= '0' && max[i] <= '9')) 
+              ++i;
+            setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
             setIsFinish(true);
           });
         })
@@ -131,6 +134,7 @@ function BookInfo() {
     }
     restartPage();
   }, [currentPage]);
+
 
   useEffect(() => {
     getSources().then((res) => {
@@ -167,7 +171,7 @@ function BookInfo() {
       </div>
 
       <div>
-        <h1 className="font-Poppins font-bold text-2xl text-main text-center pt-[15px] pb-[20px]">
+        <h1 className="font-Poppins font-bold text-2xl text-main text-center pt-[15px] pb-[20px] ml-[20px] mr-[20px]">
           {book.title}
         </h1>
       </div>
@@ -238,12 +242,12 @@ function BookInfo() {
                     <div className="flex-grow">
                       <span className="font-Poppins font-base text-sub font-bold">
                         {item.title.indexOf("Chương") == -1 &&
-                        item.title.indexOf("chương")
+                        item.title.indexOf("chương") == -1
                           ? "Chương "
-                          : " "}{" "}
+                          : " "}
                         {item.title.split(":")[0]} :{" "}
                       </span>
-                      <span className="">{item.title.split(": ")[1]}</span>
+                      <span className="">{item.title.split(":")[1]}</span>
                     </div>
                     {downloadedChapters.some(
                       (chapter) => chapter.title === "Chương " + item.title
@@ -269,12 +273,12 @@ function BookInfo() {
                   >
                     <span className="font-Poppins font-base text-sub font-bold">
                       {item.title.indexOf("Chương") == -1 &&
-                      item.title.indexOf("chương")
+                      item.title.indexOf("chương") == -1
                         ? "Chương "
-                        : " "}{" "}
+                        : " "}
                       {item.title.split(":")[0]} :{" "}
                     </span>
-                    <span className="">{item.title.split(": ")[1]}</span>
+                    <span className="">{item.title.split(":")[1]}</span>
                   </li>
                 </Link>
               );
