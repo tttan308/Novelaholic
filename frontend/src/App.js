@@ -6,6 +6,7 @@ import Layout from "./layout/Layout";
 import { fetchSources } from "./services/source";
 import { SourcesContext } from "./context/SourcesContext";
 import global from "./GlobalVariables";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const sourcesContext = useContext(SourcesContext);
@@ -56,6 +57,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <Routes>
           {routes.map((route, index) => {
