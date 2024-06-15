@@ -34,7 +34,8 @@ import ChaptersModal from "./ChaptersModel";
 const BookContent = () => {
   const [chapterData, setChapterData] = useState([]);
   const { id, chapter, sourceId } = useParams();
-  const [source, setSource] = useState();
+  console.log("sourceId", sourceId)
+  const [source, setSource] = useState(sourceId);
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [chapterCount, setChapterCount] = useState(0);
@@ -43,7 +44,7 @@ const BookContent = () => {
   useEffect(() => {
     async function fetchChapterData() {
       setLoading(true);
-      const res = await getChapter(id, chapter, source);
+      const res = await getChapter(id, chapter, sourceId);
       if (res) {
         setChapterData(res);
         saveBookHistory(id, chapter, sourceId);
@@ -72,11 +73,11 @@ const BookContent = () => {
           setSources([]);
         } else {
           fetchChapterData();
-          getChapterCount(id).then((res) => {
+          getChapterCount(id, source).then((res) => {
             setChapterCount(res);
           });
           const tmpSources = getSourcesFromLocalStorage();
-          getNovelInfo(id)
+          getNovelInfo(id, source)
             .then((res) => {
               return getSourceChapterIds(res, tmpSources);
             })
@@ -89,11 +90,11 @@ const BookContent = () => {
       .catch((error) => {
         console.error("Error fetching book chapter: ", error);
         fetchChapterData();
-        getChapterCount(id).then((res) => {
+        getChapterCount(id, source).then((res) => {
           setChapterCount(res);
         });
         const tmpSources = getSourcesFromLocalStorage();
-        getNovelInfo(id)
+        getNovelInfo(id, source)
           .then((res) => {
             return getSourceChapterIds(res, tmpSources);
           })
@@ -111,7 +112,6 @@ const BookContent = () => {
     setFont(getFont());
     setFontSize(getFontSize());
     setLineHeight(getLineHeight());
-    setSource(sourceId);
   }, []);
 
  

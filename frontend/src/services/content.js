@@ -6,7 +6,7 @@ export const getChapter = async (id, chapter, source, retries = 3) => {
   console.log("Get chapter: ", id, chapter, source);
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      const response = await axios.get(`${apiURL}/novels/${id}/${chapter}`);
+      const response = await axios.get(`${apiURL}/novels/${id}/${chapter}?id=${source}`);
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -126,10 +126,10 @@ export const getUpdateBook = async (oldBook, lastChap, source) => {
   }
 };
 
-export const getNovelInfo = async (id, page = 1) => {
+export const getNovelInfo = async (id, sourceId, page = 1) => {
   try {
     const response = await axios.get(
-      `${apiURL}/novels?id=1&name=${id}&page=${page}`
+      `${apiURL}/novels?id=${sourceId}&name=${id}&page=${page}`
     );
     return response.data;
   } catch (error) {
@@ -138,18 +138,23 @@ export const getNovelInfo = async (id, page = 1) => {
   }
 };
 
-export const getChapterCount = async (id) => {
+export const getChapterCount = async (id, sourceId) => {
   try {
-    const response = await axios.get(`${apiURL}/novels?id=1&name=${id}&page=1`);
+    const response = await axios.get(`${apiURL}/novels?id=${sourceId}&name=${id}&page=1`);
     const maxPage = response.data.maxPage;
 
     const res2 = await axios.get(
-      `${apiURL}/novels?id=1&name=${id}&page=${maxPage}`
+      `${apiURL}/novels?id=${sourceId}&name=${id}&page=${maxPage}`
     );
+    console.log(`sadasd sa: ${apiURL}/novels?id=${sourceId}&name=${id}&page=${maxPage}`)
 
     const last = res2.data.chapters[res2.data.chapters.length - 1].title;
-    console.log(parseInt(last.substr(0, last.indexOf(":"))));
-    return parseInt(last.substr(0, last.indexOf(":")));
+    const res = parseInt(last.substr(6, last.indexOf(":")));
+    if (res) {
+      return res;
+    } else {
+      return parseInt(last.substr(6, last.indexOf(":")));
+    }
   } catch (error) {
     console.log("Get chapter count failed: ", error);
     alert("Get chapter count failed: ", error.message);
