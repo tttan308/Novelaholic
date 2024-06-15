@@ -5,6 +5,8 @@ import { getDownloadedBookCardInfo } from "../../services/localStorage";
 const DownloadedPage = () => {
   const [downloadNovels, setDownloadNovels] = useState([]);
 
+  console.log(downloadNovels);
+
   useEffect(() => {
     getDownloadedBookCardInfo().then((books) => {
       setDownloadNovels(books);
@@ -26,7 +28,7 @@ const DownloadedPage = () => {
         {downloadNovels.map((novel) => (
           <div key={novel.id} className="flex justify-center">
             <Link
-              to={`/book/${novel.id}`}
+              to={`/book/${novel.id}?source=${novel.sourceId}`}
               className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
             >
               <img

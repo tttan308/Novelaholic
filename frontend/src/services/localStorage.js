@@ -259,6 +259,7 @@ export const getDownloadedBookCardInfo = async () => {
           id: book.id,
           title: book.title,
           cover: book.cover,
+          sourceId: book.sourceId,
           chapterCount: book.chapters.length,
         };
       })

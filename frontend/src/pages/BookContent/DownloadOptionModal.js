@@ -6,7 +6,6 @@ import {
   isDownLoaded,
   isFullDownloaded,
 } from "../../services/localStorage";
-import { getChapterCount } from "../../services/content";
 import { Button } from "primereact/button";
 
 const DownloadOptionModal = ({
@@ -62,7 +61,6 @@ const DownloadOptionModal = ({
   const handleSourceClick = async (sourceId) => {
     setIsDownloading(true);
     await downloadBook(bookId, beginChapter, endChapter, sourceId);
-    alert("Tải truyện thành công");
     setIsDownloading(false);
     setModalOpen(false);
   };

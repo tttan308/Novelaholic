@@ -59,6 +59,7 @@ export const getFullBookContent = async (id, downSourceId) => {
       id,
       ...novelInfo.data,
       chapters,
+      sourceId: downSourceId,
       chaptersContent,
     };
   } catch (error) {
@@ -96,6 +97,7 @@ export const getBookContent = async (id, source, from, to) => {
       ...novelInfo.data,
       chapters,
       chapterCount,
+      sourceId: source,
       chaptersContent,
     };
   } catch (error) {
