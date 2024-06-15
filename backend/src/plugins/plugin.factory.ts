@@ -31,13 +31,15 @@ export class PluginFactory {
 	}
 
 	getNovelPlugins(): { id: number; name: string; url: string }[] {
-		return this.loadedNovelPlugins.map((plugin) => {
-			return {
-				id: plugin.id || 0,
-				name: plugin.name,
-				url: plugin.url,
-			};
-		});
+		return this.loadedNovelPlugins
+			.map((plugin) => {
+				return {
+					id: plugin.id || 0,
+					name: plugin.name,
+					url: plugin.url,
+				};
+			})
+			.sort((a, b) => a.id - b.id);
 	}
 
 	getExportPlugin(id: number): ExportFilePlugin {
@@ -51,11 +53,13 @@ export class PluginFactory {
 
 	getExportPlugins(): { id: number; type: string }[] {
 		console.log(this.loadedExportPlugins);
-		return this.loadedExportPlugins.map((plugin) => {
-			return {
-				id: plugin.id || 0,
-				type: plugin.type,
-			};
-		});
+		return this.loadedExportPlugins
+			.map((plugin) => {
+				return {
+					id: plugin.id || 0,
+					type: plugin.type,
+				};
+			})
+			.sort((a, b) => a.id - b.id);
 	}
 }
