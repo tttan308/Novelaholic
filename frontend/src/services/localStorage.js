@@ -33,7 +33,7 @@ export const saveBookHistory = async (bookId, chapterNumber, sourceId) => {
     } else {
       // Fetch book details from the API
       const response = await fetch(
-        `${apiURL}/novels?id=1&name=${bookId}&page=1`
+        `${apiURL}/novels?id=${sourceId}&name=${bookId}&page=1`
       );
 
       if (!response.ok) {

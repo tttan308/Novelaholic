@@ -64,7 +64,7 @@ const BookContent = () => {
         ) {
           console.log('asd', res);
           setChapterData(res);
-          saveBookHistory(id, chapter);
+          saveBookHistory(id, chapter, sourceId);
           setLoading(false);
           console.log(res);
           setChapterCount(res.chapterCount);
