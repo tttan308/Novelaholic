@@ -255,13 +255,11 @@ export const getDownloadedBookCardInfo = async () => {
 
     const booksWithFullDownloadInfo = await Promise.all(
       books.map(async (book) => {
-        const isFullDownload = await isFullDownloaded(book);
         return {
           id: book.id,
           title: book.title,
           cover: book.cover,
           chapterCount: book.chapters.length,
-          isFullDownload,
         };
       })
     );

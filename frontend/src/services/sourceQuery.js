@@ -11,4 +11,14 @@ export const sourceQuery = (type) => {
       return `&id=${sourceParam}`;
     }
   }
+  else {
+    //get source from book/{id}/{chapter}/{source}
+    const segments = currentUrl.split('/');
+    const lastSegment = segments[segments.length - 1];
+    if (type === 0) {
+      return `?id=${lastSegment}`;
+    } else {
+      return `&id=${lastSegment}`;
+    }
+  }
 };

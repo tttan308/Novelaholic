@@ -89,7 +89,7 @@ export const getBookContent = async (id, source, from, to) => {
       };
     });
 
-    const chapterCount = await getChapterCount(id);
+    const chapterCount = await getChapterCount(id, source);
 
     return {
       id,
@@ -140,13 +140,13 @@ export const getNovelInfo = async (id, sourceId, page = 1) => {
 
 export const getChapterCount = async (id, sourceId) => {
   try {
+    console.log("Get chapter count: ", id, sourceId);
     const response = await axios.get(`${apiURL}/novels?id=${sourceId}&name=${id}&page=1`);
     const maxPage = response.data.maxPage;
 
     const res2 = await axios.get(
       `${apiURL}/novels?id=${sourceId}&name=${id}&page=${maxPage}`
     );
-    console.log(`sadasd sa: ${apiURL}/novels?id=${sourceId}&name=${id}&page=${maxPage}`)
 
     const last = res2.data.chapters[res2.data.chapters.length - 1].title;
     const res = parseInt(last.substr(0, last.indexOf(":")));
@@ -156,7 +156,6 @@ export const getChapterCount = async (id, sourceId) => {
       return parseInt(last.substr(6, last.indexOf(":")));
     }
   } catch (error) {
-    console.log("Get chapter count failed: ", error);
     alert("Get chapter count failed: ", error.message);
   }
 };
@@ -183,6 +182,8 @@ export const getSourceChapterIds = async (chapter, sources) => {
 
     const responsePromise = bodies.map((body) => axios.post(url, body));
 
+    //log request
+    console.log("Get chapter id request: ", bodies);
 
     const responses = await Promise.all(responsePromise);
 
@@ -192,7 +193,7 @@ export const getSourceChapterIds = async (chapter, sources) => {
         chapterId: responses[index].data,
       };
     });
-    
+    console.log("Source chapter ids: ", sourceChapterIds);
     //remove sources that don't have the chapter
     sourceChapterIds.filter((source) => source.chapterId.length > 0);
 

@@ -26,7 +26,7 @@ const DownloadOptionModal = ({
     }
   };
   document.addEventListener("click", handleClickOutside);
-  const [isGettingInfo, setIsGettingInfo] = useState(true);
+  const [isGettingInfo, setIsGettingInfo] = useState(false);
   const [fullDownloadedState, setFullDownloadedState] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -41,28 +41,30 @@ const DownloadOptionModal = ({
     setEndChapter(parseInt(event.target.value));
   };
 
-  useEffect(() => {
-    getDownloadedBookInfo(bookId)
-      .then((novel) => {
-        if (novel) {
-          return Promise.all([isFullDownloaded(novel)]);
-        } else {
-          throw new Error("Novel not found");
-        }
-      })
-      .then(([isFullDownloadedRes]) => {
-        setFullDownloadedState(isFullDownloadedRes);
-        setIsGettingInfo(false);
-      })
-      .catch((error) => {
-        setIsGettingInfo(false);
-      });
-  }, [isDownloading]);
+  // useEffect(() => {
+  //   getDownloadedBookInfo(bookId)
+  //     .then((novel) => {
+  //       if (novel) {
+  //         return Promise.all([isFullDownloaded(novel)]);
+  //       } else {
+  //         throw new Error("Novel not found");
+  //       }
+  //     })
+  //     .then(([isFullDownloadedRes]) => {
+  //       setFullDownloadedState(isFullDownloadedRes);
+  //       setIsGettingInfo(false);
+  //     })
+  //     .catch((error) => {
+  //       setIsGettingInfo(false);
+  //     });
+  // }, [isDownloading]);
 
   const handleSourceClick = async (sourceId) => {
     setIsDownloading(true);
     await downloadBook(bookId, beginChapter, endChapter, sourceId);
+    alert("Tải truyện thành công");
     setIsDownloading(false);
+    setModalOpen(false);
   };
 
   return (

@@ -34,7 +34,6 @@ import ChaptersModal from "./ChaptersModel";
 const BookContent = () => {
   const [chapterData, setChapterData] = useState([]);
   const { id, chapter, sourceId } = useParams();
-  console.log("sourceId", sourceId)
   const [source, setSource] = useState(sourceId);
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +47,6 @@ const BookContent = () => {
       if (res) {
         setChapterData(res);
         saveBookHistory(id, chapter, sourceId);
-        console.log("sources fetch from server:", sources);
       } else {
         setChapterData({
           novelTitle: "Không tìm thấy truyện",
@@ -75,18 +73,30 @@ const BookContent = () => {
           fetchChapterData();
           getChapterCount(id, source).then((res) => {
             setChapterCount(res);
-            console.log("asdsadsa1111: ",res)
           });
           
-          const tmpSources = getSourcesFromLocalStorage();
-          getNovelInfo(id, source)
-            .then((res) => {
-              return getSourceChapterIds(res, tmpSources);
-            })
-            .then((res) => {
-              setSources(res);
-            });
-          console.log("chapter fetch from server");
+          const fetchSource = async () => {
+            const sources = await getSources();
+            console.log('Sources: ', sources)
+            const novelInfo = await getNovelInfo(id, source);
+            console.log('Novel Info: ', novelInfo)
+            const sourceChapterIds = await getSourceChapterIds (novelInfo, sources);
+            setSources(sourceChapterIds);
+            console.log('Souces: ', sourceChapterIds)
+          };
+
+          fetchSource();
+          // const tmpSources = getSourcesFromLocalStorage();
+
+          // getNovelInfo(id, source)
+          //   .then((res) => {
+          //     return getSourceChapterIds(res, tmpSources);
+          //   })
+          //   .then((res) => {
+          //     console.log("get source chapter ids: ", res)
+          //     setSources(res);
+          //   });
+          // console.log("chapter fetch from server");
         }
       })
       .catch((error) => {
