@@ -26,7 +26,7 @@ const DownloadedPage = () => {
         {downloadNovels.map((novel) => (
           <div key={novel.id} className="flex justify-center">
             <Link
-              to={`/downloaded/${novel.id}`}
+              to={`/book/${novel.id}`}
               className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
             >
               <img
@@ -41,16 +41,7 @@ const DownloadedPage = () => {
                 <p className="text-[14px] font-bold text-center text-sub">
                   Đã tải {novel.chapterCount} chương
                 </p>
-                <p className="text-[14px] font-bold text-center text-lime-700">
-                  {novel.isFullDownload && 'Up to date'}
-                  {!novel.isFullDownload && 
-                    <div 
-                      className="bg-main text-white p-2 rounded-md"
-                    >
-                      Tải về chương mới
-                    </div>
-                  }
-                </p>
+                
                 
               </div>
             </Link>

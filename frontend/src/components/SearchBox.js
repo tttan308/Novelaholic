@@ -1,11 +1,17 @@
 import { IoIosSearch } from 'react-icons/io';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { searchNovels } from '../services/novel';
 import { fetchGenres } from '../services/genre';
 import { getGenreFromHref } from '../utils/genre';
 
 const SearchBox = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { genre } = useParams();
   const [searchParams] = useSearchParams();
@@ -29,6 +35,16 @@ const SearchBox = () => {
   }, [genre]);
 
   useEffect(() => {
+    const query = searchParams.get('keyword');
+    if (query === searchQuery) {
+      setSearchResults([]);
+      return;
+    }
+
+    if (searchQuery.length < 2) {
+      setSearchResults([]);
+      return;
+    }
     const timeoutId = setTimeout(async () => {
       const { data } = await searchNovels(searchQuery, 1);
       setSearchResults(data?.slice(0, 5));
@@ -36,7 +52,7 @@ const SearchBox = () => {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [searchQuery]);
+  }, [searchQuery, searchParams]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -53,11 +69,14 @@ const SearchBox = () => {
   useEffect(() => {
     const getData = async () => {
       const data = await fetchGenres();
-      setGenres(data);
+      setGenres(data.filter((genre) => genre.name !== 'Tất cả'));
     };
 
     getData();
   }, []);
+
+  const queryParams = new URLSearchParams(location.search);
+  const sourceParam = queryParams.get('source');
 
   return (
     <div className="flex justify-between my-10 px-6">
@@ -67,10 +86,10 @@ const SearchBox = () => {
           className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-sub"
           onChange={(e) => {
             if (e.target.value === '') {
-              navigate('/');
+              navigate(`/?source=${sourceParam}`);
               return;
             }
-            navigate(`/category/${e.target.value}`);
+            navigate(`/category/${e.target.value}?source=${sourceParam}`);
           }}
           value={selectedGenre}
         >
@@ -95,7 +114,7 @@ const SearchBox = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
-              navigate(`/search?keyword=${searchQuery}`);
+              navigate(`/search?keyword=${searchQuery}&source=${sourceParam}`);
             }
           }}
           placeholder="Nhập tên truyện hoặc tác giả"
@@ -110,14 +129,18 @@ const SearchBox = () => {
               <div
                 key={novel.id}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b"
-                onClick={() => navigate(`/book/${novel.id}`)}
+                onClick={() =>
+                  navigate(`/book/${novel.id}?source=${sourceParam}`)
+                }
               >
                 {novel.title}
               </div>
             ))}
             <div
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-1"
-              onClick={() => navigate(`/search?keyword=${searchQuery}`)}
+              onClick={() =>
+                navigate(`/search?keyword=${searchQuery}&source=${sourceParam}`)
+              }
             >
               <span className="italic text-sm">Xem thêm truyện khác</span>
               <IoIosSearch size={22} />

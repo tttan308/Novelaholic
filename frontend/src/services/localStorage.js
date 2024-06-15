@@ -1,4 +1,4 @@
-import { getFullBookContent, getUpdateBook, getNovelInfo } from "./content";
+import { getFullBookContent, getUpdateBook, getNovelInfo, getBookContent } from "./content";
 
 const apiURL = process.env.REACT_APP_API_URL;
 
@@ -68,16 +68,79 @@ export const getBookHistoryChapter = (bookId) => {
     return book ? book.chapters : [];
 };
 
+export const downloadBook = async (bookId, chapterFrom, chapterTo, sourceId) => {
+    console.log("Download book: ", bookId, sourceId);
+    //save to indexedDB
+    const book = await getBookContent(bookId, sourceId,chapterFrom, chapterTo);
+    console.log("Downloaded book: ", book);
+    if(!book)
+    {
+        return;
+    }
+    const request = indexedDB.open("books", 1);
+    request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        const objectStore = db.createObjectStore("books", { keyPath: "id" });
+        objectStore.createIndex("id", "id", { unique: true });
+    };
+    request.onsuccess = (event) => {
+        const db = event.target.result;
+        const transaction = db.transaction("books", "readwrite");
+        const objectStore = transaction.objectStore("books");
+    
+        // Kiểm tra xem có tồn tại sách với bookId không
+        const getRequest = objectStore.get(book.id);
+    
+        getRequest.onsuccess = () => {
+            const existingBook = getRequest.result;
+    
+            if (existingBook) {
+                // Nếu sách tồn tại, append chapters và chaptersContent
+                const updatedChapters = [...existingBook.chapters, ...book.chapters].reduce((acc, chapter) => {
+                    if (!acc.find(ch => ch.title === chapter.title)) {
+                        acc.push(chapter);
+                    }
+                    return acc;
+                }, []);
+    
+                const updatedChaptersContent = [...existingBook.chaptersContent, ...book.chaptersContent].reduce((acc, chapterContent) => {
+                    if (!acc.find(ch => ch.chapterTitle === chapterContent.chapterTitle)) {
+                        acc.push(chapterContent);
+                    }
+                    return acc;
+                }, []);
+    
+                const updatedBook = {
+                    ...existingBook,
+                    chapters: updatedChapters,
+                    chaptersContent: updatedChaptersContent
+                };
+    
+                objectStore.put(updatedBook);
+            } else {
+                // Nếu sách không tồn tại, thêm sách mới
+                objectStore.add(book);
+            }
+        };
+    
+        getRequest.onerror = () => {
+            console.error("Error retrieving book:", getRequest.error);
+        };
+    };
+    request.onerror = (event) => {
+        console.error("Error downloading book: ", event.target.errorCode);
+    };
+};
+
 
 //download books to indexedDB
-export const downloadFullBook = async (bookId, sourceId, setIsDownloading) => {
+export const downloadFullBook = async (bookId, chapterFrom, chapterTo, sourceId) => {
     console.log("Download book: ", bookId, sourceId);
     //save to indexedDB
     const book = await getFullBookContent(bookId, sourceId);
     console.log("Downloaded book: ", book);
     if(!book) 
     {
-        setIsDownloading(false);
         return;
     }
     const request = indexedDB.open("books", 1);
@@ -91,18 +154,14 @@ export const downloadFullBook = async (bookId, sourceId, setIsDownloading) => {
         const transaction = db.transaction("books", "readwrite");
         const objectStore = transaction.objectStore("books");
         objectStore.add(book);
-        setIsDownloading(false);
     };
     request.onerror = (event) => {
         console.error("Error downloading book: ", event.target.errorCode);
-        setIsDownloading(false);
     };
 };
 
 export const isFullDownloaded = async (novel) => {
     const fetchNovel = await getNovelInfo(novel.id);
-    console.log(`novel: ${novel.chapters.length}`);
-    console.log(`fetchNovel: ${fetchNovel.chapters.length}  `);
     if (!novel.chapters || !fetchNovel.chapters) return false;
     return fetchNovel.chapters.length === novel.chapters.length;
 };
@@ -270,7 +329,11 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
                 if (book && book.chaptersContent) {
                     const chapterContent = book.chaptersContent[chapter - 1];
                     console.log("Chapter found: ", chapterContent);
-                    resolve(chapterContent);
+                    resolve({
+                        ...chapterContent,
+                        chapterCount: book.chapterCount
+                    }
+                    );
                 } else {
                     console.log("Chapter not found");
                     resolve(null); // Return null if no content is found

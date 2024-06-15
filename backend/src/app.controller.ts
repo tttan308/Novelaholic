@@ -24,11 +24,23 @@ export class AppController {
 		description: 'Data needed to generate the PDF',
 		schema: {
 			example: {
-				id: 1,
-				author: 'John Doe',
-				chapterContent: 'This is the content of the chapter...',
-				chapterTitle: 'Chapter One',
-				novelTitle: 'The Great Novel',
+				
+					id :2,
+					author : "author name",
+					novelTitle : "Novel title name",
+					chapters: [{
+						chapterTitle: "chapter title 1",
+						chapterContent: "Chapter content 1"
+						},
+						{
+						chapterTitle: "chapter title 2",
+						chapterContent: "Chapter content 2"
+						}, 
+						{
+						chapterTitle: "chapter title 3",
+						chapterContent: "Chapter content 3"
+						}
+					 ]
 			},
 		},
 	})
@@ -38,7 +50,8 @@ export class AppController {
 			const type = await this.appService.getExportType(exportFileDto.id);
 			res.setHeader('Content-Type', type);
 
-			const filename = `${exportFileDto.novelTitle}.${type}`;
+			const name = exportFileDto.novelTitle.normalize('NFD').replace(/[\u0300-\u036F]/g, '').replace(/đ/g, 'd').replace(/Đ/g,'D');
+			const filename = `${name}.${type}`;
 			res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
 
 			res.send(buffer);
