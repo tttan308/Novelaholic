@@ -256,7 +256,6 @@ export const getDownloadedBookCardInfo = async () => {
 };
 
 export const getDownloadedBookInfo = async (bookId) => {
-    //get {id,title,    cover,    author,    gneres,    source,    status,    description,    chapters } exclude chaptersContent from indexedDB
     function requestToPromise(request) {
         return new Promise((resolve, reject) => {
             request.onsuccess = () => resolve(request.result);
@@ -331,7 +330,8 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
                     console.log("Chapter found: ", chapterContent);
                     resolve({
                         ...chapterContent,
-                        chapterCount: book.chapterCount
+                        chapterCount: book.chapterCount,
+                        chapters: book.chapters
                     }
                     );
                 } else {
@@ -348,3 +348,8 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
         };
     });
 };
+
+export const getSourcesFromLocalStorage = () => {
+    const sources = localStorage.getItem("sources");
+    return sources ? JSON.parse(sources) : [];
+  }
