@@ -1,14 +1,16 @@
 import { FaCog } from "react-icons/fa";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import OrderSourceModal from "../../components/OrderSourceModal";
+import { SourcesContext } from "../../context/SourcesContext";
 
 function Header() {
+  const sourcesContext = useContext(SourcesContext);
   const [isModalVisible, setModalVisible] = useState(false);
+
+  const sourceOrder = sourcesContext.sources;
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
-
-  const sourceOrder = JSON.parse(localStorage.getItem("sources"));
 
   return (
     <div className="flex justify-between h-[60px] bg-main">
