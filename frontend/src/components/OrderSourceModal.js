@@ -35,10 +35,19 @@ const OrderSourceModal = ({ isVisible, onClose }) => {
         let bookId = "";
         let newSource = -1;
 
+        let curTitle = "";
+        let lastIndexDash = global.currentTitle.lastIndexOf("-");
+
+        if (lastIndexDash === -1) {
+          curTitle = global.currentTitle.trim();
+        } else {
+          curTitle = global.currentTitle.substring(0, lastIndexDash).trim();
+        }
+
         for (let i = 0; i < sourcesCopy.length; i++) {
           bookId = await findId(
             sourcesCopy[i].id,
-            global.currentTitle,
+            curTitle,
             global.currentAuthor
           );
 
