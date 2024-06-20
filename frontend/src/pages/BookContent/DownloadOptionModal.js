@@ -76,12 +76,12 @@ const DownloadOptionModal = ({
             {!isGettingInfo && (
               <div>
                 {!fullDownloadedState && (
-                  <div className="m-0 bg-sub p-6 w-full h-full rounded-lg">
+                  <div className="m-0 bg-sub p-6 w-full h-full rounded-lg px-24">
                     <h1 className="text-2xl text-white font-bold text-center py-5">
                       Chọn danh sách chương muốn tải
                     </h1>
                     <div className="flex justify-center items-center">
-                      <p className="text-white font-bold px-4">Từ chương:</p>
+                      <p className="text-white px-1">Từ:</p>
                       <select
                         className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500 text-black mx-2"
                         defaultValue={1}
@@ -93,7 +93,7 @@ const DownloadOptionModal = ({
                           </option>
                         ))}
                       </select>
-                      <p className=" text-white font-bold px-4">Đến chương:</p>
+                      <p className=" text-white px-1 ml-3">Đến:</p>
                       <select
                         className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500 text-black mx-2"
                         defaultValue={1}
@@ -116,7 +116,7 @@ const DownloadOptionModal = ({
                         <Button
                           key={source.id}
                           label={source.name}
-                          className="py-2 px-5 bg-main rounded-md m-2 text-white transition duration-200 transform hover:scale-110"
+                          className="pt-[10px] pb-[10px] pl-[20px] pr-[20px] bg-main rounded-[5px] m-[10px] text-white transition duration-200 transform hover:scale-110"
                           onClick={() => handleSourceClick(source.id)}
                         />
                       ))}

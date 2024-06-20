@@ -23,7 +23,7 @@ const SettingBox = () => {
 
   return (
     <div className="fixed left-20 top-1/2 transform -translate-y-1/2 bg-white p-4 rounded-lg border-4 w-64">
-      <h3 className="font-bold mb-4">Cài đặt</h3>
+      <h3 className="font-bold mb-4 text-[18px]">Cài đặt</h3>
       <div className="mb-4">
         <label className="block mb-2">Font chữ</label>
         <select

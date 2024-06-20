@@ -1,6 +1,12 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import { FaCog, FaDownload, FaBars } from "react-icons/fa";
+import {
+  FaCog,
+  FaDownload,
+  FaBars,
+  FaChevronLeft,
+  FaChevronRight,
+} from "react-icons/fa";
 import SettingBox from "./settingBox";
 import {
   setFont,
@@ -62,7 +68,7 @@ const BookContent = () => {
           res &&
           res.chapters.some((item) => item.number === parseInt(chapter))
         ) {
-          console.log('asd', res);
+          console.log("asd", res);
           setChapterData(res);
           saveBookHistory(id, chapter, sourceId);
           setLoading(false);
@@ -71,20 +77,23 @@ const BookContent = () => {
           console.log("chapter Load from indexDB");
           setSources([]);
         } else {
-          console.log('not find')
+          console.log("not find");
           fetchChapterData();
           getChapterCount(id, source).then((res) => {
             setChapterCount(res);
           });
-          
+
           const fetchSource = async () => {
             const sources = await getSources();
-            console.log('Sources: ', sources)
+            console.log("Sources: ", sources);
             const novelInfo = await getNovelInfo(id, source);
-            console.log('Novel Info: ', novelInfo)
-            const sourceChapterIds = await getSourceChapterIds (novelInfo, sources);
+            console.log("Novel Info: ", novelInfo);
+            const sourceChapterIds = await getSourceChapterIds(
+              novelInfo,
+              sources
+            );
             setSources(sourceChapterIds);
-            console.log('Souces: ', sourceChapterIds)
+            console.log("Souces: ", sourceChapterIds);
           };
 
           fetchSource();
@@ -103,7 +112,7 @@ const BookContent = () => {
       })
       .catch((error) => {
         console.error("Error fetching book chapter: ", error);
-        
+
         fetchChapterData();
         getChapterCount(id, source).then((res) => {
           setChapterCount(res);
@@ -128,9 +137,6 @@ const BookContent = () => {
     setFontSize(getFontSize());
     setLineHeight(getLineHeight());
   }, []);
-
- 
-  
 
   const handleChapterSelectionChanged = (event) => {
     const value = event.target.value;
@@ -164,12 +170,12 @@ const BookContent = () => {
                 to={`/book/${id}/${parseInt(chapter) - 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
-                &lt;
+                <FaChevronLeft size={20} color="#ffffff" />
               </Link>
             )}
             {chapter == 1 && (
               <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
-                &lt;
+                <FaChevronLeft size={20} color="#ffffff" />
               </div>
             )}
 
@@ -189,13 +195,13 @@ const BookContent = () => {
                 to={`/book/${id}/${parseInt(chapter) + 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
-                &gt;
+                <FaChevronRight size={20} color="#ffffff" />
               </Link>
             )}
 
             {chapter == chapterCount && (
               <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
-                &gt;
+                <FaChevronRight size={20} color="#ffffff" />
               </div>
             )}
           </div>
@@ -242,12 +248,12 @@ const BookContent = () => {
                 to={`/book/${id}/${parseInt(chapter) - 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
-                &lt;
+                <FaChevronLeft size={20} color="#ffffff" />
               </Link>
             )}
             {chapter == 1 && (
               <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
-                &lt;
+                <FaChevronLeft size={20} color="#ffffff" />
               </div>
             )}
             <select
@@ -266,12 +272,12 @@ const BookContent = () => {
                 to={`/book/${id}/${parseInt(chapter) + 1}/${source}`}
                 className="bg-main w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white"
               >
-                &gt;
+                <FaChevronRight size={20} color="#ffffff" />
               </Link>
             )}
             {chapter == chapterCount && (
               <div className="bg-main-light w-10 h-10 rounded-full flex items-center justify-center text-3xl text-white">
-                &gt;
+                <FaChevronRight size={20} color="#ffffff" />
               </div>
             )}
           </div>

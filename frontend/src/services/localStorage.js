@@ -141,7 +141,7 @@ export const downloadBook = async (
         // Nếu sách không tồn tại, thêm sách mới
         objectStore.add(book);
       }
-      alert("Tải sách thành công");
+      alert("Tải truyện thành công");
     };
 
     getRequest.onerror = () => {
@@ -351,8 +351,10 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
       getRequest.onsuccess = (event) => {
         const book = event.target.result;
         if (book && book.chaptersContent && book.chapters) {
-          console.log(book.chapters)
-          const index = book.chapters.findIndex((ch) => ch.number === parseInt(chapter));
+          console.log(book.chapters);
+          const index = book.chapters.findIndex(
+            (ch) => ch.number === parseInt(chapter)
+          );
           console.log("Chapter found: ", book.chaptersContent[index]);
           const chapterContent = book.chaptersContent[index];
           resolve({

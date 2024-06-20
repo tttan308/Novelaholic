@@ -276,7 +276,7 @@ function BookInfo() {
                       </div>
                       {downloadedChapters.some(
                         (chapter) => chapter.title === "Chương " + item.title
-                      ) && <span className="ml-4 text-amber-700">đã tải</span>}
+                      ) && <span className="ml-4 text-amber-700">Đã tải</span>}
                     </li>
                   </Link>
                 );

@@ -48,9 +48,12 @@ async function download(novelId, chapter, typeId) {
 
 const Overlay = () => {
   return (
-    <div id="overlay" className="fixed bottom-[-35px] left-[0px] text-main ">
+    <div
+      id="overlay"
+      className="fixed bottom-4 left-4 bg-blue-500 text-white p-3 rounded shadow-lg"
+    >
       {" "}
-      Downloading...{" "}
+      Đang xuất...{" "}
     </div>
   );
 };
@@ -97,7 +100,7 @@ export default function ExportButton({ novelId, chapter }) {
               return (
                 <Button
                   label={type.type}
-                  className="pt-[10px] pb-[10px] pl-[20px] pr-[20px] bg-main rounded-[5px] m-[10px] text-white transition duration-200 hover:scale-125"
+                  className="uppercase pt-[10px] pb-[10px] pl-[20px] pr-[20px] bg-main rounded-[5px] m-[10px] text-white transition duration-200 hover:scale-125"
                   onClick={() => handleButtonClick(type.id)}
                 />
               );

@@ -10,10 +10,9 @@ export const sourceQuery = (type) => {
     } else {
       return `&id=${sourceParam}`;
     }
-  }
-  else {
+  } else {
     //get source from book/{id}/{chapter}/{source}
-    const segments = currentUrl.split('/');
+    const segments = currentUrl.split("/");
     const lastSegment = segments[segments.length - 1];
     if (type === 0) {
       return `?id=${lastSegment}`;

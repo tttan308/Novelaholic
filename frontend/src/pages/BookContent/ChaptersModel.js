@@ -28,7 +28,7 @@ const ChaptersModal = ({ chapterCount, setModalOpen }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div ref={boxRef} className="bg-white p-6 rounded-lg max-w-lg w-full">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Chapters</h2>
+          <h2 className="text-2xl font-bold">Chương</h2>
 
           <button
             onClick={() => setModalOpen(false)}
@@ -45,7 +45,7 @@ const ChaptersModal = ({ chapterCount, setModalOpen }) => {
               className="cursor-pointer p-2 hover:bg-gray-200"
               onClick={() => handleChapterClick(index + 1)}
             >
-              Chapter {index + 1}
+              Chương {index + 1}
             </li>
           ))}
         </ul>

@@ -1,3 +1,4 @@
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Link, json, useLocation } from "react-router-dom";
 import { getChapter, getInfo, getExportType } from "../services/Infomation";
@@ -56,9 +57,12 @@ async function download(novelId, beginChapter, endChapter, id, author) {
 
 const Overlay = () => {
   return (
-    <div id="overlay" className="fixed bottom-[10px] right-[40px] text-sub ">
+    <div
+      id="overlay"
+      className="fixed bottom-4 left-4 bg-blue-500 text-white p-3 rounded shadow-lg"
+    >
       {" "}
-      <b>Downloading... </b>
+      Đang xuất...{" "}
     </div>
   );
 };
@@ -103,7 +107,7 @@ const ReadMore = ({
   const handleButtonClick = async (id) => {
     setVisible(false); // close dialog
     if (beginChapter > lastChapter) {
-      alert("chương bắt đầu không được lớn hơn chương kết thúc");
+      alert("Chương bắt đầu không được lớn hơn chương kết thúc");
     } else {
       setOnDownloading(true);
       await download(novelId, beginChapter, lastChapter, id, author);
@@ -139,27 +143,19 @@ const ReadMore = ({
         className="flex relative justify-center w-[967px] pt-4"
         onClick={() => setCollapse((prev) => !prev)}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          class="size-6"
-          className="size-8 border-[1px] border-solid border-full bg-main rounded-full text-white"
-        >
-          <path
-            fill-rule="evenodd"
-            d={
-              !collapse
-                ? "M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
-                : "M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z"
-            }
-            clip-rule="evenodd"
-          />
-        </svg>
+        <div className="flex items-center justify-center gap-4 cursor-pointer">
+          <div className="w-8 h-8 rounded-full bg-main flex justify-center items-center">
+            {collapse ? (
+              <FaChevronUp size={22} color="#ffffff" />
+            ) : (
+              <FaChevronDown size={22} color="#ffffff" />
+            )}
+          </div>
 
-        <span className="font-bold font-Poppins text-sub text-basic pt-[10px] pl-2">
-          {collapse ? SEE_LESS : SEE_MORE}
-        </span>
+          <span className="font-bold font-Poppins text-sub text-basic">
+            {collapse ? SEE_LESS : SEE_MORE}
+          </span>
+        </div>
       </button>
       <div className="Groupbtn flex justify-center flex-skrink-0 mt-4">
         <Link to={`1/${sourceParam}`}>
@@ -213,7 +209,7 @@ const ReadMore = ({
                 Chọn danh sách chương muốn xuất
               </h1>
               <div className="group flex justify-center">
-                <p className="p-[10px]">Từ chương: </p>
+                <p className="p-[10px]">Từ: </p>
                 <select
                   className="block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500 text-black"
                   defaultValue={1}
@@ -225,7 +221,7 @@ const ReadMore = ({
                     </option>
                   ))}
                 </select>
-                <p className="p-[10px]">Đến chương: </p>
+                <p className="p-[10px] ml-8">Đến: </p>
                 <select
                   className=" block bg-white border border-gray-300 h-10 px-4 py-2 focus:outline-none focus:border-blue-500 text-black"
                   defaultValue={chapters}
@@ -249,7 +245,7 @@ const ReadMore = ({
                     return (
                       <Button
                         label={type.type}
-                        className="pt-[10px] pb-[10px] pl-[20px] pr-[20px] bg-main rounded-[5px] m-[10px] text-white transition duration-200 hover:scale-125"
+                        className="uppercase pt-[10px] pb-[10px] pl-[20px] pr-[20px] bg-main rounded-[5px] m-[10px] text-white transition duration-200 hover:scale-125"
                         onClick={() => handleButtonClick(type.id)}
                       />
                     );
