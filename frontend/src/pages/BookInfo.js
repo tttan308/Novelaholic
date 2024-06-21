@@ -129,19 +129,35 @@ function BookInfo() {
           setLeft(info.chapters.slice(0, middle));
           setRight(info.chapters.slice(middle, size));
 
-          getChapter(`/novels/${id}/${1}`).then((inside) => {
-            setEndPage(inside.totalChapters);
-            setIsFinish(true);
-          });
-
-          // getInfo(id, info.maxPage).then((inside) => {
-          //   const max = inside.chapters[inside.chapters.length - 1].title;
-          //   var i =0;
-          //   while(!(max[i] >= '0' && max[i] <= '9'))
-          //     ++i;
-          //   setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
+          // getChapter(`/novels/${id}/${1}`).then((inside) => {
+          //   setEndPage(inside.totalChapters);
           //   setIsFinish(true);
+          //   console.log(inside);
+          //   console.log("total chapter: ", inside.totalChapters);
           // });
+
+          getInfo(id, info.maxPage).then((inside) => {
+            if(inside.chapters.length > 0){
+              console.log("first time: ", inside);
+              const max = inside.chapters[inside.chapters.length - 1].title;
+              var i =0;
+              while(!(max[i] >= '0' && max[i] <= '9'))
+                ++i;
+              setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
+              setIsFinish(true);
+            }else{
+              getInfo(id,info.maxPage - 1).then((second) => {
+                console.log("second time: ",second);
+
+                const max = second.chapters[second.chapters.length - 1].title;
+                var i =0;
+                while(!(max[i] >= '0' && max[i] <= '9'))
+                  ++i;
+                setEndPage(parseInt(max.substr(i, max.indexOf(":"))));
+                setIsFinish(true);
+              })
+            }
+          });
         })
         .catch((error) => {
           setFoundBook(false);
