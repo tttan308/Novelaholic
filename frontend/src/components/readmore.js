@@ -137,7 +137,7 @@ const ReadMore = ({
             : " max-h-[7.1rem] overflow-hidden transition-max-height duration-500"
         }`}
       >
-        <p dangerouslySetInnerHTML={{ __html: fullText }} />
+        <p dangerouslySetInnerHTML={{ __html: fullText.replace(/\n/g,"<br>") }} />
       </div>
       <button
         className="flex relative justify-center w-[967px] pt-4"
