@@ -213,7 +213,7 @@ const BookContent = () => {
           <button
             key={item.id}
             className={`mx-1 text-white px-4 py-2 rounded-md ${
-              item.id === source ? "  bg-sub" : "bg-main"
+              item.id == source ? "  bg-sub" : "bg-main"
             }`}
             onClick={() => {
               setSource(item.id);

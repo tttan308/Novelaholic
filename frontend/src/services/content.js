@@ -175,6 +175,12 @@ export const getSources = async () => {
 
 export const getSourceChapterIds = async (chapter, sources) => {
   try {
+    //if chapter.title has "Tự Cẩm"
+    if (chapter.title.includes("Tự Cẩm")) {
+      chapter.title = chapter.title = "Tự Cẩm"
+    }
+
+
     const url = `${apiURL}/novels/getIdByTitleAndAuthor`;
     const bodies = sources.map((source) => ({
       title: chapter.title,

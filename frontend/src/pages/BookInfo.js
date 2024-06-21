@@ -304,22 +304,27 @@ function BookInfo() {
                 return (
                   <Link
                     to={`${
-                      index + left.length + (currentPage - 1) * pageSize + 1
+                      index + (currentPage - 1) * pageSize + 1
                     }/${sourceParam}`}
                     className=""
                   >
                     <li
                       key={index}
-                      className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] "
+                      className="border-2 border-[#9F9F9F] p-[14px] bg-[#EFEFEF] flex justify-between items-center"
                     >
-                      <span className="font-Poppins font-base text-sub font-bold">
-                        {item.title.indexOf("Chương") == -1 &&
-                        item.title.indexOf("chương") == -1
-                          ? "Chương "
-                          : " "}
-                        {item.title.split(":")[0]} :{" "}
-                      </span>
-                      <span className="">{item.title.split(":")[1]}</span>
+                      <div className="flex-grow">
+                        <span className="font-Poppins font-base text-sub font-bold">
+                          {item.title.indexOf("Chương") == -1 &&
+                          item.title.indexOf("chương") == -1
+                            ? "Chương "
+                            : " "}
+                          {item.title.split(":")[0]} :{" "}
+                        </span>
+                        <span className="">{item.title.split(":")[1]}</span>
+                      </div>
+                      {downloadedChapters.some(
+                        (chapter) => chapter.title === "Chương " + item.title
+                      ) && <span className="ml-4 text-amber-700">Đã tải</span>}
                     </li>
                   </Link>
                 );
