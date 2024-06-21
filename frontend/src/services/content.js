@@ -8,7 +8,12 @@ export const getChapter = async (id, chapter, source, retries = 3) => {
     try {
       const response = await axios.get(`${apiURL}/novels/${id}/${chapter}?id=${source}`);
       console.log(response.data);
-      return response.data;
+      const chapterContent = response.data.chapterContent.replace(/\n\n\t/g, "<br><br>");
+      return {
+        ... response.data,
+        chapterContent,
+      };
+
     } catch (error) {
       console.log(
         `Attempt ${attempt} to fetch chapter ${chapter} failed: `,
@@ -128,12 +133,30 @@ export const getUpdateBook = async (oldBook, lastChap, source) => {
   }
 };
 
+function removeChineseCharactersAndPunctuation(input) {
+  // Biểu thức chính quy để khớp với các ký tự Trung Quốc và các dấu câu
+  const chineseCharAndPunctuationRegex = /[\u4e00-\u9fff]|[.,\/#!$%\^&\*;:{}=\-_`~()]/g;
+  
+  // Sử dụng replace để thay thế các ký tự Trung Quốc và các dấu câu bằng chuỗi rỗng
+  const result = input.replace(chineseCharAndPunctuationRegex, '');
+  
+  // Loại bỏ khoảng trắng ở đầu và cuối chuỗi nếu có
+  return result.trim();
+}
+
 export const getNovelInfo = async (id, sourceId, page = 1) => {
   try {
     const response = await axios.get(
       `${apiURL}/novels?id=${sourceId}&name=${id}&page=${page}`
     );
-    return response.data;
+    const novelInfo = response.data;
+    const title = removeChineseCharactersAndPunctuation(novelInfo.title);
+
+    return {
+      ...novelInfo,
+      title,
+    };
+
   } catch (error) {
     console.log("Get novel info failed: ", error);
     alert("Get novel info failed: ", error.message);
@@ -176,9 +199,9 @@ export const getSources = async () => {
 export const getSourceChapterIds = async (chapter, sources) => {
   try {
     //if chapter.title has "Tự Cẩm"
-    if (chapter.title.includes("Tự Cẩm")) {
-      chapter.title = chapter.title = "Tự Cẩm"
-    }
+    // if (chapter.title.includes("Tự Cẩm")) {
+    //   chapter.title = chapter.title = "Tự Cẩm"
+    // }
 
 
     const url = `${apiURL}/novels/getIdByTitleAndAuthor`;
