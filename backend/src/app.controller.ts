@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { ExportFileDto } from './dtos/exportfile.dto';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { Response } from 'express';
+import { file } from 'pdfkit';
 
 @Controller()
 export class AppController {
@@ -49,8 +50,11 @@ export class AppController {
 			const buffer = await this.appService.export(exportFileDto);
 			const type = await this.appService.getExportType(exportFileDto.id);
 			res.setHeader('Content-Type', type);
-
-			const name = exportFileDto.novelTitle.normalize('NFD').replace(/[\u0300-\u036F]/g, '').replace(/đ/g, 'd').replace(/Đ/g,'D');
+			var name = exportFileDto.novelTitle.normalize('NFD').replace(/[\u0300-\u036F]/g, '').replace(/đ/g, 'd').replace(/Đ/g,'D');
+			var i = 0;
+			while((name[i] >= 'a' && name[i] <= 'z') || (name[i] >= 'A' && name[i] <= 'Z') || (name[i] >= '0' && name[i] <= '9') || name[i] == ' ' )
+				++i;
+			name = name.substring(0,i);
 			const filename = `${name}.${type}`;
 			res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
 
