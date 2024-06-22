@@ -23,7 +23,7 @@ async function download(novelId, beginChapter, endChapter, id, author) {
     next = json.nextChapter;
     novelTitle = json.novelTitle;
     chapters.push({
-      chapterContent: json.chapterContent,
+      chapterContent: json.chapterContent.replace(/\n/g,"<br>"),
       chapterTitle: json.chapterTitle,
     });
     ++pos;

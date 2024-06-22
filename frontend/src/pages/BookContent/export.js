@@ -20,7 +20,7 @@ async function download(novelId, chapter, typeId) {
     chapters: [
       {
         chapterTitle: content.chapterTitle,
-        chapterContent: content.chapterContent,
+        chapterContent: content.chapterContent.replace(/\n/g,"<br>"),
       },
     ],
   };
