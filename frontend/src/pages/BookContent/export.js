@@ -50,7 +50,7 @@ const Overlay = () => {
   return (
     <div
       id="overlay"
-      className="fixed bottom-4 left-4 bg-blue-500 text-white p-3 rounded shadow-lg"
+      className="fixed bottom-[-50px] left-[0px] w-[113px] bg-blue-500 text-white p-3 rounded shadow-lg"
     >
       {" "}
       Đang xuất...{" "}
