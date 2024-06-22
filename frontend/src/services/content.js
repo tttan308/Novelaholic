@@ -135,7 +135,7 @@ export const getUpdateBook = async (oldBook, lastChap, source) => {
 
 function removeChineseCharactersAndPunctuation(input) {
   // Biểu thức chính quy để khớp với các ký tự Trung Quốc và các dấu câu
-  const chineseCharAndPunctuationRegex = /[\u4e00-\u9fff]|[.,\/#!$%\^&\*;:{}=\-_`~()]/g;
+  const chineseCharAndPunctuationRegex = /[\u4e00-\u9fff]|[-_~()]/g;
   
   // Sử dụng replace để thay thế các ký tự Trung Quốc và các dấu câu bằng chuỗi rỗng
   const result = input.replace(chineseCharAndPunctuationRegex, '');
@@ -152,8 +152,12 @@ export const getNovelInfo = async (id, sourceId, page = 1) => {
     const novelInfo = response.data;
     const title = removeChineseCharactersAndPunctuation(novelInfo.title);
 
+    const sources = await getSources();
+    const sourceNovelIds = await getSourceChapterIds(novelInfo, sources);
+
     return {
       ...novelInfo,
+      sourceNovelIds,
       title,
     };
 

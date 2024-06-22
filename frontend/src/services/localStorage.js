@@ -13,12 +13,20 @@ export const saveBookHistory = async (bookId, chapterNumber, sourceId) => {
     // Get the history from local storage or initialize an empty array if not present
     let history = JSON.parse(localStorage.getItem("history")) || [];
 
-    // Find the book in the history
-    let book = history.find((item) => item.bookId === bookId);
+    console.log("Save book history: ", bookId, chapterNumber, sourceId);
+
+    // Find the book in the history if item.sourceNovelIds includes an object having chapterId == bookId and sourceId == sourceId
+    let book = history.find(item => 
+      item.souceNovelIds.some(id => 
+        id.chapterId === bookId
+      )
+    );
+
 
     if (book) {
       // Check if the chapter is already in the book's chapters list
       if (book.chapters.includes(chapterNumber)) {
+        console.log("Chapter already exists in the book history");
         //delete the chapter from the list
         book.chapters = book.chapters.filter((item) => item !== chapterNumber);
       }
@@ -28,25 +36,27 @@ export const saveBookHistory = async (bookId, chapterNumber, sourceId) => {
       book.lastRead = new Date().toISOString();
 
       // Remove the old entry and add the updated book at the beginning
-      history = history.filter((item) => item.bookId !== bookId);
+      history = history.filter(item => 
+        !item.souceNovelIds.some(id => 
+            id.chapterId === bookId
+        )
+      );
       history.unshift(book);
     } else {
       // Fetch book details from the API
-      const response = await fetch(
-        `${apiURL}/novels?id=${sourceId}&name=${bookId}&page=1`
-      );
+      const data = await getNovelInfo(bookId, sourceId);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch book details");
+      if (!data) {
+        alert("Không tìm thấy sách");
+        return;
       }
 
-      const data = await response.json();
 
       // Create a new book entry
       book = {
-        bookId: bookId,
         title: data.title,
         cover: data.cover,
+        souceNovelIds: data.sourceNovelIds,
         sourceId: sourceId,
         chapters: [chapterNumber],
         lastRead: new Date().toISOString(),
