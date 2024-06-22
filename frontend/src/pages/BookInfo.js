@@ -319,7 +319,7 @@ function BookInfo() {
                 return (
                   <Link
                     to={`${
-                      index + (currentPage - 1) * pageSize + 1
+                      index + (currentPage -1 ) * pageSize + 1 + left.length
                     }/${sourceParam}`}
                     className=""
                   >
