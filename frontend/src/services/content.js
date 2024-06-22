@@ -171,7 +171,7 @@ export const getNovelInfo = async (id, sourceId, page = 1) => {
     
 
     const sources = await getSources();
-    const sourceNovelIds = await getSourceChapterIds(novelInfo, sources);
+    const sourceNovelIds = await getSourceChapterIds({title, author: novelInfo.author}, sources);
 
     return {
       ...novelInfo,
@@ -205,7 +205,7 @@ export const getChapterCount = async (id, sourceId) => {
       return parseInt(last.substr(6, last.indexOf(":")));
     }
   } catch (error) {
-    alert("Get chapter count failed: ", error.message);
+    alert("Get chapter count failed: ", error.message); 
   }
 };
 

@@ -32,7 +32,7 @@ const DownloadedPage = () => {
         {downloadNovels.map((novel) => (
           <div key={novel.id} className="flex justify-center">
             <Link
-              to={`/book/${(novel.sourceNovelIds.find(item => item.id == priorSourceId)||novel.sourceNovelIds[0]).chapterId}?source=${(novel.sourceNovelIds.find(item => item.id == priorSourceId)||novel.sourceNovelIds[0]).id}&downloadedObjectId=${novel.id}`}
+              to={`/book/${(novel.sourceNovelIds.find(item => item.id == priorSourceId)||novel.sourceNovelIds[0])?.chapterId}?source=${(novel.sourceNovelIds.find(item => item.id == priorSourceId)||novel.sourceNovelIds[0])?.id}&downloadedObjectId=${novel.id}`}
               className="flex flex-col items-center gap-2 max-w-[140px] my-3 cursor-pointer"
             >
               <img
