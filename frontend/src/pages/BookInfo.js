@@ -4,7 +4,7 @@ import Pagination from "../components/pagination";
 import { Link, useLocation } from "react-router-dom";
 import { getChapter, getInfo } from "../services/Infomation";
 import DownloadOptionModal from "./BookContent/DownloadOptionModal";
-import { getSources } from "../services/content";
+import { getNovelInfo, getSourceChapterIds, getSources, removeChineseCharactersAndPunctuation } from "../services/content";
 import { getDownloadedBookInfo } from "../services/localStorage";
 import global from "../GlobalVariables";
 import { findId } from "../services/novel";
@@ -28,6 +28,7 @@ function BookInfo() {
   const [right, setRight] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sources, setSources] = useState([]);
+  const [sourceNovelIds, setSourceNovelIds] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [endPage, setEndPage] = useState(1);
   const [isFinish, setIsFinish] = useState(false);
@@ -36,6 +37,7 @@ function BookInfo() {
   const [state, setState] = useState(false);
   const [foundBook, setFoundBook] = useState(true);
   let shouldRender = false;
+  
 
   if (global.currentState > 0) {
     shouldRender = true;
@@ -170,6 +172,16 @@ function BookInfo() {
   useEffect(() => {
     getSources().then((res) => {
       setSources(res);
+      getNovelInfo(id, sourceParam).then((book) => {
+        const title = removeChineseCharactersAndPunctuation(book.title);
+        const author = book.author;
+
+        getSourceChapterIds({ title, author }, res).then((res) => {
+          setSourceNovelIds(res);
+        });
+      });
+
+
     });
 
     getDownloadedBookInfo(id).then((novel) => {
@@ -178,7 +190,7 @@ function BookInfo() {
         console.log(novel.chapters);
       }
     });
-  }, []);
+  }, [sourceParam]);
 
   if (!shouldRender) {
     return null;
@@ -194,7 +206,7 @@ function BookInfo() {
       <div className="inline">
         {modalOpen && (
           <DownloadOptionModal
-            sources={sources}
+            sources={sourceNovelIds}
             bookId={id}
             setModalOpen={setModalOpen}
             chapterCount={endPage}

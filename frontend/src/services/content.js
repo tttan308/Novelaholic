@@ -149,10 +149,10 @@ export const getUpdateBook = async (oldBook, lastChap, source) => {
   }
 };
 
-function removeChineseCharactersAndPunctuation(input) {
+export function removeChineseCharactersAndPunctuation(input) {
 
   //remove các ký tự từ dấu '-' trở về sau
-  let result = input.replace(/[-].*$/, "");
+  let result = input?.replace(/[-].*$/, "");
   
   console.log("Result: ", result);
 
