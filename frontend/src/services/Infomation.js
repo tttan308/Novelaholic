@@ -10,9 +10,23 @@ export const getInfo = async (name, page) => {
 
     // console.log("url: ",`${apiURL}/novels?name=${name}&page=${page}` + sourceQuery(1));
     const info = await response.json();
-    // console.log("fetch data:", info);
+    console.log("fetch data:", info);
 
-    return info;
+    //override chapters - add chapter number
+    const chapters = info.chapters.map((chapter) => {
+      let number = parseInt(chapter.title.substr(0, chapter.title.indexOf(":"))) || parseInt(chapter.title.substr(6, chapter.title.indexOf(":")))
+      
+      return {
+        ...chapter,
+        number
+      }
+    })
+
+    return {
+      ...info,
+      chapters,
+    }
+
   } catch (error) {
     console.log("FAILED: ", error);
     throw error;

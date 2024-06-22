@@ -82,7 +82,11 @@ export const getFiveRecentBooks = () => {
 
 export const getBookHistoryChapter = (bookId) => {
   const history = getBookHistory();
-  const book = history.find((item) => item.bookId === bookId);
+  let book = history.find(item => 
+    item.souceNovelIds.some(id => 
+      id.chapterId === bookId
+    )
+  );
   return book ? book.chapters : [];
 };
 
@@ -122,7 +126,7 @@ export const downloadBook = async (
           ...existingBook.chapters,
           ...book.chapters,
         ].reduce((acc, chapter) => {
-          if (!acc.find((ch) => ch.title === chapter.title)) {
+          if (!acc.find((ch) => ch.number === chapter.number)) {
             acc.push(chapter);
           }
           return acc;
@@ -133,7 +137,7 @@ export const downloadBook = async (
           ...book.chaptersContent,
         ].reduce((acc, chapterContent) => {
           if (
-            !acc.find((ch) => ch.chapterTitle === chapterContent.chapterTitle)
+            !acc.find((ch) => ch.number === chapterContent.number)
           ) {
             acc.push(chapterContent);
           }
@@ -272,6 +276,7 @@ export const getDownloadedBookCardInfo = async () => {
           cover: book.cover,
           sourceId: book.sourceId,
           chapterCount: book.chapters.length,
+          sourceNovelIds: book.sourceNovelIds,  
         };
       })
     );
@@ -322,70 +327,131 @@ export const getDownloadedBookInfo = async (bookId) => {
     const db = await initIndexedDB();
     const transaction = db.transaction("books", "readonly");
     const objectStore = transaction.objectStore("books");
-    const request = objectStore.get(bookId);
-    const book = await requestToPromise(request);
+     // Sử dụng con trỏ để duyệt qua tất cả các đối tượng
+     const request = objectStore.openCursor();
+ 
+     // Chuyển request thành promise
+     const requestToPromise = (request) => {
+      return new Promise((resolve, reject) => {
+        request.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+        request.onerror = (event) => {
+          reject(event.target.error);
+        };
+      });
+    };
 
-    if (book) {
-      delete book.chaptersContent;
-      console.log("Get book info 3: ", book);
-      return book;
-    } else {
-      console.log("Book not found");
-      return null;
+    let cursor = await requestToPromise(request);
+
+    while (cursor) {
+      if (cursor.value.sourceNovelIds) {
+        console.log(cursor.value.sourceNovelIds);
+        const found = cursor.value.sourceNovelIds.some(item => item.chapterId === bookId);
+        if (found) {
+          delete cursor.value.chaptersContent;  // Xóa thuộc tính chaptersContent nếu có
+          return cursor.value;
+        }
+      }
+      cursor.continue();
+      cursor = await requestToPromise(request);
     }
+
+    console.log("No objects found");
+    return null;
+
   } catch (error) {
-    console.log("Get book info failed: ", error);
+    console.log("Get obj info failed: ", error);
     return null;
   }
 };
 
 export const getDownloadedBookChapter = async (bookId, chapter) => {
+  try {
+    const db = await initIndexedDB();
+    const transaction = db.transaction("books", "readonly");
+    const objectStore = transaction.objectStore("books");
+
+    // Sử dụng openCursor để duyệt qua tất cả các đối tượng trong objectStore
+    const request = objectStore.openCursor();
+    
+    // Chuyển request thành Promise
+    const requestToPromise = (request) => {
+      return new Promise((resolve, reject) => {
+        request.onsuccess = (event) => {
+          resolve(event.target.result);
+        };
+        request.onerror = (event) => {
+          reject(event.target.error);
+        };
+      });
+    };
+
+    let cursor = await requestToPromise(request);
+
+    while (cursor) {
+      const book = cursor.value;
+
+      if (book && book.sourceNovelIds) {
+        const found = book.sourceNovelIds.some(item => item.chapterId === bookId);
+
+        if (found && book.chaptersContent && book.chapters) {
+          const index = book.chapters.findIndex((ch) => ch.number === parseInt(chapter));
+
+          if (index !== -1) {
+            const chapterContent = book.chaptersContent[index];
+            return {
+              ...chapterContent,
+              chapterCount: book.chapterCount,
+              chapters: book.chapters,
+            };
+          } else {
+            console.log("Chapter not found");
+            return null;
+          }
+        }
+      }
+
+      cursor = await requestToPromise(cursor.continue());
+    }
+
+    console.log("Book not found");
+    return null;
+
+  } catch (error) {
+    console.error("Failed to retrieve the book:", error);
+    return null;
+  }
+};
+
+
+// Function to initialize the IndexedDB
+const initIndexedDB = () => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("books", 1);
-
+    request.onerror = (event) => {
+      reject(event.target.errorCode);
+    };
+    request.onsuccess = (event) => {
+      resolve(event.target.result);
+    };
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
       if (!db.objectStoreNames.contains("books")) {
-        const objectStore = db.createObjectStore("books", { keyPath: "id" });
-        objectStore.createIndex("chaptersContent", "chaptersContent", {
-          unique: false,
-        });
+        db.createObjectStore("books", { keyPath: "id" });
       }
-    };
-    request.onsuccess = (event) => {
-      const db = event.target.result;
-      const transaction = db.transaction("books", "readonly");
-      const objectStore = transaction.objectStore("books");
-      const getRequest = objectStore.get(bookId);
-
-      getRequest.onsuccess = (event) => {
-        const book = event.target.result;
-        if (book && book.chaptersContent && book.chapters) {
-          console.log(book.chapters);
-          const index = book.chapters.findIndex(
-            (ch) => ch.number === parseInt(chapter)
-          );
-          console.log("Chapter found: ", book.chaptersContent[index]);
-          const chapterContent = book.chaptersContent[index];
-          resolve({
-            ...chapterContent,
-            chapterCount: book.chapterCount,
-            chapters: book.chapters,
-          });
-        } else {
-          console.log("Chapter not found");
-          resolve(null); // Return null if no content is found
-        }
-      };
-      getRequest.onerror = (event) => {
-        reject(new Error("Failed to retrieve the book"));
-      };
-    };
-    request.onerror = (event) => {
-      reject(new Error("Failed to open the database"));
     };
   });
 };
+
+// Function to convert IndexedDB request to Promise
+const requestToPromise = (request) => {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+};
+
 
 export const getSourcesFromLocalStorage = () => {
   const sources = localStorage.getItem("sources");

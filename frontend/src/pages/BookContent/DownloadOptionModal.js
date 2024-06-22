@@ -58,9 +58,10 @@ const DownloadOptionModal = ({
   //     });
   // }, [isDownloading]);
 
-  const handleSourceClick = async (sourceId) => {
+  const handleSourceClick = async (source) => {
     setIsDownloading(true);
-    await downloadBook(bookId, beginChapter, endChapter, sourceId);
+    console.log(source);
+    await downloadBook(source.chapterId, beginChapter, endChapter, source.id);
     setIsDownloading(false);
     setModalOpen(false);
   };
@@ -117,7 +118,7 @@ const DownloadOptionModal = ({
                           key={source.id}
                           label={source.name}
                           className="pt-[10px] pb-[10px] pl-[20px] pr-[20px] bg-main rounded-[5px] m-[10px] text-white transition duration-200 transform hover:scale-110"
-                          onClick={() => handleSourceClick(source.id)}
+                          onClick={() => handleSourceClick(source)}
                         />
                       ))}
                     </div>

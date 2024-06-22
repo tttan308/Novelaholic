@@ -186,6 +186,9 @@ function BookInfo() {
 
   isFinish && console.log(foundBook);
 
+  console.log(downloadedChapters)
+  console.log(left)
+
   if (foundBook)
     return (
       <div className="inline">
@@ -291,7 +294,7 @@ function BookInfo() {
                         <span className="">{item.title.split(":")[1]}</span>
                       </div>
                       {downloadedChapters.some(
-                        (chapter) => chapter.title === "Chương " + item.title
+                        (chapter) => chapter.number == item.number
                       ) && <span className="ml-4 text-amber-700">Đã tải</span>}
                     </li>
                   </Link>
@@ -323,7 +326,7 @@ function BookInfo() {
                         <span className="">{item.title.split(":")[1]}</span>
                       </div>
                       {downloadedChapters.some(
-                        (chapter) => chapter.title === "Chương " + item.title
+                        (chapter) => chapter.number == item.number
                       ) && <span className="ml-4 text-amber-700">Đã tải</span>}
                     </li>
                   </Link>

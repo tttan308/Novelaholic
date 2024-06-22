@@ -16,7 +16,7 @@ export const getChapter = async (id, chapter, source, retries = 3) => {
 
     } catch (error) {
       console.log(
-        `Attempt ${attempt} to fetch chapter ${chapter} failed: `,
+        `Attempt ${attempt} to fetch chapter ${chapter}, book ${id}, source ${source} failed: `,
         error
       );
       if (attempt === retries) {
@@ -73,23 +73,39 @@ export const getFullBookContent = async (id, downSourceId) => {
   }
 };
 
+export const getSourcesFromLocalStorage = () => {
+  const sources = localStorage.getItem("sources");
+  if (sources) {
+    return JSON.parse(sources);
+  } else {
+    return [];
+  }
+};
+
+
 export const getBookContent = async (id, source, from, to) => {
   try {
-    const novelInfo = await axios.get(
-      `${apiURL}/novels?id=${source}&name=${id}&page=1`
-    );
+    const novelInfo = await getNovelInfo(id, source);
+
 
     const novelPromises = [];
     for (let i = from; i <= to; i++) {
       novelPromises.push(getChapter(id, i, source));
     }
-
-    const chaptersContent = await Promise.all(novelPromises);
-    const chapters = chaptersContent.map((content, index) => {
+   
+    const res = await Promise.all(novelPromises);
+    const chaptersContent = res.map((content, index) => {
       return {
         number: parseInt(
           content.chapterTitle.substr(6, content.chapterTitle.indexOf(":"))
         ),
+        ...content,
+      };
+    })
+    
+    const chapters = chaptersContent.map((content, index) => {
+      return {
+        number: content.number,
         title: content.chapterTitle,
         link: `/novels/${id}/${index + 1}`,
       };
@@ -98,8 +114,8 @@ export const getBookContent = async (id, source, from, to) => {
     const chapterCount = await getChapterCount(id, source);
 
     return {
-      id,
-      ...novelInfo.data,
+      id: novelInfo.hashedId,
+      ...novelInfo,
       chapters,
       chapterCount,
       sourceId: source,
@@ -152,6 +168,8 @@ export const getNovelInfo = async (id, sourceId, page = 1) => {
     const novelInfo = response.data;
     const title = removeChineseCharactersAndPunctuation(novelInfo.title);
 
+    
+
     const sources = await getSources();
     const sourceNovelIds = await getSourceChapterIds(novelInfo, sources);
 
@@ -159,6 +177,8 @@ export const getNovelInfo = async (id, sourceId, page = 1) => {
       ...novelInfo,
       sourceNovelIds,
       title,
+      
+      hashedId: title,
     };
 
   } catch (error) {

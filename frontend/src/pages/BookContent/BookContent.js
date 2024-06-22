@@ -68,7 +68,6 @@ const BookContent = () => {
           res &&
           res.chapters.some((item) => item.number === parseInt(chapter))
         ) {
-          console.log("asd", res);
           setChapterData(res);
           saveBookHistory(id, chapter, sourceId);
           setLoading(false);
