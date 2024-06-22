@@ -150,12 +150,12 @@ export const getUpdateBook = async (oldBook, lastChap, source) => {
 };
 
 function removeChineseCharactersAndPunctuation(input) {
-  // Biểu thức chính quy để khớp với các ký tự Trung Quốc và các dấu câu
-  const chineseCharAndPunctuationRegex = /[\u4e00-\u9fff]|[-_~()]/g;
+
+  //remove các ký tự từ dấu '-' trở về sau
+  let result = input.replace(/[-].*$/, "");
   
-  // Sử dụng replace để thay thế các ký tự Trung Quốc và các dấu câu bằng chuỗi rỗng
-  const result = input.replace(chineseCharAndPunctuationRegex, '');
-  
+  console.log("Result: ", result);
+
   // Loại bỏ khoảng trắng ở đầu và cuối chuỗi nếu có
   return result.trim();
 }
