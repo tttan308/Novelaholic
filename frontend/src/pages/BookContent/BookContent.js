@@ -66,7 +66,7 @@ const BookContent = () => {
       .then((res) => {
         if (
           res &&
-          res.chapters.some((item) => item.number === parseInt(chapter))
+          res.chapters.some((item) => item.number == parseInt(chapter))
         ) {
           setChapterData(res);
           saveBookHistory(id, chapter, sourceId);
@@ -110,7 +110,7 @@ const BookContent = () => {
         }
       })
       .catch((error) => {
-        console.error("Error fetching book chapter: ", error);
+        console.error("Error indexedDB book chapter: ", error);
 
         fetchChapterData();
         getChapterCount(id, source).then((res) => {

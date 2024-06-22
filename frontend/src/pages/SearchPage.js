@@ -74,9 +74,9 @@ const SearchPage = () => {
                       alt={novel.title}
                       className="w-36 h-48 object-cover"
                     />
-                    <h3 className="text-[17px] font-bold text-center leading-relaxed">
-                      {novel.title}
-                    </h3>
+                    <h3 className="text-[17px] font-bold text-center leading-relaxed line-clamp-2">
+                  {novel.title}
+                </h3>
                   </Link>
                 </div>
               ))}

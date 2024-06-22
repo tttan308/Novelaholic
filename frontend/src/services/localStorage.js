@@ -347,7 +347,7 @@ export const getDownloadedBookInfo = async (bookId) => {
     while (cursor) {
       if (cursor.value.sourceNovelIds) {
         console.log(cursor.value.sourceNovelIds);
-        const found = cursor.value.sourceNovelIds.some(item => item.chapterId === bookId);
+        const found = cursor.value.sourceNovelIds.some(item => item.chapterId == bookId);
         if (found) {
           delete cursor.value.chaptersContent;  // Xóa thuộc tính chaptersContent nếu có
           return cursor.value;
@@ -372,7 +372,6 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
     const transaction = db.transaction("books", "readonly");
     const objectStore = transaction.objectStore("books");
 
-    // Sử dụng openCursor để duyệt qua tất cả các đối tượng trong objectStore
     const request = objectStore.openCursor();
     
     // Chuyển request thành Promise
@@ -393,10 +392,10 @@ export const getDownloadedBookChapter = async (bookId, chapter) => {
       const book = cursor.value;
 
       if (book && book.sourceNovelIds) {
-        const found = book.sourceNovelIds.some(item => item.chapterId === bookId);
+        const found = book.sourceNovelIds.some(item => item.chapterId == bookId);
 
         if (found && book.chaptersContent && book.chapters) {
-          const index = book.chapters.findIndex((ch) => ch.number === parseInt(chapter));
+          const index = book.chapters.findIndex((ch) => ch.number == parseInt(chapter));
 
           if (index !== -1) {
             const chapterContent = book.chaptersContent[index];
